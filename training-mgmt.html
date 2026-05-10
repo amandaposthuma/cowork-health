@@ -69,8 +69,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .day-dots{display:flex;gap:2px;min-height:6px}
 .dot{width:5px;height:5px;border-radius:50%}
 .dot-run{background:var(--green)}
-.dot-bike{background:var(--blue)}
+.dot-swim{background:var(--cyan)}
 .dot-lift{background:var(--orange)}
+.dot-xt{background:var(--blue)}
 
 /* INSPIRATION CARD */
 .inspire-card{margin:0 16px 14px;padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,#00A878 0%,#4361EE 100%);color:#fff;position:relative;overflow:hidden}
@@ -610,7 +611,9 @@ const LIFTS = {
   }
 };
 
-const LIFT_MAP = {1:'A',2:'B',3:'C',4:'D',5:'E',6:'F'}; // day of week → lift key
+// New schedule: Run days = Mon/Wed/Fri/Sat | Lift days = Tue/Thu/Sun
+// Tue=Lower Heavy+Femoral Neck, Thu=Upper Heavy, Sun=Full Body Runner
+const LIFT_MAP = {0:'E', 2:'D', 4:'A'}; // 0=Sun, 2=Tue, 4=Thu
 
 const CORE_ROUTINES = {
   0: { // Sunday — Active Recovery
@@ -749,14 +752,20 @@ function getWeekNum(){
 }
 
 function getDayWorkouts(date){
-  const dow=date.getDay(); // 0=Sun
-  const workouts=[];
-  if(dow===0) return [{type:'rest'}];
-  if([1,3,5].includes(dow)){workouts.push({type:'run'});}
-  if([2,4,6].includes(dow)){workouts.push({type:'bike'});}
-  const liftKey=LIFT_MAP[dow];
-  if(liftKey) workouts.push({type:'lift',key:liftKey});
-  return workouts;
+  const dow=date.getDay();
+  // Run days: Mon(1) Wed(3) Fri(5) Sat(6) → Run + Swim to fill 2.5 hrs
+  if([1,3,5,6].includes(dow)) return [{type:'run'},{type:'swim'}];
+  // Lift days: Sun(0) Tue(2) Thu(4) → Lift 60min + XT 90min
+  if([0,2,4].includes(dow)) return [{type:'lift'},{type:'xt'}];
+  return [{type:'rest'}];
+}
+
+function getRunMinutes(date){
+  const dur=getRunWorkout(date).duration||'';
+  const nums=dur.match(/\d+/g);
+  if(!nums||!nums.length) return 45;
+  if(nums.length===1) return parseInt(nums[0]);
+  return Math.round((parseInt(nums[0])+parseInt(nums[nums.length-1]))/2);
 }
 
 function storageKey(prefix,dateStr,extra=''){return `tm_${prefix}_${dateStr}${extra?'_'+extra:''}`;}
@@ -858,13 +867,16 @@ function renderWorkoutCards(){
   const dow=selectedDate.getDay();
   const ds=datStr(selectedDate);
 
-  if(dow===0){
-    container.innerHTML=`<div class="rest-card"><div class="rest-emoji">🌿</div><div class="rest-title">Full Rest Day</div><div class="rest-sub">Recover. Eat well. Sleep 8+ hours.</div></div>`;
-  } else {
-    if([1,3,5].includes(dow)) container.appendChild(buildRunCard(selectedDate,ds));
-    if([2,4,6].includes(dow)) container.appendChild(buildBikeCard(selectedDate,ds));
+  // Run days: Mon/Wed/Fri/Sat — Run + Swim to fill 2.5 hrs
+  if([1,3,5,6].includes(dow)){
+    container.appendChild(buildRunCard(selectedDate,ds));
+    container.appendChild(buildSwimCard(selectedDate,ds));
+  }
+  // Lift days: Sun/Tue/Thu — Lift 60min + XT 90min
+  else if([0,2,4].includes(dow)){
     const liftKey=LIFT_MAP[dow];
     if(liftKey) container.appendChild(buildLiftCard(selectedDate,ds,liftKey));
+    container.appendChild(buildXTCard(selectedDate,ds));
   }
   container.appendChild(buildCoreCard(ds, dow));
 }
@@ -924,6 +936,66 @@ function buildBikeCard(date,ds){
       <div class="workout-detail-row"><span class="workout-detail-label">Effort</span><span class="workout-detail-val">${bike.effort}</span></div>
       <div class="workout-detail-row"><span class="workout-detail-label">Note</span><span class="workout-detail-val" style="font-style:italic;color:var(--text-muted)">${bike.note}</span></div>
       <button class="complete-btn complete-btn-bike${done?' done':''}" onclick="markDone('bike','${ds}',this)">${done?'✓ Completed':'Mark Complete'}</button>
+    </div>`;
+  return card;
+}
+
+function buildSwimCard(date,ds){
+  const runMins=getRunMinutes(date);
+  const swimMins=150-runMins;
+  const done=isComplete('swim',ds);
+  const card=document.createElement('div');
+  card.className='workout-card';
+  card.innerHTML=`
+    <div class="workout-card-header" onclick="toggleCard('swim-${ds}')">
+      <div class="workout-icon" style="background:var(--cyan-light)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0"/>
+          <circle cx="12" cy="6" r="2" fill="var(--cyan)" stroke="none"/>
+          <path d="M10 8.5l-2 2.5M14 8.5l2 2.5"/>
+        </svg>
+      </div>
+      <div class="workout-card-info">
+        <div class="workout-card-title">Swim / Aqua Jog</div>
+        <div class="workout-card-subtitle">~${swimMins} min · fills to 2.5 hrs total</div>
+      </div>
+      <svg class="workout-chevron" id="chev-swim-${ds}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="workout-card-body" id="swim-${ds}">
+      <div class="workout-detail-row"><span class="workout-detail-label">Duration</span><span class="workout-detail-val">~${swimMins} min (run ~${runMins} min + swim = 2.5 hrs)</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Type</span><span class="workout-detail-val">Easy swim or aqua jog — your choice</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Effort</span><span class="workout-detail-val">Zone 2 · HR 120–135 · conversational</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Focus</span><span class="workout-detail-val">Zero impact. Pure aerobic base. Active recovery.</span></div>
+      <button class="complete-btn complete-btn-core${done?' done':''}" style="background:var(--cyan)" onclick="markDone('swim','${ds}',this)">${done?'✓ Completed':'Mark Swim Complete'}</button>
+    </div>`;
+  return card;
+}
+
+function buildXTCard(date,ds){
+  const dow=date.getDay();
+  const isSun=dow===0;
+  const done=isComplete('xt',ds);
+  const options=isSun?'Easy swim · yoga · light bike':'Bike Zone 2 · swim · elliptical · your choice';
+  const note=isSun?'Active recovery only. Low HR. Let the body rebuild.':'Zone 2 effort only. HR 120–135. Aerobic base.';
+  const card=document.createElement('div');
+  card.className='workout-card';
+  card.innerHTML=`
+    <div class="workout-card-header" onclick="toggleCard('xt-${ds}')">
+      <div class="workout-icon workout-icon-bike">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="16.5" r="3.5"/><circle cx="18.5" cy="16.5" r="3.5"/><circle cx="15" cy="5.5" r="1.3" fill="var(--blue)" stroke="none"/><path d="M5.5 16.5L11 7.5L15 5.5L18.5 16.5"/><line x1="11" y1="7.5" x2="12" y2="16.5"/></svg>
+      </div>
+      <div class="workout-card-info">
+        <div class="workout-card-title">Cross Training — 90 min</div>
+        <div class="workout-card-subtitle">${options}</div>
+      </div>
+      <svg class="workout-chevron" id="chev-xt-${ds}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="workout-card-body" id="xt-${ds}">
+      <div class="workout-detail-row"><span class="workout-detail-label">Duration</span><span class="workout-detail-val">90 min</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Options</span><span class="workout-detail-val">${options}</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Effort</span><span class="workout-detail-val">${note}</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Total day</span><span class="workout-detail-val" style="color:var(--green-dark);font-weight:700">Lift 60 min + XT 90 min = 2.5 hrs ✓</span></div>
+      <button class="complete-btn complete-btn-bike${done?' done':''}" onclick="markDone('xt','${ds}',this)">${done?'✓ Completed':'Mark XT Complete'}</button>
     </div>`;
   return card;
 }
