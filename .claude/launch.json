@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "training-mgmt",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "7654", "--directory", "/Users/amandaposthumacoelho/Desktop/Cowork OS/Health"],
+      "port": 7654
+    }
+  ]
+}

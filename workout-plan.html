@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Amanda's Training Plan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0F2F7;
+  --surface:#FFFFFF;
+  --surface2:#F6F7FB;
+  --surface3:#ECEEF5;
+  --border:#E4E6EF;
+  --border2:#CDD0DF;
+
+  --green:#00A878;--green-light:#E5F7F2;--green-dark:#007A58;
+  --blue:#4361EE;--blue-light:#EEF1FD;
+  --orange:#F4831F;--orange-light:#FEF3E8;
+  --red:#E63946;--red-light:#FDECEE;
+  --cyan:#0096C7;--cyan-light:#E5F4FA;
+  --purple:#7B2FBE;--purple-light:#F3E8FA;
+  --yellow:#C18A00;--yellow-light:#FDF6E3;
+
+  --text:#111827;--text-muted:#6B7280;--text-dim:#9CA3AF;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-x:hidden}
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto}
+/* HEADER */
+#header{padding:20px 20px 0;position:sticky;top:0;background:var(--bg);z-index:100;border-bottom:1px solid transparent;transition:border-color .3s}
+#header.scrolled{border-color:var(--border)}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.phase-chip{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1px solid rgba(0,168,120,.25)}
+.marathon-chip{color:var(--text-muted);font-size:12px;font-weight:500}
+.marathon-days{color:var(--orange);font-weight:700}
+#header h1{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px}
+#header .date-line{font-size:13px;color:var(--text-muted);margin-bottom:16px}
+/* DAY STRIP */
+#day-strip{display:flex;gap:6px;padding:0 20px 16px;overflow-x:auto;scrollbar-width:none}
+#day-strip::-webkit-scrollbar{display:none}
+.day-btn{flex-shrink:0;width:52px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.day-btn:hover{border-color:var(--border2);background:var(--surface2)}
+.day-btn.active{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 4px 12px rgba(0,168,120,.3)}
+.day-btn.today:not(.active){border-color:var(--green);background:var(--green-light)}
+.day-btn.rest-day{opacity:.5}
+.day-name{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:inherit}
+.day-num{font-size:18px;font-weight:800;color:inherit}
+.day-dots{display:flex;gap:2px;height:6px;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%}
+.dot.run{background:var(--green)}
+.dot.bike{background:var(--blue)}
+.dot.lift{background:var(--orange)}
+.dot.rest{background:transparent}
+/* CONTENT */
+#content{flex:1;padding:0 16px 100px}
+/* SECTION HEADERS */
+.section-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);padding:16px 4px 8px}
+/* WORKOUT CARDS */
+.workout-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;margin-bottom:12px;overflow:hidden;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.workout-card.expanded{border-color:var(--border2);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.card-header{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer;user-select:none}
+.card-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.card-icon.run-icon{background:var(--green-light)}
+.card-icon.bike-icon{background:var(--blue-light)}
+.card-icon.lift-icon{background:var(--orange-light)}
+.card-meta{flex:1;min-width:0}
+.card-title{font-size:16px;font-weight:700;letter-spacing:-.2px;color:var(--text)}
+.card-sub{font-size:13px;color:var(--text-muted);margin-top:1px}
+.card-chevron{color:var(--text-dim);font-size:20px;font-weight:300;transition:transform .2s;flex-shrink:0}
+.workout-card.expanded .card-chevron{transform:rotate(90deg)}
+.card-body{padding:0 16px 16px;display:none}
+.workout-card.expanded .card-body{display:block}
+/* PAIN CHECK BANNER */
+.pain-banner{background:var(--red-light);border:1.5px solid rgba(230,57,70,.25);border-radius:14px;padding:12px 16px;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start}
+.pain-banner-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.pain-banner-text h4{font-size:14px;font-weight:700;color:var(--red);margin-bottom:2px}
+.pain-banner-text p{font-size:12px;color:var(--text-muted);line-height:1.4}
+.pain-inputs{display:flex;gap:8px;margin-top:8px}
+.pain-input-group{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;display:flex;flex-direction:column;gap:2px}
+.pain-input-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.pain-score{font-size:20px;font-weight:800;color:var(--text);cursor:pointer;padding:2px 0}
+/* BLOCK SECTION — Runna-style */
+.block-section{border-radius:14px;overflow:hidden;margin-bottom:12px}
+.block-section-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:12px 12px 0 0}
+.block-section-header.clr-blue{background:var(--blue);color:#fff}
+.block-section-header.clr-orange{background:var(--orange);color:#fff}
+.block-section-header.clr-red{background:var(--red);color:#fff}
+.block-section-header.clr-cyan{background:var(--cyan);color:#fff}
+.block-section-header.clr-green{background:var(--green);color:#fff}
+.block-section-header.clr-purple{background:var(--purple);color:#fff}
+.block-section-header.clr-gray{background:var(--surface3);color:var(--text-muted)}
+.block-part-name{font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.block-repeat-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.25);backdrop-filter:blur(4px)}
+.block-repeat-badge.dark{background:rgba(0,0,0,.08);color:var(--text-muted)}
+.block-section-body{background:var(--surface2);border-radius:0 0 12px 12px;padding:8px}
+.block-desc{font-size:12px;color:var(--text-muted);padding:8px 4px 4px;line-height:1.4;font-style:italic}
+/* EXERCISE ROW — Runna style */
+.exercise-list{display:flex;flex-direction:column;gap:6px}
+.exercise-row{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border-radius:10px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.ex-icon-wrap{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.ex-icon-wrap.cat-pt{background:var(--red-light)}
+.ex-icon-wrap.cat-lower{background:var(--orange-light)}
+.ex-icon-wrap.cat-upper{background:var(--blue-light)}
+.ex-icon-wrap.cat-core{background:var(--cyan-light)}
+.ex-icon-wrap.cat-mob{background:var(--purple-light)}
+.ex-icon-wrap.cat-full{background:var(--yellow-light)}
+.ex-icon-wrap svg{width:32px;height:32px}
+.ex-icon-wrap.cat-pt svg{color:var(--red)}
+.ex-icon-wrap.cat-lower svg{color:var(--orange)}
+.ex-icon-wrap.cat-upper svg{color:var(--blue)}
+.ex-icon-wrap.cat-core svg{color:var(--cyan)}
+.ex-icon-wrap.cat-mob svg{color:var(--purple)}
+.ex-icon-wrap.cat-full svg{color:var(--yellow)}
+.exercise-info{flex:1;min-width:0}
+.exercise-name{font-size:14px;font-weight:600;letter-spacing:-.1px;color:var(--text)}
+.exercise-meta{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap}
+.ex-muscle-tag{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
+.exercise-detail{font-size:13px;font-weight:700;color:var(--text);margin-top:2px}
+.exercise-check{width:26px;height:26px;border-radius:8px;border:2px solid var(--border2);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.exercise-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.exercise-check svg{width:13px;height:13px;opacity:0;transition:opacity .15s}
+.exercise-check.done svg{opacity:1}
+/* COACHING CUE */
+.cue-text{font-size:12px;color:#3D9A76;font-style:italic;padding:4px 0 0;line-height:1.4;border-left:2px solid var(--green-light);padding-left:8px;margin-top:4px}
+.cue-text.cue-warning{color:var(--red);border-left-color:var(--red-light)}
+/* RUN DETAIL */
+.run-detail{background:var(--green-light);border-radius:12px;padding:14px;margin-top:12px;border:1px solid rgba(0,168,120,.15)}
+.run-detail h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--green-dark)}
+.run-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(0,168,120,.15)}
+.run-row:last-child{border-bottom:none}
+.run-key{font-size:12px;color:var(--text-muted)}
+.run-val{font-size:13px;font-weight:600;color:var(--text)}
+.pain-zone-guide{margin-top:12px;display:flex;flex-direction:column;gap:4px}
+.pain-zone{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px}
+.pz-green{background:var(--green-light)}
+.pz-yellow{background:#FEF9E5}
+.pz-orange{background:var(--orange-light)}
+.pz-red{background:var(--red-light)}
+.pz-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pz-green .pz-dot{background:var(--green)}
+.pz-yellow .pz-dot{background:#D4A017}
+.pz-orange .pz-dot{background:var(--orange)}
+.pz-red .pz-dot{background:var(--red)}
+.pz-text{font-size:11px;flex:1;color:var(--text-muted)}
+.pz-text strong{color:var(--text);font-weight:700}
+/* BIKE DETAIL */
+.bike-detail{background:var(--blue-light);border-radius:12px;padding:14px;margin-top:12px;border:1px solid rgba(67,97,238,.15)}
+.bike-detail h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--blue)}
+/* COMPLETE BUTTON */
+.complete-btn{width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;letter-spacing:.3px;cursor:pointer;margin-top:14px;transition:all .15s}
+.complete-btn.done{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(0,168,120,.25)}
+.complete-btn.not-done{background:var(--surface3);color:var(--text-muted);border:1.5px solid var(--border)}
+/* PHASE PROGRESS */
+.phase-progress{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.phase-progress h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.phase-list{display:flex;flex-direction:column;gap:8px}
+.phase-item{display:flex;align-items:center;gap:10px}
+.phase-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.phase-item.complete .phase-dot{background:var(--green)}
+.phase-item.active .phase-dot{background:var(--orange);box-shadow:0 0 6px rgba(244,131,31,.5)}
+.phase-item.upcoming .phase-dot{background:var(--border2)}
+.phase-text{flex:1}
+.phase-name{font-size:13px;font-weight:600;color:var(--text)}
+.phase-dates{font-size:11px;color:var(--text-muted)}
+.phase-bar-wrap{flex:1;height:5px;background:var(--border);border-radius:4px;position:relative;overflow:hidden}
+.phase-bar-fill{height:100%;background:linear-gradient(90deg,var(--orange),#FFAA44);border-radius:4px;transition:width .5s}
+.phase-pct{font-size:11px;font-weight:700;color:var(--orange);width:32px;text-align:right;flex-shrink:0}
+/* REST DAY */
+.rest-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:24px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.rest-emoji{font-size:48px;margin-bottom:12px}
+.rest-card h3{font-size:18px;font-weight:800;margin-bottom:6px;color:var(--text)}
+.rest-card p{font-size:14px;color:var(--text-muted);line-height:1.5}
+/* BOTTOM NAV */
+#bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 max(8px,env(safe-area-inset-bottom));display:flex;justify-content:space-around;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;cursor:pointer;color:var(--text-dim);transition:color .15s;border:none;background:none;font-family:inherit}
+.nav-btn.active{color:var(--green)}
+.nav-icon{font-size:20px}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:.3px}
+/* VIEWS */
+.view{display:none}
+.view.active{display:block}
+/* PLAN VIEW */
+.plan-week{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.plan-week-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);cursor:pointer}
+.plan-week-title{font-size:15px;font-weight:700;color:var(--text)}
+.plan-week-status{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px}
+.status-complete{background:var(--green-light);color:var(--green-dark)}
+.status-active{background:var(--orange-light);color:var(--orange)}
+.status-upcoming{background:var(--surface3);color:var(--text-muted)}
+.plan-week-body{padding:12px 16px;display:none}
+.plan-week.expanded .plan-week-body{display:block}
+.plan-day-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:center}
+.plan-day-row:last-child{border-bottom:none}
+.plan-day-name{width:32px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.plan-day-workout{flex:1;color:var(--text)}
+.plan-day-type{display:flex;gap:4px;flex-shrink:0}
+.type-tag{font-size:9px;font-weight:800;padding:2px 5px;border-radius:5px;text-transform:uppercase;letter-spacing:.5px}
+.tag-run{background:var(--green-light);color:var(--green-dark)}
+.tag-bike{background:var(--blue-light);color:var(--blue)}
+.tag-lift{background:var(--orange-light);color:var(--orange)}
+.tag-rest{background:var(--surface3);color:var(--text-dim)}
+/* NOTIFICATION DOT */
+.notif{width:7px;height:7px;background:var(--red);border-radius:50%;position:absolute;top:4px;right:12px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <div class="header-top">
+      <div class="phase-chip" id="phase-chip">Phase 2 · Week 3</div>
+      <div class="marathon-chip">NYC <span class="marathon-days" id="marathon-days">208</span>d away</div>
+    </div>
+    <h1>Amanda's Plan</h1>
+    <div class="date-line" id="date-line">Tuesday, April 7</div>
+  </div>
+
+  <div id="day-strip"></div>
+
+  <div id="content">
+    <div id="view-today" class="view active"></div>
+    <div id="view-plan" class="view"></div>
+  </div>
+
+  <nav id="bottom-nav">
+    <button class="nav-btn active" onclick="switchView('today')" id="nav-today">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">TODAY</span>
+    </button>
+    <button class="nav-btn" onclick="switchView('plan')" id="nav-plan">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">PLAN</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+/* ─── EXERCISE SVG ICONS ─── */
+const EXERCISE_SVGS = {
+  'run': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="7" r="3.5" fill="currentColor" stroke="none"/><line x1="24" y1="11" x2="20" y2="22"/><line x1="22" y1="15" x2="30" y2="20"/><line x1="22" y1="15" x2="14" y2="10"/><line x1="20" y1="22" x2="26" y2="16"/><line x1="26" y1="16" x2="33" y2="26"/><line x1="20" y1="22" x2="13" y2="32"/><line x1="13" y1="32" x2="9" y2="37"/></svg>`,
+
+  'bike': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="30" r="6"/><circle cx="31" cy="30" r="6"/><line x1="9" y1="30" x2="20" y2="20"/><line x1="20" y1="20" x2="31" y2="30"/><line x1="20" y1="20" x2="15" y2="24"/><line x1="31" y1="30" x2="31" y2="19"/><line x1="29" y1="19" x2="34" y2="19"/><circle cx="26" cy="12" r="3.5" fill="currentColor" stroke="none"/><line x1="26" y1="16" x2="20" y2="20"/><line x1="26" y1="16" x2="32" y2="19"/></svg>`,
+
+  'bench': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="28" x2="36" y2="28" stroke-width="3" opacity="0.2"/><circle cx="8" cy="23" r="3" fill="currentColor" stroke="none"/><line x1="11" y1="23" x2="29" y2="23"/><line x1="16" y1="23" x2="14" y2="14"/><line x1="24" y1="23" x2="26" y2="14"/><line x1="10" y1="14" x2="30" y2="14" stroke-width="2.2"/><line x1="6" y1="14" x2="10" y2="14"/><line x1="30" y1="14" x2="34" y2="14"/></svg>`,
+
+  'pull-up': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="34" y2="6" stroke-width="3" opacity="0.25"/><circle cx="20" cy="12" r="3.5" fill="currentColor" stroke="none"/><line x1="17" y1="11" x2="10" y2="6"/><line x1="23" y1="11" x2="30" y2="6"/><line x1="20" y1="15" x2="20" y2="27"/><line x1="20" y1="27" x2="15" y2="37"/><line x1="20" y1="27" x2="25" y2="37"/></svg>`,
+
+  'shoulder-press': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="12" x2="20" y2="24"/><line x1="20" y1="15" x2="10" y2="10"/><line x1="10" y1="10" x2="6" y2="13"/><line x1="20" y1="15" x2="30" y2="10"/><line x1="30" y1="10" x2="34" y2="13"/><line x1="5" y1="13" x2="35" y2="13" stroke-width="2"/><line x1="20" y1="24" x2="14" y2="36"/><line x1="20" y1="24" x2="26" y2="36"/></svg>`,
+
+  'lat-pull': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="5" x2="34" y2="5" stroke-width="3" opacity="0.25"/><line x1="8" y1="5" x2="32" y2="5" stroke-width="2"/><circle cx="20" cy="15" r="3.5" fill="currentColor" stroke="none"/><line x1="17" y1="14" x2="10" y2="8"/><line x1="23" y1="14" x2="30" y2="8"/><line x1="20" y1="19" x2="20" y2="30"/><line x1="20" y1="30" x2="14" y2="38"/><line x1="20" y1="30" x2="26" y2="38"/></svg>`,
+
+  'row': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="31" cy="9" r="3.5" fill="currentColor" stroke="none"/><line x1="28" y1="12" x2="11" y2="20"/><line x1="11" y1="20" x2="12" y2="33"/><line x1="11" y1="20" x2="9" y2="33"/><line x1="25" y1="16" x2="18" y2="24"/><line x1="18" y1="24" x2="12" y2="29"/><circle cx="11" cy="31" r="3" stroke-width="2"/></svg>`,
+
+  'lateral-raise': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="7" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="11" x2="20" y2="24"/><line x1="20" y1="16" x2="6" y2="22"/><line x1="20" y1="16" x2="34" y2="22"/><circle cx="5" cy="23" r="2"/><circle cx="35" cy="23" r="2"/><line x1="20" y1="24" x2="14" y2="36"/><line x1="20" y1="24" x2="26" y2="36"/></svg>`,
+
+  'face-pull': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="35" y1="5" x2="35" y2="35" stroke-width="3" opacity="0.2"/><circle cx="13" cy="14" r="3.5" fill="currentColor" stroke="none"/><line x1="16" y1="13" x2="26" y2="18"/><line x1="26" y1="18" x2="35" y2="16"/><line x1="26" y1="18" x2="35" y2="20"/><line x1="16" y1="17" x2="13" y2="28"/><line x1="13" y1="28" x2="7" y2="36"/><line x1="13" y1="28" x2="19" y2="36"/></svg>`,
+
+  'tricep': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="30" y1="4" x2="30" y2="36" stroke-width="3" opacity="0.2"/><circle cx="18" cy="10" r="3.5" fill="currentColor" stroke="none"/><line x1="18" y1="14" x2="22" y2="22"/><line x1="22" y1="22" x2="30" y2="18"/><line x1="22" y1="22" x2="30" y2="26"/><line x1="30" y1="22" x2="30" y2="30" stroke-width="2.5"/><line x1="18" y1="18" x2="12" y2="24"/><line x1="18" y1="24" x2="12" y2="34"/><line x1="18" y1="24" x2="24" y2="34"/></svg>`,
+
+  'squat': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="5" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="9" x2="18" y2="21"/><line x1="18" y1="14" x2="10" y2="12"/><line x1="18" y1="14" x2="26" y2="12"/><line x1="18" y1="21" x2="9" y2="33"/><line x1="9" y1="33" x2="5" y2="26"/><line x1="18" y1="21" x2="27" y2="33"/><line x1="27" y1="33" x2="31" y2="26"/><line x1="4" y1="37" x2="36" y2="37" stroke-width="1" opacity="0.2"/></svg>`,
+
+  'split-squat': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="6" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="10" x2="20" y2="22"/><line x1="20" y1="15" x2="14" y2="19"/><line x1="20" y1="15" x2="26" y2="19"/><line x1="20" y1="22" x2="30" y2="30"/><line x1="30" y1="30" x2="36" y2="36"/><line x1="20" y1="22" x2="10" y2="30"/><line x1="10" y1="30" x2="6" y2="36"/></svg>`,
+
+  'hinge': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="31" cy="9" r="3.5" fill="currentColor" stroke="none"/><line x1="28" y1="12" x2="8" y2="19"/><line x1="8" y1="19" x2="10" y2="34"/><line x1="8" y1="19" x2="6" y2="32"/><line x1="26" y1="16" x2="20" y2="26"/><line x1="20" y1="16" x2="15" y2="26"/><line x1="4" y1="36" x2="16" y2="36" stroke-width="1" opacity="0.2"/></svg>`,
+
+  'glute-bridge': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="36" x2="36" y2="36" opacity="0.2"/><circle cx="7" cy="29" r="3" fill="currentColor" stroke="none"/><line x1="10" y1="28" x2="24" y2="16"/><line x1="24" y1="16" x2="35" y2="25"/><line x1="35" y1="25" x2="35" y2="34"/><line x1="5" y1="33" x2="10" y2="28"/><line x1="8" y1="36" x2="36" y2="36" stroke-width="2" opacity="0.3"/></svg>`,
+
+  'clamshell': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="36" x2="36" y2="36" opacity="0.2"/><circle cx="9" cy="20" r="3" fill="currentColor" stroke="none"/><line x1="12" y1="20" x2="26" y2="23"/><line x1="26" y1="23" x2="31" y2="34"/><line x1="26" y1="23" x2="22" y2="13"/><line x1="22" y1="13" x2="15" y2="14"/></svg>`,
+
+  'hip-abduction': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="7" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="11" x2="20" y2="22"/><line x1="20" y1="16" x2="12" y2="20"/><line x1="20" y1="16" x2="28" y2="20"/><line x1="20" y1="22" x2="16" y2="36"/><line x1="20" y1="22" x2="36" y2="32"/><line x1="36" y1="32" x2="38" y2="37"/></svg>`,
+
+  'step-down': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="28" x2="38" y2="28" stroke-width="3" opacity="0.25"/><circle cx="18" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="18" y1="12" x2="18" y2="24"/><line x1="18" y1="17" x2="12" y2="21"/><line x1="18" y1="17" x2="24" y2="21"/><line x1="18" y1="24" x2="14" y2="28"/><line x1="18" y1="24" x2="28" y2="36"/></svg>`,
+
+  'plank': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="20" r="3" fill="currentColor" stroke="none"/><line x1="11" y1="20" x2="32" y2="18"/><line x1="11" y1="20" x2="8" y2="29"/><line x1="8" y1="29" x2="15" y2="29"/><line x1="32" y1="18" x2="36" y2="24"/><line x1="36" y1="24" x2="36" y2="30"/></svg>`,
+
+  'dead-bug': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="36" x2="36" y2="36" opacity="0.15"/><circle cx="20" cy="26" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="22" x2="20" y2="11"/><line x1="20" y1="18" x2="8" y2="14"/><line x1="8" y1="14" x2="4" y2="20"/><line x1="20" y1="18" x2="32" y2="24"/><line x1="32" y1="24" x2="36" y2="18"/></svg>`,
+
+  'bird-dog': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="3" fill="currentColor" stroke="none"/><line x1="13" y1="14" x2="28" y2="14"/><line x1="16" y1="14" x2="14" y2="23"/><line x1="14" y1="23" x2="14" y2="30"/><line x1="26" y1="14" x2="28" y2="23"/><line x1="28" y1="23" x2="28" y2="30"/><line x1="13" y1="14" x2="4" y2="9"/><line x1="28" y1="14" x2="38" y2="19"/></svg>`,
+
+  'core-twist': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="18" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="22" x2="14" y2="33"/><line x1="20" y1="22" x2="26" y2="33"/><line x1="20" y1="14" x2="12" y2="8"/><line x1="20" y1="14" x2="32" y2="12"/><line x1="32" y1="12" x2="36" y2="18"/></svg>`,
+
+  'ab-wheel': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="32" r="5" stroke-width="2"/><circle cx="8" cy="22" r="3" fill="currentColor" stroke="none"/><line x1="11" y1="22" x2="22" y2="28"/><line x1="22" y1="28" x2="30" y2="26"/><line x1="8" y1="25" x2="10" y2="32"/><line x1="10" y1="32" x2="14" y2="32"/></svg>`,
+
+  'band-walk': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="12" x2="20" y2="24"/><line x1="20" y1="16" x2="12" y2="20"/><line x1="20" y1="16" x2="28" y2="20"/><line x1="20" y1="24" x2="12" y2="36"/><line x1="20" y1="24" x2="28" y2="36"/><path d="M12 31 Q20 27 28 31" fill="none" stroke-dasharray="2,2"/></svg>`,
+
+  'stretch': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="19" y1="12" x2="15" y2="26"/><line x1="19" y1="17" x2="9" y2="13"/><line x1="19" y1="17" x2="32" y2="20"/><line x1="15" y1="26" x2="7" y2="34"/><line x1="15" y1="26" x2="27" y2="22"/><line x1="27" y1="22" x2="33" y2="30"/></svg>`,
+
+  'push-up': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="17" r="3" fill="currentColor" stroke="none"/><line x1="11" y1="17" x2="30" y2="14"/><line x1="11" y1="17" x2="8" y2="25"/><line x1="8" y1="25" x2="15" y2="25"/><line x1="30" y1="14" x2="34" y2="22"/><line x1="34" y1="22" x2="34" y2="28"/></svg>`,
+
+  'curl': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="18" y1="12" x2="18" y2="24"/><line x1="18" y1="16" x2="28" y2="18"/><line x1="28" y1="18" x2="32" y2="26"/><line x1="32" y1="26" x2="26" y2="30"/><line x1="18" y1="16" x2="10" y2="13"/><line x1="18" y1="24" x2="12" y2="36"/><line x1="18" y1="24" x2="24" y2="36"/></svg>`,
+
+  'calf-raise': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="6" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="10" x2="20" y2="24"/><line x1="20" y1="16" x2="12" y2="19"/><line x1="20" y1="16" x2="28" y2="19"/><line x1="20" y1="24" x2="15" y2="32"/><line x1="15" y1="32" x2="13" y2="27"/><line x1="20" y1="24" x2="25" y2="32"/><line x1="25" y1="32" x2="27" y2="27"/></svg>`,
+
+  'pallof': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="35" y1="4" x2="35" y2="36" stroke-width="3" opacity="0.2"/><circle cx="14" cy="16" r="3.5" fill="currentColor" stroke="none"/><line x1="17" y1="16" x2="28" y2="16"/><line x1="28" y1="16" x2="35" y2="16"/><line x1="17" y1="20" x2="14" y2="30"/><line x1="14" y1="30" x2="8" y2="38"/><line x1="14" y1="30" x2="20" y2="38"/></svg>`,
+
+  'pull-through': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="18" y1="12" x2="12" y2="22"/><line x1="12" y1="22" x2="14" y2="34"/><line x1="12" y1="22" x2="10" y2="34"/><line x1="18" y1="16" x2="24" y2="26"/><line x1="24" y1="26" x2="22" y2="36"/><line x1="4" y1="38" x2="22" y2="36"/></svg>`,
+
+  'hip-flexor': `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="18" y1="12" x2="20" y2="22"/><line x1="18" y1="17" x2="10" y2="14"/><line x1="18" y1="17" x2="26" y2="14"/><line x1="20" y1="22" x2="30" y2="30"/><line x1="30" y1="30" x2="36" y2="38"/><line x1="20" y1="22" x2="12" y2="30"/><line x1="12" y1="30" x2="12" y2="38"/></svg>`,
+};
+
+/* ─── EXERCISE ICON MAPPING ─── */
+const ICON_MAP = {
+  // Cardio
+  '_run': 'run', '_bike': 'bike',
+  // PT
+  'PA': 'lat-pull', 'HW': 'band-walk', 'CL': 'clamshell', 'HA': 'hip-abduction',
+  'GB': 'glute-bridge', 'WD': 'stretch', 'CA': 'hip-abduction', 'SB': 'glute-bridge',
+  'SR': 'hinge', 'SD': 'step-down', 'SL': 'step-down', 'CT': 'band-walk',
+  'EC': 'calf-raise',
+  // Upper
+  'BB': 'bench', 'BR': 'row', 'LP': 'lat-pull', 'LR': 'lateral-raise',
+  'FP': 'face-pull', 'TP': 'tricep', 'BP': 'bench', 'PU': 'pull-up',
+  'IP': 'bench', 'CR': 'row', 'RF': 'lateral-raise', 'AC': 'lateral-raise',
+  // SP is ambiguous: shoulder press OR side plank OR push press
+  // We'll handle it by cat in renderExercise
+  // Core
+  'DB': 'dead-bug', 'HB': 'plank', 'PD': 'push-up', 'WC': 'core-twist',
+  'AW': 'ab-wheel', 'RT': 'core-twist',
+  // Lower
+  'BS': 'squat', 'BU': 'split-squat', 'LB': 'band-walk', 'PT': 'pull-through',
+  'SH': 'hip-abduction', 'SQ': 'squat',
+  // Full body
+  'RR': 'push-up', 'RD': 'hinge', 'RL': 'split-squat', 'CP': 'curl',
+  // Mobility
+  'WG': 'stretch', 'BD': 'bird-dog', 'HF': 'hip-flexor', 'TR': 'stretch',
+  'HS': 'stretch', 'PP': 'pallof',
+  // SP is shoulder-press for upper, plank for core — handled by cat
+};
+
+function getExIcon(code, cat) {
+  // Context-sensitive: SP code
+  if (code === 'SP' && cat === 'ex-core') return EXERCISE_SVGS['plank'];
+  if (code === 'SP') return EXERCISE_SVGS['shoulder-press'];
+  const type = ICON_MAP[code];
+  return type && EXERCISE_SVGS[type] ? EXERCISE_SVGS[type] : EXERCISE_SVGS['stretch'];
+}
+
+/* ─── DATA ─── */
+const MARATHON_DATE = new Date('2026-11-01T00:00:00');
+
+const PHASES = [
+  {id:1,name:'Run/Walk Intervals',shortName:'Run/Walk',dates:'Mar 25 – Apr 6',start:'2026-03-25',end:'2026-04-06',status:'complete'},
+  {id:2,name:'Bridging to Continuous',shortName:'Bridge',dates:'Apr 6 – Apr 27',start:'2026-04-06',end:'2026-04-27',status:'active'},
+  {id:3,name:'First Continuous Runs',shortName:'Continuous',dates:'Apr 28 – May 18',start:'2026-04-28',end:'2026-05-18',status:'upcoming'},
+  {id:4,name:'Fitness Rebuild',shortName:'Rebuild',dates:'May 19 – Jun 22',start:'2026-05-19',end:'2026-06-22',status:'upcoming'},
+  {id:5,name:'Speed Introduction',shortName:'Speed',dates:'Jun 23 – Aug 3',start:'2026-06-23',end:'2026-08-03',status:'upcoming'},
+  {id:6,name:'Marathon Specific',shortName:'Marathon',dates:'Aug – Oct',start:'2026-08-04',end:'2026-10-25',status:'upcoming'},
+];
+
+function getRunWorkout(dateStr) {
+  const d = dateStr;
+  if(d >= '2026-03-25' && d < '2026-04-06') return {label:'Phase 1 Complete ✓',intervals:'6×2 min run / 2 min walk',pace:'9.0–9.2 kph',effort:'Zone 2',duration:'~25 min total',notes:'Run/Walk intervals. Treadmill preferred.',complete:true};
+  if(d >= '2026-04-06' && d < '2026-04-14') return {label:'Week 3 — Phase 2',intervals:'4 × 5 min run / 90 sec walk',pace:'9.0–9.5 kph',effort:'Zone 2',duration:'~28 min total',notes:'First reps over 3 min. Monitor both shins separately throughout. If pain >2/10, shorten interval — do not push through.'};
+  if(d >= '2026-04-14' && d < '2026-04-21') return {label:'Week 4 — Phase 2',intervals:'3 × 8 min run / 2 min walk',pace:'9.0–9.5 kph',effort:'Zone 2',duration:'~34 min total',notes:'Big step up to 8 min. Biggest week of Phase 2. Note any bilateral shin sensation carefully.'};
+  if(d >= '2026-04-21' && d < '2026-04-28') return {label:'Week 5 — Phase 2',intervals:'3 × 10–12 min run / 2 min walk',pace:'9.0–9.5 kph',effort:'Zone 2',duration:'~40 min total',notes:'Almost continuous. The bridge is nearly crossed. Hard cross training fully online this week.'};
+  if(d >= '2026-04-28' && d < '2026-05-05') return {label:'Week 6 — Phase 3',intervals:'2 × 15–18 min continuous / 2 min walk between',pace:'9.0 kph Zone 2',effort:'Zone 2 — easy',duration:'~40 min total',notes:'🎯 First truly continuous reps. Milestone. Two quality reps, nothing extra. Your aerobic engine from months of cycling will shine.'};
+  if(d >= '2026-05-05' && d < '2026-05-12') return {label:'Week 7 — Phase 3',intervals:'20–25 min continuous',pace:'9.0–9.5 kph Zone 2',effort:'Zone 2 — easy',duration:'20–25 min',notes:'🎉 FIRST FULLY CONTINUOUS RUN. Treat it like race day. Easy pace — you will feel like you could go faster. Don\'t.'};
+  if(d >= '2026-05-12' && d < '2026-05-19') return {label:'Week 8 — Phase 3',intervals:'25–30 min continuous',pace:'Zone 2 only',effort:'Zone 2',duration:'25–30 min',notes:'End of return-to-run phase. You made it back. Hard cross training at full intensity continues.'};
+  return {label:'Phase 4 — Fitness Rebuild',intervals:'30–45 min easy continuous',pace:'Zone 2',effort:'Zone 2',duration:'30–45 min',notes:'Building toward NYC. Strides reintroduce mid-Phase 4. Talk to Dr. Best before adding track work.'};
+}
+
+function getBikeWorkout(dateStr) {
+  const d = dateStr;
+  const isWeek4Plus = d >= '2026-04-14';
+  const dow = new Date(dateStr+'T12:00:00').getDay();
+  const canDoIntervals = isWeek4Plus && dow === 4;
+  if(canDoIntervals) return {type:'intervals',duration:'25–30 min',hr:'155–175',effort:'Hard',notes:'Tabata or 3–5 min intervals. This replaces bone stress training — go genuinely hard. 1×/week only.',zone2alt:'Zone 2, 45–60 min, HR 120–135 if shins are not 2× clean yet.'};
+  return {type:'zone2',duration:'45–60 min',hr:'120–135',effort:'Zone 2',notes:'Conversational pace. You should be able to speak full sentences. This is recovery + aerobic engine building — not active rest, it\'s cardiovascular training.'};
+}
+
+/* ─── LIFT WORKOUTS ─── */
+const LIFTS = {
+  A: {
+    name:'Upper Push + Core',focus:'Chest · Triceps · Shoulders · Core',color:'#4361EE',
+    warmup:[
+      {code:'PA',cat:'ex-upper',name:'Band Pull-Apart',sets:2,reps:'15',rest:'—',cue:'Retract scapula fully. Activates rear delts.'},
+      {code:'DB',cat:'ex-core',name:'Dead Bug',sets:2,reps:'8/side',rest:'—',cue:'Lower back glued to floor. Exhale on extend.'},
+      {code:'WG',cat:'ex-mob',name:"World's Greatest Stretch",sets:2,reps:'5/side',rest:'—',cue:'Slow and controlled. Thoracic rotation.'},
+      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: toes up, anterior tib activated.'},
+    ],
+    blocks:[
+      {label:'A — Compound Upper',clr:'clr-blue',note:'Olivia May style — progressive overload',rptLabel:'',exercises:[
+        {code:'BB',cat:'ex-upper',name:'Barbell Bench Press',sets:4,reps:'6–8',rest:'90s',cue:'Heavy. 3-sec eccentric. Progressive overload weekly.'},
+        {code:'BR',cat:'ex-upper',name:'Barbell Bent-Over Row',sets:4,reps:'6–8',rest:'90s',cue:'Hinge at hip. Row to lower chest. Control the return.'},
+        {code:'SP',cat:'ex-upper',name:'Seated DB Shoulder Press',sets:3,reps:'10–12',rest:'75s',cue:'Controlled eccentric (3 sec down). No back arch.'},
+      ]},
+      {label:'B — Accessory Upper',clr:'clr-blue',note:'',rptLabel:'',exercises:[
+        {code:'LP',cat:'ex-upper',name:'Cable Lat Pulldown',sets:3,reps:'12',rest:'60s',cue:'Full stretch at top. Drive elbows down.'},
+        {code:'LR',cat:'ex-upper',name:'DB Lateral Raise',sets:3,reps:'15',rest:'45s',cue:'Slight forward lean. Light weight, controlled.'},
+        {code:'FP',cat:'ex-upper',name:'Face Pulls (Cable)',sets:3,reps:'15',rest:'45s',cue:'External rotation at end range. Rear delt focus.'},
+        {code:'TP',cat:'ex-upper',name:'Cable Tricep Pushdown',sets:3,reps:'12–15',rest:'60s',cue:'Elbows pinned. Full extension.'},
+      ]},
+      {label:'C — Core Finisher',clr:'clr-cyan',note:'WorkoutsByWinter style: 40s on / 20s off × 3 rounds',rptLabel:'3 rounds',exercises:[
+        {code:'HB',cat:'ex-core',name:'Hollow Body Hold',sets:3,reps:'40 sec',rest:'20s',cue:'Lower back pressed to floor. Arms overhead.'},
+        {code:'PP',cat:'ex-core',name:'Pallof Press',sets:3,reps:'40s/side',rest:'20s',cue:'Anti-rotation. Stand tall, zero hip shift.'},
+        {code:'PD',cat:'ex-core',name:'Plank to Down Dog',sets:3,reps:'40 sec',rest:'20s',cue:'Flow controlled. Core tight throughout.'},
+      ]},
+    ]
+  },
+  B: {
+    name:'Hip & Glute (PT Protocol)',focus:'Femoral Neck · Hip Abductors · Hamstrings · Ankle',color:'#F4831F',
+    warmup:[
+      {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:2,reps:'20/side',rest:'—',cue:'Femoral neck activation. Light band, full ROM.'},
+      {code:'HA',cat:'ex-pt',name:'Standing Banded Hip Abduction',sets:2,reps:'15/side',rest:'—',cue:'Straight leg, no trunk lean.'},
+      {code:'GB',cat:'ex-pt',name:'Glute Bridge (Double Leg)',sets:2,reps:'15',rest:'—',cue:'Drive through heels. Full hip extension at top.'},
+      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: toes lifted, anterior tib working.'},
+      {code:'WD',cat:'ex-pt',name:'Wall Lean Dorsiflexion + Eversion',sets:2,reps:'15',rest:'—',cue:'PT-prescribed. Band around both feet. Flex up and out. Controlled.'},
+    ],
+    blocks:[
+      {label:'A — Femoral Neck Bone Density',clr:'clr-red',note:'NON-NEGOTIABLE every lower body day',rptLabel:'',exercises:[
+        {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Slow and controlled. Cable at ankle. Drive leg out.'},
+        {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:3,reps:'20/side',rest:'45s',cue:'Side-lying, hips stacked. Feet together. Increase band weekly.'},
+        {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'60s',cue:'Drive through heel. Hold 2 sec at top. Keep hips level.'},
+        {code:'SR',cat:'ex-pt',name:'Single Leg RDL (DB or KB)',sets:3,reps:'10/side',rest:'75s',cue:'Hinge at hip, not back rounding. Feel hamstring load. Build weight.'},
+      ]},
+      {label:'B — PT Rehab Protocol',clr:'clr-orange',note:'Dr. Best prescribed — do not skip',rptLabel:'',exercises:[
+        {code:'SD',cat:'ex-lower',name:'Single Leg Block Step-Down',sets:3,reps:'10/side',rest:'60s',cue:'Stand on block. Lower opposite heel slowly. 3–4 sec down.'},
+        {code:'SL',cat:'ex-lower',name:'Single Leg Balance + Hip Resist',sets:3,reps:'30s/side',rest:'45s',cue:'Band around feet. Lift opposite leg. Zero trunk sway.'},
+        {code:'CT',cat:'ex-lower',name:'Single Leg Cone Tap',sets:3,reps:'5 taps/dir/side',rest:'45s',cue:'Balance on one leg. Tap 4 cones (front, left, right, diagonal).'},
+        {code:'WD',cat:'ex-pt',name:'Wall Lean Dorsiflexion + Eversion',sets:3,reps:'15',rest:'45s',cue:'Lean back on wall. Band around feet. Flex foot up and out.'},
+        {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:3,reps:'20m',rest:'45s',cue:'Toes lifted throughout. Constant band tension. ANTERIOR TIB BUILDER.'},
+      ]},
+      {label:'C — Posterior Chain + Hip',clr:'clr-orange',note:'15 min — hip abductor + hamstring',rptLabel:'3 rounds',exercises:[
+        {code:'LB',cat:'ex-lower',name:'Lateral Band Walk',sets:3,reps:'15 steps/side',rest:'45s',cue:'Mini band above knees. Stay low. Constant tension.'},
+        {code:'PT',cat:'ex-lower',name:'Cable Pull-Through',sets:3,reps:'12–15',rest:'60s',cue:'Hip hinge pattern. Glute squeeze at top. No back rounding.'},
+        {code:'SH',cat:'ex-lower',name:'Seated Hip Abduction (Machine)',sets:3,reps:'20',rest:'45s',cue:'Controlled. No momentum. Directly loads femoral neck.'},
+      ]},
+    ]
+  },
+  C: {
+    name:'Upper Pull + Core',focus:'Back · Biceps · Rear Delts · Core Stability',color:'#00A878',
+    warmup:[
+      {code:'PA',cat:'ex-upper',name:'Band Pull-Apart',sets:2,reps:'15',rest:'—',cue:'Retract scapula fully.'},
+      {code:'DB',cat:'ex-core',name:'Dead Bug',sets:2,reps:'8/side',rest:'—',cue:'Lower back pressed to floor.'},
+      {code:'WG',cat:'ex-mob',name:"World's Greatest Stretch",sets:2,reps:'5/side',rest:'—',cue:'Hip flexor + thoracic rotation.'},
+      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: toes up, anterior tib activated.'},
+    ],
+    blocks:[
+      {label:'A — Heavy Compound Upper',clr:'clr-blue',note:'Olivia May 5×5 style',rptLabel:'5 sets',exercises:[
+        {code:'BP',cat:'ex-upper',name:'Barbell Bench Press',sets:5,reps:'5',rest:'2min',cue:'5×5 strength block. Progressive overload. 2 min rest.'},
+        {code:'PU',cat:'ex-upper',name:'Weighted Pull-Up',sets:4,reps:'5–6',rest:'90s',cue:'Add belt weight when bodyweight feels easy. Full ROM.'},
+        {code:'PP',cat:'ex-upper',name:'Barbell Push Press',sets:3,reps:'6',rest:'90s',cue:'Slight dip and drive. Power output.'},
+      ]},
+      {label:'B — Hypertrophy Upper',clr:'clr-blue',note:'',rptLabel:'3 rounds',exercises:[
+        {code:'IP',cat:'ex-upper',name:'DB Incline Press',sets:3,reps:'10–12',rest:'75s',cue:'30 degree incline. Controlled eccentric.'},
+        {code:'CR',cat:'ex-upper',name:'Cable Row (Single Arm)',sets:3,reps:'10/side',rest:'60s',cue:'Rotate trunk slightly. Full stretch at front.'},
+        {code:'LR',cat:'ex-upper',name:'DB Lateral Raise',sets:3,reps:'15',rest:'45s',cue:'Slight forward lean. Control the descent.'},
+        {code:'RF',cat:'ex-upper',name:'Reverse Fly (Cable)',sets:3,reps:'15',rest:'45s',cue:'Rear delt focus. Control the eccentric.'},
+      ]},
+      {label:'C — Core Finisher',clr:'clr-cyan',note:'Sydney Park style — 3 rounds, no rest between',rptLabel:'3 rounds',exercises:[
+        {code:'WC',cat:'ex-core',name:'Weighted Cable Crunch',sets:3,reps:'15',rest:'—',cue:'Kneeling. Drive elbow to knee.'},
+        {code:'AW',cat:'ex-core',name:'Ab Wheel Rollout',sets:3,reps:'10',rest:'—',cue:'Full extension if able. Brace hard.'},
+        {code:'RT',cat:'ex-core',name:'Russian Twist',sets:3,reps:'20',rest:'45s',cue:'Feet elevated. Plate or DB. Rotate fully.'},
+      ]},
+    ]
+  },
+  D: {
+    name:'Lower Body (Heavy Day)',focus:'Quads · Glutes · Posterior Chain · Femoral Neck',color:'#0096C7',
+    warmup:[
+      {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:2,reps:'20/side',rest:'—',cue:'Femoral neck activation.'},
+      {code:'HA',cat:'ex-pt',name:'Standing Banded Hip Abduction',sets:2,reps:'15/side',rest:'—',cue:'Straight leg. No trunk lean.'},
+      {code:'GB',cat:'ex-pt',name:'Glute Bridge (Double Leg)',sets:2,reps:'15',rest:'—',cue:'Full hip extension. Hold 2 sec.'},
+      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: anterior tib activation.'},
+      {code:'SQ',cat:'ex-lower',name:'Loaded Double Leg Squat (BW)',sets:2,reps:'10',rest:'—',cue:'Knees track over toes. Full depth if pain-free.'},
+    ],
+    blocks:[
+      {label:'A — Femoral Neck Bone Density',clr:'clr-red',note:'NON-NEGOTIABLE — complete BEFORE barbell work',rptLabel:'',exercises:[
+        {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Always first. Femoral neck stimulus.'},
+        {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:3,reps:'20/side',rest:'45s',cue:'Side-lying. Increase band resistance weekly.'},
+        {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'60s',cue:'Drive through heel. Pause 2 sec.'},
+        {code:'SR',cat:'ex-pt',name:'Single Leg RDL (DB or KB)',sets:3,reps:'10/side',rest:'75s',cue:'Build weight when form is solid.'},
+      ]},
+      {label:'B — Compound Lower',clr:'clr-cyan',note:'Heavy & athlete-first',rptLabel:'4 sets',exercises:[
+        {code:'BS',cat:'ex-lower',name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2min',cue:'Build weight gradually. Depth to parallel+. Chest tall, knees out.'},
+        {code:'BU',cat:'ex-lower',name:'Bulgarian Split Squat (DB)',sets:3,reps:'8–10/side',rest:'90s',cue:'Rear foot elevated. Drive through front heel. Best femoral neck and glute builder.'},
+      ]},
+      {label:'C — Posterior Chain + Prevention',clr:'clr-orange',note:'Permanent in program — never remove these',rptLabel:'3 rounds',exercises:[
+        {code:'LB',cat:'ex-lower',name:'Lateral Band Walk',sets:3,reps:'15 steps/side',rest:'45s',cue:'Stay low throughout. Hip abductor work.'},
+        {code:'PT',cat:'ex-lower',name:'Cable Pull-Through',sets:3,reps:'12–15',rest:'60s',cue:'Glute squeeze at top. Hip hinge.'},
+        {code:'SH',cat:'ex-lower',name:'Seated Hip Abduction (Machine)',sets:3,reps:'20',rest:'45s',cue:'Femoral neck protocol continuation.'},
+        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ SHIN PREVENTION: 4-sec slow descent. Loads soleus + reduces tibial stress. PERMANENT.'},
+      ]},
+    ]
+  },
+  E: {
+    name:'Full Body (Upper-Dominant)',focus:'Total Body · Functional · Legs Fresh for Long Run',color:'#7B2FBE',
+    warmup:[
+      {code:'AC',cat:'ex-upper',name:'Arm Circles + Band Pull-Apart',sets:2,reps:'10 each',rest:'—',cue:'Shoulder activation.'},
+      {code:'CL',cat:'ex-lower',name:'Clamshells Banded',sets:1,reps:'15/side',rest:'—',cue:'Activation only.'},
+      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:1,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: every session reminder.'},
+    ],
+    blocks:[
+      {label:'Main Circuit',clr:'clr-purple',note:'WorkoutsByWinter: 4 rounds · 45s on / 15s off · 90s between rounds',rptLabel:'4 rounds',exercises:[
+        {code:'RR',cat:'ex-full',name:'DB Renegade Row',sets:4,reps:'45 sec',rest:'15s',cue:'Core tight. Minimize hip rotation. Full row each rep.'},
+        {code:'RD',cat:'ex-full',name:'DB Romanian Deadlift',sets:4,reps:'45 sec',rest:'15s',cue:'Hip hinge only. Light to moderate. No tibial load.'},
+        {code:'PU',cat:'ex-full',name:'Push-Up',sets:4,reps:'45 sec',rest:'15s',cue:'Full ROM. Chest to floor. Weighted vest optional.'},
+        {code:'RL',cat:'ex-full',name:'Reverse Lunge (BW)',sets:4,reps:'45 sec',rest:'15s',cue:'Step BACK only. Less tibial stress than forward lunge.'},
+        {code:'CP',cat:'ex-full',name:'DB Curl to Press',sets:4,reps:'45 sec',rest:'15s',cue:'Full movement. No momentum.'},
+        {code:'SP',cat:'ex-core',name:'Side Plank + Hip Lift',sets:4,reps:'45s/side',rest:'15s',cue:'Abduction emphasis. Stacked or staggered feet.'},
+      ]},
+    ],
+    cooldown:[
+      {code:'PP',cat:'ex-mob',name:'Pigeon Pose',sets:1,reps:'60s/side',rest:'—',cue:'Deep hip flexor and glute release.'},
+      {code:'HS',cat:'ex-mob',name:'Lying Hamstring Stretch',sets:1,reps:'45s/side',rest:'—',cue:''},
+      {code:'TR',cat:'ex-mob',name:'Thoracic Spine Rotation',sets:1,reps:'10/side',rest:'—',cue:'Upper back mobility.'},
+    ]
+  },
+  F: {
+    name:'Mobility + Active Recovery',focus:'Flexibility · Hip Activation · Injury Prevention',color:'#C18A00',
+    warmup:[],
+    blocks:[
+      {label:'Activation + Mobility Flow',clr:'clr-gray',note:'Saturday — protect Sunday rest',rptLabel:'3 rounds',exercises:[
+        {code:'GB',cat:'ex-lower',name:'Glute Bridge',sets:3,reps:'15',rest:'45s',cue:'Slow reps. Glute activation before any load.'},
+        {code:'BD',cat:'ex-mob',name:'Bird-Dog',sets:3,reps:'10/side',rest:'45s',cue:'Opposite arm/leg. Spine still. Hold 2 sec at top.'},
+        {code:'WG',cat:'ex-mob',name:"World's Greatest Stretch",sets:3,reps:'5/side',rest:'30s',cue:'Lunge + rotation + extension. Thoracic mobility.'},
+        {code:'HF',cat:'ex-mob',name:'Hip Flexor Stretch',sets:3,reps:'60s/side',rest:'30s',cue:'Deep lunge. Tuck pelvis. Key for runners.'},
+        {code:'EC',cat:'ex-pt',name:'Eccentric Calf Raise (Phase 3+)',sets:3,reps:'15',rest:'60s',cue:'⚠️ Phase 3+ only. Slow lower on one leg. Tibial strength.'},
+        {code:'TR',cat:'ex-mob',name:'Thoracic Rotation',sets:3,reps:'10/side',rest:'30s',cue:'Seated or side-lying. Improve upper back mobility.'},
+      ]},
+    ]
+  }
+};
+
+const DAY_CONFIG = {
+  0: {type:'rest'},
+  1: {type:'run_lift', liftKey:'A', runDay:true, runLabel:'Easy Run'},
+  2: {type:'bike_lift', liftKey:'B', bikeDay:true},
+  3: {type:'run_lift', liftKey:'C', runDay:true, runLabel:'Run'},
+  4: {type:'bike_lift', liftKey:'D', bikeDay:true},
+  5: {type:'run_lift', liftKey:'E', runDay:true, runLabel:'Long Run / Continuous Build'},
+  6: {type:'bike_lift', liftKey:'F', bikeDay:true},
+};
+
+/* ─── STATE ─── */
+let selectedDate = new Date();
+selectedDate.setHours(0,0,0,0);
+const today = new Date();
+today.setHours(0,0,0,0);
+let completedExercises = JSON.parse(localStorage.getItem('completed') || '{}');
+let completedWorkouts = JSON.parse(localStorage.getItem('completedWorkouts') || '{}');
+
+/* ─── HELPERS ─── */
+function dateStr(d){return d.toISOString().split('T')[0]}
+function formatDate(d){return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+function dayDiff(a,b){return Math.round((b-a)/(1000*60*60*24))}
+function getCurrentPhase(){
+  const ds=dateStr(today);
+  for(const p of PHASES){if(ds>=p.start&&ds<=p.end)return p;}
+  return PHASES[PHASES.length-1];
+}
+function getPhaseProgress(){
+  const phase=getCurrentPhase();
+  if(!phase||phase.status==='upcoming')return 0;
+  const start=new Date(phase.start+'T00:00:00');
+  const end=new Date(phase.end+'T00:00:00');
+  const total=end-start;
+  const elapsed=today-start;
+  return Math.min(100,Math.max(0,Math.round(elapsed/total*100)));
+}
+function getWeekLabel(d){
+  const ds=dateStr(d);
+  if(ds>='2026-03-25'&&ds<'2026-04-06')return 'Wk 1–2 · Phase 1';
+  if(ds>='2026-04-06'&&ds<'2026-04-14')return 'Wk 3 · Phase 2';
+  if(ds>='2026-04-14'&&ds<'2026-04-21')return 'Wk 4 · Phase 2';
+  if(ds>='2026-04-21'&&ds<'2026-04-28')return 'Wk 5 · Phase 2';
+  if(ds>='2026-04-28'&&ds<'2026-05-05')return 'Wk 6 · Phase 3';
+  if(ds>='2026-05-05'&&ds<'2026-05-12')return 'Wk 7 · Phase 3';
+  if(ds>='2026-05-12'&&ds<'2026-05-19')return 'Wk 8 · Phase 3';
+  return 'Phase 4+';
+}
+function checkMark(){
+  return `<svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 6.5L5.5 10L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+/* ─── RENDER ─── */
+function renderHeader(){
+  const phase=getCurrentPhase();
+  const phaseLabel=phase?`Phase ${phase.id} · ${getWeekLabel(today)}`:'Plan Active';
+  document.getElementById('phase-chip').textContent=phaseLabel;
+  document.getElementById('marathon-days').textContent=dayDiff(today,MARATHON_DATE);
+  const isToday=dateStr(selectedDate)===dateStr(today);
+  document.getElementById('date-line').textContent=isToday?
+    'Today · '+today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}):
+    formatDate(selectedDate);
+}
+
+function renderDayStrip(){
+  const strip=document.getElementById('day-strip');
+  strip.innerHTML='';
+  const days=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const startDay=new Date(today);
+  startDay.setDate(startDay.getDate()-3);
+  for(let i=0;i<14;i++){
+    const d=new Date(startDay);
+    d.setDate(startDay.getDate()+i);
+    const dow=d.getDay();
+    const config=DAY_CONFIG[dow];
+    const ds=dateStr(d);
+    const isToday=ds===dateStr(today);
+    const isSelected=ds===dateStr(selectedDate);
+    const btn=document.createElement('div');
+    btn.className='day-btn'+(isSelected?' active':'')+(isToday&&!isSelected?' today':'')+(config.type==='rest'?' rest-day':'');
+    let dots='';
+    if(config.type!=='rest'){
+      if(config.runDay)dots+='<div class="dot run"></div>';
+      if(config.bikeDay)dots+='<div class="dot bike"></div>';
+      dots+='<div class="dot lift"></div>';
+    }else{dots='<div class="dot rest"></div>';}
+    btn.innerHTML=`<span class="day-name">${days[dow]}</span><span class="day-num">${d.getDate()}</span><div class="day-dots">${dots}</div>`;
+    btn.onclick=()=>selectDay(d);
+    strip.appendChild(btn);
+  }
+  setTimeout(()=>{
+    const active=strip.querySelector('.active,.today');
+    if(active)active.scrollIntoView({inline:'center',behavior:'smooth'});
+  },50);
+}
+
+function selectDay(d){
+  selectedDate=new Date(d);
+  selectedDate.setHours(0,0,0,0);
+  renderDayStrip();
+  renderHeader();
+  renderTodayView();
+}
+
+function catClass(cat){
+  // cat comes as 'ex-pt', 'ex-lower', etc — strip 'ex-' for icon wrap class
+  return 'cat-'+cat.replace('ex-','');
+}
+
+function renderExercise(ex, workoutKey, blockIdx, exIdx, isWarmup=false){
+  const key=`${workoutKey}_${isWarmup?'w':blockIdx}_${exIdx}`;
+  const done=completedExercises[key]||false;
+  const icon=getExIcon(ex.code,ex.cat);
+  const detail=`${isWarmup?'':ex.sets+'× '}${ex.reps}${ex.rest&&ex.rest!=='—'?' · Rest '+ex.rest:''}`;
+  const isWarning=ex.cue&&ex.cue.startsWith('⚠️');
+  return `
+  <div class="exercise-row" id="ex-${key}">
+    <div class="ex-icon-wrap ${catClass(ex.cat)}">${icon}</div>
+    <div class="exercise-info">
+      <div class="exercise-name">${ex.name}</div>
+      <div class="exercise-detail">${detail}</div>
+      ${ex.cue?`<div class="cue-text ${isWarning?'cue-warning':''}">${ex.cue}</div>`:''}
+    </div>
+    <div class="exercise-check ${done?'done':''}" onclick="toggleEx('${key}',this)">${checkMark()}</div>
+  </div>`;
+}
+
+function renderLiftCard(liftKey, dateStr_val){
+  const lift=LIFTS[liftKey];
+  const workoutKey=`${dateStr_val}_${liftKey}`;
+  const done=completedWorkouts[workoutKey]||false;
+
+  let warmupHtml='';
+  if(lift.warmup&&lift.warmup.length){
+    warmupHtml=`
+    <div class="block-section">
+      <div class="block-section-header clr-gray">
+        <span class="block-part-name">Warm-Up</span>
+      </div>
+      <div class="block-section-body">
+        <div class="exercise-list">`;
+    lift.warmup.forEach((ex,i)=>{warmupHtml+=renderExercise(ex,workoutKey,-1,i,true);});
+    warmupHtml+='</div></div></div>';
+  }
+
+  let blocksHtml='';
+  lift.blocks.forEach((block,bi)=>{
+    blocksHtml+=`
+    <div class="block-section">
+      <div class="block-section-header ${block.clr}">
+        <span class="block-part-name">${block.label}</span>
+        ${block.rptLabel?`<span class="block-repeat-badge">${block.rptLabel}</span>`:''}
+      </div>
+      <div class="block-section-body">
+        ${block.note?`<div class="block-desc">${block.note}</div>`:''}
+        <div class="exercise-list">`;
+    block.exercises.forEach((ex,ei)=>{blocksHtml+=renderExercise(ex,workoutKey,bi,ei);});
+    blocksHtml+='</div></div></div>';
+  });
+
+  let cooldownHtml='';
+  if(lift.cooldown&&lift.cooldown.length){
+    cooldownHtml=`
+    <div class="block-section">
+      <div class="block-section-header clr-gray">
+        <span class="block-part-name">Cool-Down</span>
+      </div>
+      <div class="block-section-body"><div class="exercise-list">`;
+    lift.cooldown.forEach((ex,i)=>{cooldownHtml+=renderExercise(ex,workoutKey,99,i);});
+    cooldownHtml+='</div></div></div>';
+  }
+
+  return `
+  <div class="workout-card" id="lift-card-${workoutKey}">
+    <div class="card-header" onclick="toggleCard('lift-card-${workoutKey}')">
+      <div class="card-icon lift-icon">💪</div>
+      <div class="card-meta">
+        <div class="card-title">${lift.name}</div>
+        <div class="card-sub">${lift.focus}</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body">
+      ${warmupHtml}${blocksHtml}${cooldownHtml}
+      <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
+        ${done?'✓ Completed':'Mark Complete'}
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderRunCard(dateStr_val){
+  const run=getRunWorkout(dateStr_val);
+  const workoutKey=`${dateStr_val}_run`;
+  const done=completedWorkouts[workoutKey]||false;
+  if(run.complete)return '';
+  return `
+  <div class="workout-card" id="run-card-${workoutKey}">
+    <div class="card-header" onclick="toggleCard('run-card-${workoutKey}')">
+      <div class="card-icon run-icon">${EXERCISE_SVGS['run'].replace('viewBox="0 0 40 40"','viewBox="0 0 40 40" width="28" height="28"').replace('stroke="currentColor"','stroke="#00A878"').replace('fill="currentColor" stroke="none"','fill="#00A878" stroke="none"')}</div>
+      <div class="card-meta">
+        <div class="card-title">Run</div>
+        <div class="card-sub">${run.label} · ${run.intervals}</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="run-detail">
+        <h4>Treadmill Run Protocol</h4>
+        <div class="run-row"><span class="run-key">Intervals</span><span class="run-val">${run.intervals}</span></div>
+        <div class="run-row"><span class="run-key">Speed</span><span class="run-val">${run.pace}</span></div>
+        <div class="run-row"><span class="run-key">Effort</span><span class="run-val">${run.effort}</span></div>
+        <div class="run-row"><span class="run-key">Total Time</span><span class="run-val">${run.duration}</span></div>
+        <div class="run-row"><span class="run-key">Cadence Target</span><span class="run-val">170–180 steps/min</span></div>
+        <div class="run-row"><span class="run-key">Cooldown</span><span class="run-val">5 min walk (mandatory)</span></div>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);margin-top:10px;line-height:1.5">${run.notes}</p>
+      <div class="pain-zone-guide" style="margin-top:12px">
+        <div class="pain-zone pz-green"><div class="pz-dot"></div><div class="pz-text"><strong>0–2/10</strong> — Proceed normally</div></div>
+        <div class="pain-zone pz-yellow"><div class="pz-dot"></div><div class="pz-text"><strong>2–4/10 intermittent</strong> — Proceed with caution, log it, repeat week</div></div>
+        <div class="pain-zone pz-orange"><div class="pz-dot"></div><div class="pz-text"><strong>4+ consistent or sharp</strong> — Stop. Contact Dr. Best before next run</div></div>
+        <div class="pain-zone pz-red"><div class="pz-dot"></div><div class="pz-text"><strong>5+ or bilateral pulsing</strong> — Stop immediately. Same-day contact</div></div>
+      </div>
+      <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
+        ${done?'✓ Run Completed':'Mark Run Complete'}
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderBikeCard(dateStr_val){
+  const bike=getBikeWorkout(dateStr_val);
+  const workoutKey=`${dateStr_val}_bike`;
+  const done=completedWorkouts[workoutKey]||false;
+  const isIntervals=bike.type==='intervals';
+  return `
+  <div class="workout-card" id="bike-card-${workoutKey}">
+    <div class="card-header" onclick="toggleCard('bike-card-${workoutKey}')">
+      <div class="card-icon bike-icon">${EXERCISE_SVGS['bike'].replace('viewBox="0 0 40 40"','viewBox="0 0 40 40" width="28" height="28"').replace('stroke="currentColor"','stroke="#4361EE"').replace('fill="currentColor" stroke="none"','fill="#4361EE" stroke="none"')}</div>
+      <div class="card-meta">
+        <div class="card-title">${isIntervals?'Bike — Intervals':'Bike — Zone 2'}</div>
+        <div class="card-sub">${bike.duration} · HR ${bike.hr}</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="bike-detail">
+        <h4>${isIntervals?'⚡ Cycling Intervals':'Zone 2 Aerobic'}</h4>
+        <div class="run-row"><span class="run-key">Duration</span><span class="run-val">${bike.duration}</span></div>
+        <div class="run-row"><span class="run-key">Heart Rate</span><span class="run-val">${bike.hr} bpm</span></div>
+        <div class="run-row"><span class="run-key">Effort</span><span class="run-val">${bike.effort}</span></div>
+        ${isIntervals?`<div class="run-row"><span class="run-key">Format</span><span class="run-val">Tabata or 3–5 min reps</span></div>`:''}
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);margin-top:10px;line-height:1.5">${bike.notes}</p>
+      ${isIntervals&&bike.zone2alt?`<p style="font-size:12px;color:var(--text-dim);margin-top:8px;line-height:1.5">Alt: ${bike.zone2alt}</p>`:''}
+      <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
+        ${done?'✓ Completed':'Mark Complete'}
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderTodayView(){
+  const ds=dateStr(selectedDate);
+  const dow=selectedDate.getDay();
+  const config=DAY_CONFIG[dow];
+  const view=document.getElementById('view-today');
+  let html='';
+
+  const isReturnPhase=ds<'2026-05-19';
+  if(isReturnPhase&&config.type!=='rest'){
+    html+=`
+    <div class="pain-banner">
+      <div class="pain-banner-icon">⚠️</div>
+      <div class="pain-banner-text">
+        <h4>Morning Pain Check</h4>
+        <p>Check shins before training. Log both left and right separately. >2/10 = upper body only. >4/10 = rest + contact Dr. Best.</p>
+        <div class="pain-inputs">
+          <div class="pain-input-group">
+            <div class="pain-input-label">L Shin</div>
+            <div class="pain-score" contenteditable="true" id="pain-l">_/10</div>
+          </div>
+          <div class="pain-input-group">
+            <div class="pain-input-label">R Shin</div>
+            <div class="pain-score" contenteditable="true" id="pain-r">_/10</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if(config.type==='rest'){
+    html+=`
+    <div class="rest-card">
+      <div class="rest-emoji">🛌</div>
+      <h3>Full Rest Day</h3>
+      <p>Sunday is non-negotiable. Bone remodeling is most active during rest and sleep. Zone 2 cycling and Normatec optional — but no structured training.</p>
+    </div>`;
+  }else{
+    html+=`<div class="section-label">Today's Workouts</div>`;
+    if(config.runDay)html+=renderRunCard(ds);
+    if(config.bikeDay)html+=renderBikeCard(ds);
+    if(config.liftKey)html+=renderLiftCard(config.liftKey,ds);
+  }
+
+  html+=`<div class="section-label">Plan Progress</div>`;
+  html+=renderPhaseProgress();
+  view.innerHTML=html;
+}
+
+function renderPhaseProgress(){
+  const pct=getPhaseProgress();
+  let html=`<div class="phase-progress"><h3>Return to NYC Marathon</h3><div class="phase-list">`;
+  const phase=getCurrentPhase();
+  PHASES.forEach(p=>{
+    const isActive=phase&&p.id===phase.id;
+    const status=isActive?'active':p.status;
+    html+=`<div class="phase-item ${status}">
+      <div class="phase-dot"></div>
+      <div class="phase-text">
+        <div class="phase-name">${p.name}</div>
+        <div class="phase-dates">${p.dates}</div>
+      </div>
+      ${isActive?`<div class="phase-bar-wrap"><div class="phase-bar-fill" style="width:${pct}%"></div></div><div class="phase-pct">${pct}%</div>`:''}
+    </div>`;
+  });
+  html+='</div></div>';
+  return html;
+}
+
+function renderPlanView(){
+  const view=document.getElementById('view-plan');
+  const weeks=[
+    {label:'Week 1–2',dates:'Mar 25 – Apr 6',status:'complete',phase:'Phase 1 — Run/Walk Intervals',runWorkout:'6×2 min run / 2 min walk @ 9.0–9.2 kph'},
+    {label:'Week 3',dates:'Apr 6–13',status:'active',phase:'Phase 2 — Bridging',runWorkout:'4 × 5 min run / 90 sec walk @ 9.0–9.5 kph'},
+    {label:'Week 4',dates:'Apr 14–20',status:'upcoming',phase:'Phase 2 — Bridging',runWorkout:'3 × 8 min run / 2 min walk @ 9.0–9.5 kph'},
+    {label:'Week 5',dates:'Apr 21–27',status:'upcoming',phase:'Phase 2 — Bridging',runWorkout:'3 × 10–12 min run / 2 min walk @ 9.0–9.5 kph'},
+    {label:'Week 6',dates:'Apr 28 – May 4',status:'upcoming',phase:'Phase 3 — Continuous',runWorkout:'2 × 15–18 min continuous / 2 min walk between'},
+    {label:'Week 7',dates:'May 5–11',status:'upcoming',phase:'Phase 3 — Continuous',runWorkout:'20–25 min continuous — 🎉 First fully continuous run'},
+    {label:'Week 8',dates:'May 12–18',status:'upcoming',phase:'Phase 3 — Continuous',runWorkout:'25–30 min continuous all runs'},
+  ];
+  const dayLabels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const dayTypes=[
+    {label:'Run + Lift A (Upper Push)',types:['run','lift']},
+    {label:'Bike + Lift B (Hip & Glute)',types:['bike','lift']},
+    {label:'Run + Lift C (Upper Pull)',types:['run','lift']},
+    {label:'Bike + Lift D (Lower Heavy)',types:['bike','lift']},
+    {label:'Run + Lift E (Full Body)',types:['run','lift']},
+    {label:'Bike + Lift F (Mobility)',types:['bike','lift']},
+    {label:'Full Rest',types:['rest']},
+  ];
+
+  let html=`<div class="section-label">Weekly Schedule</div>
+  <div class="workout-card" style="margin-bottom:16px">
+    <div class="card-body" style="display:block;padding:16px">
+      ${dayLabels.map((d,i)=>`
+        <div class="plan-day-row">
+          <span class="plan-day-name">${d}</span>
+          <span class="plan-day-workout">${dayTypes[i].label}</span>
+          <div class="plan-day-type">${dayTypes[i].types.map(t=>`<span class="type-tag tag-${t}">${t}</span>`).join('')}</div>
+        </div>`).join('')}
+    </div>
+  </div>
+  <div class="section-label">Phase-by-Phase Plan</div>`;
+
+  weeks.forEach((w,wi)=>{
+    const id=`plan-week-${wi}`;
+    html+=`<div class="plan-week ${w.status==='active'?'expanded':''}" id="${id}">
+      <div class="plan-week-header" onclick="togglePlanWeek('${id}')">
+        <span class="plan-week-title">${w.label} <span style="font-weight:400;color:var(--text-muted);font-size:12px">${w.dates}</span></span>
+        <span class="plan-week-status status-${w.status}">${w.status==='active'?'Current':w.status==='complete'?'Done ✓':'Upcoming'}</span>
+      </div>
+      <div class="plan-week-body">
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">${w.phase}</p>
+        <div class="run-detail">
+          <h4>Run Workout</h4>
+          <div class="run-row"><span class="run-key">All Run Days</span><span class="run-val" style="font-size:12px">${w.runWorkout}</span></div>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:10px">Bike: Zone 2, 45–60 min, HR 120–135 on all bike days.<br>Lift: See daily workouts. Femoral neck protocol on all lower body days.</p>
+      </div>
+    </div>`;
+  });
+
+  html+=`<div class="section-label">Phase 4+ Unlock Criteria</div>
+  <div class="workout-card" style="margin-bottom:12px">
+    <div class="card-body" style="display:block;padding:16px">
+      <p style="font-size:13px;color:var(--text);font-weight:700;margin-bottom:8px">Do NOT begin Phase 4 training (plyometrics, heavy barbell, track work) until ALL met:</p>
+      ${[
+        'All 8 weeks of return-to-run complete. Continuous running achieved.',
+        'Dr. Best clearance — full lower body loading and plyometrics cleared.',
+        'PT sign-off — gait analysis complete, no compensation patterns.',
+        'Hop test passed — 35 hops per side, zero pain, both sides symmetric.',
+        '3–4 consecutive mornings at 0/10 shin pain.',
+        'Vitamin D confirmed at 50–60 ng/mL (was 43 ng/mL Aug 2025 — supplement and recheck).',
+      ].map(c=>`<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted);line-height:1.4"><span style="color:var(--red);flex-shrink:0">□</span>${c}</div>`).join('')}
+    </div>
+  </div>`;
+
+  view.innerHTML=html;
+}
+
+/* ─── EVENTS ─── */
+function toggleCard(id){const c=document.getElementById(id);if(c)c.classList.toggle('expanded');}
+function togglePlanWeek(id){const e=document.getElementById(id);if(e)e.classList.toggle('expanded');}
+function toggleEx(key,el){
+  completedExercises[key]=!completedExercises[key];
+  localStorage.setItem('completed',JSON.stringify(completedExercises));
+  el.classList.toggle('done',completedExercises[key]);
+}
+function toggleWorkout(key,btn){
+  completedWorkouts[key]=!completedWorkouts[key];
+  localStorage.setItem('completedWorkouts',JSON.stringify(completedWorkouts));
+  const done=completedWorkouts[key];
+  btn.className='complete-btn '+(done?'done':'not-done');
+  btn.textContent=done?'✓ Completed':'Mark Complete';
+}
+function switchView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+}
+
+/* ─── INIT ─── */
+function init(){
+  renderHeader();
+  renderDayStrip();
+  renderTodayView();
+  renderPlanView();
+  window.addEventListener('scroll',()=>{
+    document.getElementById('header').classList.toggle('scrolled',window.scrollY>10);
+  });
+}
+init();
+</script>
+</body>
+</html>
