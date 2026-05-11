@@ -381,11 +381,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 const TODAY = new Date(); // always use current date
 
 const PHASES = [
-  {id:1,name:'Return to Run',dates:'Mar 25 – May 10',start:'2026-03-25',end:'2026-05-10',status:'complete'},
-  {id:2,name:'Volume Build',dates:'May 11 – Jun 14',start:'2026-05-11',end:'2026-06-14',status:'active'},
-  {id:3,name:'Intensity Build',dates:'Jun 15 – Aug 2',start:'2026-06-15',end:'2026-08-02',status:'upcoming'},
-  {id:4,name:'Marathon Specific',dates:'Aug 3 – Oct 11',start:'2026-08-03',end:'2026-10-11',status:'upcoming'},
-  {id:5,name:'Taper',dates:'Oct 12 – Nov 1',start:'2026-10-12',end:'2026-11-01',status:'upcoming'},
+  {id:1,name:'Return to Run',dates:'Mar 25 – May 11',start:'2026-03-25',end:'2026-05-11',status:'complete'},
+  {id:2,name:'Volume Build · Pure Zone 2',dates:'May 12 – Jun 15',start:'2026-05-12',end:'2026-06-15',status:'active'},
+  {id:3,name:'Intensity Build · Vol Locked',dates:'Jun 16 – Aug 3',start:'2026-06-16',end:'2026-08-03',status:'upcoming'},
+  {id:4,name:'Marathon Specific',dates:'Aug 4 – Oct 12',start:'2026-08-04',end:'2026-10-12',status:'upcoming'},
+  {id:5,name:'Taper',dates:'Oct 13 – Nov 1',start:'2026-10-13',end:'2026-11-01',status:'upcoming'},
 ];
 
 const WEEKLY_KM = [
@@ -693,44 +693,46 @@ const CORE_ROUTINES = {
   },
 };
 
-// Week-by-week run schedule. All weeks start Monday.
-// {s: weekStart, mo, we, fr, sa: minutes, wt: wed type, wd: wed detail, note}
+// Week-by-week run schedule. Phase 1+ weeks start TUESDAY (matching training week structure).
+// {s: weekStart, mo, we, fr, sa: run minutes, wt: wed type, wd: wed detail, note, rest: true = full rest week}
 const RUN_WEEKS = [
-  // Return to run
+  // ── Return to run (Mon-based, historical) ──────────────────────
   {s:'2026-04-06',mo:28,we:28,fr:28,sa:28,wt:'easy',note:'4×5 min run / 90s walk. Slow is right.'},
   {s:'2026-04-13',mo:34,we:34,fr:34,sa:34,wt:'easy',note:'3×8 min run / 2 min walk.'},
   {s:'2026-04-20',mo:40,we:40,fr:40,sa:40,wt:'easy',note:'3×10–12 min / 2 min walk. Last interval week.'},
   {s:'2026-04-27',mo:40,we:40,fr:40,sa:40,wt:'easy',note:'2×15–18 min continuous. First continuous reps.'},
-  {s:'2026-05-04',mo:25,we:25,fr:25,sa:25,wt:'easy',note:'First single continuous block. Easy pace.'},
-  // Phase 1 — Volume Build
-  {s:'2026-05-11',mo:28,we:28,fr:31,sa:31,wt:'easy',note:'Volume build begins. Pure Zone 2.'},
-  {s:'2026-05-18',mo:34,we:34,fr:37,sa:37,wt:'easy',note:'+20% volume. Stay aerobic.'},
-  {s:'2026-05-25',mo:40,we:40,fr:45,sa:45,wt:'strides',wd:'Easy 40 min + 6×20s strides',note:'Add strides Wed. Light and snappy — not sprinting.'},
-  {s:'2026-06-01',mo:48,we:48,fr:54,sa:54,wt:'easy',note:'+20% volume. Aerobic base building.'},
-  {s:'2026-06-08',mo:58,we:58,fr:65,sa:65,wt:'easy',note:'Phase 1 complete. ~60 min avg. Big milestone.'},
-  // Phase 2 — Intensity Build
-  {s:'2026-06-15',mo:58,we:35,fr:58,sa:65,wt:'strides',wd:'Easy 35 min + 6×20s strides',note:'Intensity intro week. Mon/Fri stay easy.'},
-  {s:'2026-06-22',mo:58,we:35,fr:58,sa:65,wt:'tempo',wd:'10 min warmup + 2×10 min tempo + 5 min cooldown',note:'Wed TEMPO: 10.5–11.5 kph. Controlled effort.'},
-  {s:'2026-06-29',mo:58,we:35,fr:58,sa:65,wt:'track',wd:'10 min warmup + 6×400m (90s rest) + 5 min cooldown',note:'Wed TRACK: fast but relaxed. Focus on form.'},
-  {s:'2026-07-06',mo:58,we:35,fr:58,sa:65,wt:'tempo',wd:'10 min warmup + 3×10 min tempo + 5 min cooldown',note:'Wed TEMPO: 3 reps. HR 155–175.'},
-  {s:'2026-07-13',mo:40,we:30,fr:40,sa:60,wt:'easy',note:'Cutback week ~170 min. Easy all days. Absorb the training.'},
-  {s:'2026-07-20',mo:58,we:35,fr:58,sa:65,wt:'tempo',wd:'10 min warmup + 2×15 min tempo + 5 min cooldown',note:'Wed TEMPO: longer reps. Building lactate capacity.'},
-  {s:'2026-07-27',mo:58,we:35,fr:58,sa:65,wt:'track',wd:'10 min warmup + 6×800m (2 min rest) + 5 min cooldown',note:'Wed TRACK: 800m target ~4:00–4:10.'},
-  // Phase 3 — Marathon Specific
-  {s:'2026-08-03',mo:45,we:35,fr:45,sa:80, wt:'tempo',wd:'10 min warmup + 2×15 min @ MP + 5 min cooldown',note:'Sat long run grows. Marathon pace work begins.'},
-  {s:'2026-08-10',mo:45,we:35,fr:45,sa:90, wt:'track',wd:'10 min warmup + 6×800m (2 min rest) + 5 min cooldown',note:'Sat: 90 min easy long run.'},
-  {s:'2026-08-17',mo:45,we:35,fr:45,sa:100,wt:'tempo',wd:'10 min warmup + 3×10 min @ MP + 5 min cooldown',note:'Sat: 100 min + MP segments. First real marathon-pace long run.'},
-  {s:'2026-08-24',mo:45,we:35,fr:45,sa:115,wt:'track',wd:'10 min warmup + 6×400m @ 5K pace + 5 min cooldown',note:'Sat: 115 min + MP segments.'},
-  {s:'2026-08-31',mo:35,we:25,fr:35,sa:70, wt:'easy',note:'Cutback week. Absorb the long run build.'},
-  {s:'2026-09-07',mo:45,we:35,fr:45,sa:130,wt:'tempo',wd:'10 min warmup + 3×12 min @ MP + 5 min cooldown',note:'Sat: 130 min. Sub-3 long run territory.'},
-  {s:'2026-09-14',mo:45,we:35,fr:45,sa:140,wt:'track',wd:'10 min warmup + 5×1km @ tempo + 5 min cooldown',note:'Sat: 140 min + MP segments.'},
-  {s:'2026-09-21',mo:45,we:35,fr:45,sa:150,wt:'tempo',wd:'10 min warmup + 2×20 min @ MP + 5 min cooldown',note:'Sat: 150 min + extended MP segments.'},
-  {s:'2026-09-28',mo:45,we:35,fr:45,sa:160,wt:'track',wd:'10 min warmup + 4×1km @ tempo + 5 min cooldown',note:'Sat: PEAK LONG RUN. 32km. This is it.'},
-  {s:'2026-10-05',mo:35,we:25,fr:35,sa:70, wt:'easy',note:'Post-peak cutback. Legs recover fast from here.'},
-  // Phase 4 — Taper
-  {s:'2026-10-12',mo:35,we:20,fr:35,sa:55,wt:'tempo',wd:'Easy 10 min + 2×10 min @ MP + easy 5 min',note:'Taper week 1. Volume drops, quality stays.'},
-  {s:'2026-10-19',mo:25,we:15,fr:25,sa:40,wt:'strides',wd:'Easy 15 min + 4×20s strides',note:'Taper week 2. Feeling fresh. Trust the work.'},
-  {s:'2026-10-26',mo:20,we:15,fr:20,sa:20,wt:'strides',wd:'Easy 15 min + 3×20s strides',note:'Race week. Stay loose. NYC Marathon Sunday Nov 1!'},
+  // ── Wk 7 — THIS WEEK (Tue May 5 – Mon May 11) ──────────────────
+  {s:'2026-05-05',mo:25,we:25,fr:25,sa:20,wt:'easy',note:'First week with 4 run days. Sat 20 min — first ever 4th run. Keep it easy.'},
+  // ── Phase 1 — Volume Build · Pure Zone 2 ───────────────────────
+  // Weeks run Tue–Mon. Mo = last run of the week.
+  {s:'2026-05-12',mo:28,we:28,fr:31,sa:31,wt:'easy',note:'Volume build begins. Pure Zone 2. Treadmill only.'},
+  {s:'2026-05-19',mo:34,we:34,fr:37,sa:37,wt:'easy',note:'+20% volume. Stay aerobic. Treadmill only.'},
+  {s:'2026-05-26',mo:40,we:40,fr:45,sa:45,wt:'strides',wd:'40 min Zone 2 + 4 strides (20s each, not sprinting)',note:'Add strides Wed. Light and snappy. Trail/road OK from here.'},
+  {s:'2026-06-02',mo:48,we:48,fr:54,sa:54,wt:'strides',wd:'48 min Zone 2 + 4–6 strides',note:'+20% volume. Strides continue Wed.'},
+  {s:'2026-06-09',mo:58,we:58,fr:65,sa:65,wt:'strides',wd:'58 min Zone 2 + 6 strides',note:'PHASE 1 COMPLETE. ~60 min avg. Big milestone.'},
+  // ── Phase 2 — Intensity Build · Volume locked ~246 min ─────────
+  {s:'2026-06-16',mo:58,we:58,fr:58,sa:72, wt:'strides',wd:'58 min Zone 2 + 6 strides',note:'Phase 2 begins. Volume locked. Sat extends to 72 min.'},
+  {s:'2026-06-23',mo:58,we:50,fr:45,sa:80, wt:'tempo', wd:'10 min WU + 2×10 min @ 4:45/km + 10 min CD',note:'Wed TEMPO: HR 155–175. Stay controlled. Pavement OK now.'},
+  {s:'2026-06-30',mo:58,we:50,fr:45,sa:80, wt:'track', wd:'10 min WU + 6×400m @ 5K effort (90s rest) + 10 min CD',note:'Wed TRACK: fast but relaxed. Form over pace.'},
+  {s:'2026-07-07',mo:58,we:55,fr:45,sa:80, wt:'tempo', wd:'10 min WU + 3×10 min @ 4:45/km + 10 min CD',note:'Wed TEMPO: 3 reps. HR 155–175.'},
+  {s:'2026-07-14',mo:40,we:40,fr:30,sa:55, wt:'track', wd:'10 min WU + 4×400m @ 5K effort (90s rest) + 10 min CD',note:'CUTBACK WEEK ~170 min. Easy all. Absorb the training.'},
+  {s:'2026-07-21',mo:58,we:55,fr:45,sa:80, wt:'tempo', wd:'10 min WU + 2×15 min @ 4:43/km + 10 min CD',note:'Wed TEMPO: longer reps. Building lactate capacity.'},
+  {s:'2026-07-28',mo:58,we:60,fr:45,sa:80, wt:'track', wd:'10 min WU + 6×800m @ 5K effort (2 min rest) + 10 min CD',note:'Wed TRACK: 800m target ~4:00–4:10.'},
+  // ── Phase 3 — Marathon Specific ────────────────────────────────
+  {s:'2026-08-04',mo:58,we:55,fr:45,sa:90, wt:'tempo', wd:'10 min WU + 25 min @ 4:43/km + 10 min CD',note:'Sat long run grows. Marathon pace work begins.'},
+  {s:'2026-08-11',mo:58,we:60,fr:45,sa:100,wt:'track', wd:'10 min WU + 8×800m @ 5K effort (2 min rest) + 10 min CD',note:'Sat: 100 min / 10km @ MP.'},
+  {s:'2026-08-18',mo:58,we:60,fr:45,sa:115,wt:'tempo', wd:'10 min WU + 30 min @ 4:43/km + 10 min CD',note:'Sat: 115 min / 13km @ MP.'},
+  {s:'2026-08-25',mo:40,we:45,fr:30,sa:75, wt:'track', wd:'10 min WU + 4×800m @ 5K effort (2 min rest) + 10 min CD',note:'CUTBACK WEEK. Absorb the long run build.'},
+  {s:'2026-09-01',mo:58,we:65,fr:45,sa:130,wt:'tempo', wd:'10 min WU + 35 min @ 4:40/km + 10 min CD',note:'Sat: 130 min / 16km @ MP. Sub-3 long run territory.'},
+  {s:'2026-09-08',mo:58,we:65,fr:45,sa:140,wt:'track', wd:'10 min WU + 10×800m @ 5K effort (90s rest) + 10 min CD',note:'Sat: 140 min / 18km @ MP.'},
+  {s:'2026-09-15',mo:58,we:70,fr:45,sa:170,wt:'tempo', wd:'10 min WU + 40 min @ 4:40/km + 10 min CD',note:'PEAK WEEK. Sat: ~32km steady. Long run is the full 2.5 hrs.'},
+  {s:'2026-09-22',mo:40,we:50,fr:30,sa:85, wt:'track', wd:'10 min WU + 5×800m @ 5K effort (2 min rest) + 10 min CD',note:'CUTBACK WEEK. Recover from peak.'},
+  {s:'2026-09-29',mo:58,we:60,fr:45,sa:125,wt:'tempo', wd:'10 min WU + 30 min @ MP + 10 min CD',note:'Sat: 125 min / 15km @ MP.'},
+  {s:'2026-10-06',mo:55,we:55,fr:35,sa:110,wt:'track', wd:'10 min WU + 6×800m @ 5K effort (2 min rest) + 10 min CD',note:'Sat: 110 min / 10km @ MP. Last big week.'},
+  // ── Phase 4 — Taper ────────────────────────────────────────────
+  {s:'2026-10-13',mo:45,we:40,fr:25,sa:70, wt:'tempo', wd:'10 min WU + 3×8 min @ MP + 10 min CD',note:'Taper week 1. Volume drops sharply. Quality stays.'},
+  {s:'2026-10-20',mo:25,we:35,fr:15,sa:0,  wt:'track', wd:'10 min WU + 4×400m + strides + CD',note:'Taper week 2. Feeling fresh. Thu = REST/travel. Trust the work.'},
+  {s:'2026-10-27',mo:0, we:0, fr:0, sa:0,  wt:'easy', rest:true, note:'RACE WEEK. Rest Mon–Sat. NYC Marathon Sunday Nov 1! 3:15–3:20.'},
 ];
 
 function getRunWorkout(date) {
@@ -812,9 +814,17 @@ function getWeekNum(){
 
 function getDayWorkouts(date){
   const dow=date.getDay();
-  // Run days: Mon(1) Wed(3) Fri(5) Sat(6) → Run + Swim to fill 2.5 hrs
+  const ds=datStr(date);
+  // Find current week
+  let week=null;
+  for(let i=RUN_WEEKS.length-1;i>=0;i--){if(ds>=RUN_WEEKS[i].s){week=RUN_WEEKS[i];break;}}
+  // Race week = full rest
+  if(week && week.rest) return [{type:'rest'}];
+  // Sat rest (taper wk 2 + race week)
+  if(dow===6 && week && week.sa===0) return [{type:'rest'}];
+  // Run days: Mon/Wed/Fri/Sat → Run + Swim to fill 2.5 hrs
   if([1,3,5,6].includes(dow)) return [{type:'run'},{type:'swim'}];
-  // Lift days: Sun(0) Tue(2) Thu(4) → Lift 60min + XT 90min
+  // Lift days: Sun/Tue/Thu → Lift 60 min + XT 90 min
   if([0,2,4].includes(dow)) return [{type:'lift'},{type:'xt'}];
   return [{type:'rest'}];
 }
@@ -1001,7 +1011,7 @@ function buildBikeCard(date,ds){
 
 function buildSwimCard(date,ds){
   const runMins=getRunMinutes(date);
-  const swimMins=150-runMins;
+  const swimMins=Math.max(0,150-runMins);
   const done=isComplete('swim',ds);
   const card=document.createElement('div');
   card.className='workout-card';
@@ -1033,9 +1043,12 @@ function buildSwimCard(date,ds){
 function buildXTCard(date,ds){
   const dow=date.getDay();
   const isSun=dow===0;
+  const isTue=dow===2;
   const done=isComplete('xt',ds);
-  const options=isSun?'Easy swim · yoga · light bike':'Bike Zone 2 · swim · elliptical · your choice';
-  const note=isSun?'Active recovery only. Low HR. Let the body rebuild.':'Zone 2 effort only. HR 120–135. Aerobic base.';
+  const liftLabel=isSun?'Full Body Runner · 45 min':isTue?'Lower Body Heavy + Femoral Neck · 60 min':'Upper Body Heavy · 60 min';
+  const xtLabel=isSun?'Easy swim · yoga · walk (60 + 30 min)':'Bike / elliptical / swim · 90 min';
+  const options=isSun?'Easy swim · yoga · walk':'Bike Zone 2 · swim · elliptical · your choice';
+  const note=isSun?'Active recovery. Lift 45 min + swim/yoga 60 min + walk 30 min = 2.5 hrs.':isTue?'Femoral neck protocol included. XT: Bike / elliptical 90 min.':'Upper body heavy. XT: Swim / bike 90 min.';
   const card=document.createElement('div');
   card.className='workout-card';
   card.innerHTML=`
@@ -1044,16 +1057,16 @@ function buildXTCard(date,ds){
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="16.5" r="3.5"/><circle cx="18.5" cy="16.5" r="3.5"/><circle cx="15" cy="5.5" r="1.3" fill="var(--blue)" stroke="none"/><path d="M5.5 16.5L11 7.5L15 5.5L18.5 16.5"/><line x1="11" y1="7.5" x2="12" y2="16.5"/></svg>
       </div>
       <div class="workout-card-info">
-        <div class="workout-card-title">Cross Training — 90 min</div>
-        <div class="workout-card-subtitle">${options}</div>
+        <div class="workout-card-title">${liftLabel}</div>
+        <div class="workout-card-subtitle">${xtLabel}</div>
       </div>
       <svg class="workout-chevron" id="chev-xt-${ds}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
     <div class="workout-card-body" id="xt-${ds}">
-      <div class="workout-detail-row"><span class="workout-detail-label">Duration</span><span class="workout-detail-val">90 min</span></div>
-      <div class="workout-detail-row"><span class="workout-detail-label">Options</span><span class="workout-detail-val">${options}</span></div>
-      <div class="workout-detail-row"><span class="workout-detail-label">Effort</span><span class="workout-detail-val">${note}</span></div>
-      <div class="workout-detail-row"><span class="workout-detail-label">Total day</span><span class="workout-detail-val" style="color:var(--green-dark);font-weight:700">Lift 60 min + XT 90 min = 2.5 hrs ✓</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Lift</span><span class="workout-detail-val">${liftLabel}</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">XT</span><span class="workout-detail-val">${options}</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Note</span><span class="workout-detail-val" style="font-style:italic;color:var(--text-muted)">${note}</span></div>
+      <div class="workout-detail-row"><span class="workout-detail-label">Total</span><span class="workout-detail-val" style="color:var(--green-dark);font-weight:700">${isSun?'45 + 60 + 30':'60 + 90'} min = 2.5 hrs ✓</span></div>
       <button class="complete-btn complete-btn-bike${done?' done':''}" onclick="markDone('xt','${ds}',this)">${done?'✓ Completed':'Mark XT Complete'}</button>
     </div>`;
   return card;
