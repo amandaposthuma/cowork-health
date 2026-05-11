@@ -381,12 +381,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 const TODAY = new Date(); // always use current date
 
 const PHASES = [
-  {id:1,name:'Run/Walk Intervals',dates:'Mar 25 – Apr 6',start:'2026-03-25',end:'2026-04-06',status:'complete'},
-  {id:2,name:'Bridging to Continuous',dates:'Apr 6 – Apr 27',start:'2026-04-06',end:'2026-04-27',status:'active'},
-  {id:3,name:'First Continuous Runs',dates:'Apr 28 – May 18',start:'2026-04-28',end:'2026-05-18',status:'upcoming'},
-  {id:4,name:'Fitness Rebuild',dates:'May 19 – Jun 22',start:'2026-05-19',end:'2026-06-22',status:'upcoming'},
-  {id:5,name:'Speed Introduction',dates:'Jun 23 – Aug 3',start:'2026-06-23',end:'2026-08-03',status:'upcoming'},
-  {id:6,name:'Marathon Specific',dates:'Aug – Oct 25',start:'2026-08-04',end:'2026-10-25',status:'upcoming'},
+  {id:1,name:'Return to Run',dates:'Mar 25 – May 10',start:'2026-03-25',end:'2026-05-10',status:'complete'},
+  {id:2,name:'Volume Build',dates:'May 11 – Jun 14',start:'2026-05-11',end:'2026-06-14',status:'active'},
+  {id:3,name:'Intensity Build',dates:'Jun 15 – Aug 2',start:'2026-06-15',end:'2026-08-02',status:'upcoming'},
+  {id:4,name:'Marathon Specific',dates:'Aug 3 – Oct 11',start:'2026-08-03',end:'2026-10-11',status:'upcoming'},
+  {id:5,name:'Taper',dates:'Oct 12 – Nov 1',start:'2026-10-12',end:'2026-11-01',status:'upcoming'},
 ];
 
 const WEEKLY_KM = [
@@ -694,33 +693,78 @@ const CORE_ROUTINES = {
   },
 };
 
-function getRunWorkout(date) {
-  const d = date;
-  // All boundaries on Mondays so training weeks align correctly
-  const apr6  = new Date(2026,3,6);   // Mon Apr 6  — Phase 2 starts
-  const apr13 = new Date(2026,3,13);  // Mon Apr 13
-  const apr20 = new Date(2026,3,20);  // Mon Apr 20
-  const apr27 = new Date(2026,3,27);  // Mon Apr 27 — transition to continuous
-  const may4  = new Date(2026,4,4);   // Mon May 4  — first single continuous block
-  const may11 = new Date(2026,4,11);  // Mon May 11 — 28 min week
-  const may18 = new Date(2026,4,18);  // Mon May 18 — Phase 4 starts
-  const may25 = new Date(2026,4,25);  // Mon May 25
-  const jun1  = new Date(2026,5,1);   // Mon Jun 1
-  const jun8  = new Date(2026,5,8);   // Mon Jun 8
-  const jun15 = new Date(2026,5,15);  // Mon Jun 15
+// Week-by-week run schedule. All weeks start Monday.
+// {s: weekStart, mo, we, fr, sa: minutes, wt: wed type, wd: wed detail, note}
+const RUN_WEEKS = [
+  // Return to run
+  {s:'2026-04-06',mo:28,we:28,fr:28,sa:28,wt:'easy',note:'4×5 min run / 90s walk. Slow is right.'},
+  {s:'2026-04-13',mo:34,we:34,fr:34,sa:34,wt:'easy',note:'3×8 min run / 2 min walk.'},
+  {s:'2026-04-20',mo:40,we:40,fr:40,sa:40,wt:'easy',note:'3×10–12 min / 2 min walk. Last interval week.'},
+  {s:'2026-04-27',mo:40,we:40,fr:40,sa:40,wt:'easy',note:'2×15–18 min continuous. First continuous reps.'},
+  {s:'2026-05-04',mo:25,we:25,fr:25,sa:25,wt:'easy',note:'First single continuous block. Easy pace.'},
+  // Phase 1 — Volume Build
+  {s:'2026-05-11',mo:28,we:28,fr:31,sa:31,wt:'easy',note:'Volume build begins. Pure Zone 2.'},
+  {s:'2026-05-18',mo:34,we:34,fr:37,sa:37,wt:'easy',note:'+20% volume. Stay aerobic.'},
+  {s:'2026-05-25',mo:40,we:40,fr:45,sa:45,wt:'strides',wd:'Easy 40 min + 6×20s strides',note:'Add strides Wed. Light and snappy — not sprinting.'},
+  {s:'2026-06-01',mo:48,we:48,fr:54,sa:54,wt:'easy',note:'+20% volume. Aerobic base building.'},
+  {s:'2026-06-08',mo:58,we:58,fr:65,sa:65,wt:'easy',note:'Phase 1 complete. ~60 min avg. Big milestone.'},
+  // Phase 2 — Intensity Build
+  {s:'2026-06-15',mo:58,we:35,fr:58,sa:65,wt:'strides',wd:'Easy 35 min + 6×20s strides',note:'Intensity intro week. Mon/Fri stay easy.'},
+  {s:'2026-06-22',mo:58,we:35,fr:58,sa:65,wt:'tempo',wd:'10 min warmup + 2×10 min tempo + 5 min cooldown',note:'Wed TEMPO: 10.5–11.5 kph. Controlled effort.'},
+  {s:'2026-06-29',mo:58,we:35,fr:58,sa:65,wt:'track',wd:'10 min warmup + 6×400m (90s rest) + 5 min cooldown',note:'Wed TRACK: fast but relaxed. Focus on form.'},
+  {s:'2026-07-06',mo:58,we:35,fr:58,sa:65,wt:'tempo',wd:'10 min warmup + 3×10 min tempo + 5 min cooldown',note:'Wed TEMPO: 3 reps. HR 155–175.'},
+  {s:'2026-07-13',mo:40,we:30,fr:40,sa:60,wt:'easy',note:'Cutback week ~170 min. Easy all days. Absorb the training.'},
+  {s:'2026-07-20',mo:58,we:35,fr:58,sa:65,wt:'tempo',wd:'10 min warmup + 2×15 min tempo + 5 min cooldown',note:'Wed TEMPO: longer reps. Building lactate capacity.'},
+  {s:'2026-07-27',mo:58,we:35,fr:58,sa:65,wt:'track',wd:'10 min warmup + 6×800m (2 min rest) + 5 min cooldown',note:'Wed TRACK: 800m target ~4:00–4:10.'},
+  // Phase 3 — Marathon Specific
+  {s:'2026-08-03',mo:45,we:35,fr:45,sa:80, wt:'tempo',wd:'10 min warmup + 2×15 min @ MP + 5 min cooldown',note:'Sat long run grows. Marathon pace work begins.'},
+  {s:'2026-08-10',mo:45,we:35,fr:45,sa:90, wt:'track',wd:'10 min warmup + 6×800m (2 min rest) + 5 min cooldown',note:'Sat: 90 min easy long run.'},
+  {s:'2026-08-17',mo:45,we:35,fr:45,sa:100,wt:'tempo',wd:'10 min warmup + 3×10 min @ MP + 5 min cooldown',note:'Sat: 100 min + MP segments. First real marathon-pace long run.'},
+  {s:'2026-08-24',mo:45,we:35,fr:45,sa:115,wt:'track',wd:'10 min warmup + 6×400m @ 5K pace + 5 min cooldown',note:'Sat: 115 min + MP segments.'},
+  {s:'2026-08-31',mo:35,we:25,fr:35,sa:70, wt:'easy',note:'Cutback week. Absorb the long run build.'},
+  {s:'2026-09-07',mo:45,we:35,fr:45,sa:130,wt:'tempo',wd:'10 min warmup + 3×12 min @ MP + 5 min cooldown',note:'Sat: 130 min. Sub-3 long run territory.'},
+  {s:'2026-09-14',mo:45,we:35,fr:45,sa:140,wt:'track',wd:'10 min warmup + 5×1km @ tempo + 5 min cooldown',note:'Sat: 140 min + MP segments.'},
+  {s:'2026-09-21',mo:45,we:35,fr:45,sa:150,wt:'tempo',wd:'10 min warmup + 2×20 min @ MP + 5 min cooldown',note:'Sat: 150 min + extended MP segments.'},
+  {s:'2026-09-28',mo:45,we:35,fr:45,sa:160,wt:'track',wd:'10 min warmup + 4×1km @ tempo + 5 min cooldown',note:'Sat: PEAK LONG RUN. 32km. This is it.'},
+  {s:'2026-10-05',mo:35,we:25,fr:35,sa:70, wt:'easy',note:'Post-peak cutback. Legs recover fast from here.'},
+  // Phase 4 — Taper
+  {s:'2026-10-12',mo:35,we:20,fr:35,sa:55,wt:'tempo',wd:'Easy 10 min + 2×10 min @ MP + easy 5 min',note:'Taper week 1. Volume drops, quality stays.'},
+  {s:'2026-10-19',mo:25,we:15,fr:25,sa:40,wt:'strides',wd:'Easy 15 min + 4×20s strides',note:'Taper week 2. Feeling fresh. Trust the work.'},
+  {s:'2026-10-26',mo:20,we:15,fr:20,sa:20,wt:'strides',wd:'Easy 15 min + 3×20s strides',note:'Race week. Stay loose. NYC Marathon Sunday Nov 1!'},
+];
 
-  if(d < apr6)  return {protocol:'Phase 1 complete',intervals:'Run/Walk protocol finished',duration:'—',speed:'—',effort:'Zone 2',note:''};
-  if(d < apr13) return {protocol:'4×5 min run / 90 sec walk',intervals:'4×5 min + 90s walk × 4',duration:'~28 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'Keep it honest. Slow is right.'};
-  if(d < apr20) return {protocol:'3×8 min run / 2 min walk',intervals:'3×8 min + 2 min walk × 3',duration:'~34 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'3 longer reps. Same easy pace.'};
-  if(d < apr27) return {protocol:'3×10–12 min run / 2 min walk',intervals:'3×10–12 min + 2 min walk × 3',duration:'~40 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'Last interval week before continuous.'};
-  if(d < may4)  return {protocol:'2×15–18 min continuous / 2 min walk',intervals:'2×15–18 min + 2 min walk between',duration:'~40 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'First continuous reps. Big milestone.'};
-  if(d < may11) return {protocol:'22–25 min continuous',intervals:'1×22–25 min continuous run',duration:'~25 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'First single continuous block. Easy pace.'};
-  if(d < may18) return {protocol:'28 min continuous',intervals:'1×28 min continuous run',duration:'~28 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'New distance PB. Stay easy, stay controlled.'};
-  if(d < may25) return {protocol:'30–32 min continuous',intervals:'1×30–32 min continuous run',duration:'~32 min',speed:'9.0–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Phase 4 — fitness rebuild. Keep it aerobic.'};
-  if(d < jun1)  return {protocol:'35 min continuous',intervals:'1×35 min continuous run',duration:'~35 min',speed:'9.5–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Building aerobic base week by week.'};
-  if(d < jun8)  return {protocol:'38–40 min continuous',intervals:'1×38–40 min continuous run',duration:'~40 min',speed:'9.5–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Steady base build.'};
-  if(d < jun15) return {protocol:'42–45 min continuous',intervals:'1×42–45 min continuous run',duration:'~45 min',speed:'9.5–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Strong base. Cadence 175–185 spm.'};
-  return {protocol:'45–60 min easy continuous',intervals:'45–60 min at easy effort',duration:'45–60 min',speed:'9.5–10.5 kph',effort:'Zone 2 (HR 120–135)',note:'Marathon base phase. Long and easy.'};
+function getRunWorkout(date) {
+  const dow = date.getDay(); // 1=Mon, 3=Wed, 5=Fri, 6=Sat
+  const ds  = datStr(date);
+  let week = null;
+  for(let i = RUN_WEEKS.length - 1; i >= 0; i--) {
+    if(ds >= RUN_WEEKS[i].s){ week = RUN_WEEKS[i]; break; }
+  }
+  if(!week) return {protocol:'Phase complete',intervals:'—',duration:'—',speed:'—',effort:'Zone 2',note:''};
+
+  const durMap = {1: week.mo, 3: week.we, 5: week.fr, 6: week.sa};
+  const dur = durMap[dow] || week.mo || 30;
+
+  // Wed quality sessions
+  if(dow === 3 && week.wt !== 'easy') {
+    const isIntensity = week.wt === 'tempo' || week.wt === 'track';
+    return {
+      protocol: week.wd || `${dur} min quality`,
+      intervals: week.wd || `${dur} min`,
+      duration: `~${dur} min`,
+      speed: week.wt === 'tempo' ? '10.5–11.5 kph' : week.wt === 'track' ? '11.0–13.0 kph' : '9.0–10.0 kph',
+      effort: isIntensity ? 'Threshold / Race pace (HR 155–175)' : 'Zone 2 + accelerations',
+      note: week.note
+    };
+  }
+  return {
+    protocol: `${dur} min Zone 2`,
+    intervals: `${dur} min continuous`,
+    duration: `~${dur} min`,
+    speed: '9.0–10.0 kph',
+    effort: 'Zone 2 (HR 120–135)',
+    note: week.note
+  };
 }
 
 function getBikeWorkout(date) {
