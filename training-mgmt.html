@@ -696,22 +696,31 @@ const CORE_ROUTINES = {
 
 function getRunWorkout(date) {
   const d = date;
-  const apr6  = new Date(2026,3,6);
-  const apr14 = new Date(2026,3,14);
-  const apr21 = new Date(2026,3,21);
-  const apr28 = new Date(2026,3,28);
-  const may5  = new Date(2026,4,5);
-  const may12 = new Date(2026,4,12);
-  const may19 = new Date(2026,4,19);
+  // All boundaries on Mondays so training weeks align correctly
+  const apr6  = new Date(2026,3,6);   // Mon Apr 6  — Phase 2 starts
+  const apr13 = new Date(2026,3,13);  // Mon Apr 13
+  const apr20 = new Date(2026,3,20);  // Mon Apr 20
+  const apr27 = new Date(2026,3,27);  // Mon Apr 27 — transition to continuous
+  const may4  = new Date(2026,4,4);   // Mon May 4  — first single continuous block
+  const may11 = new Date(2026,4,11);  // Mon May 11 — 28 min week
+  const may18 = new Date(2026,4,18);  // Mon May 18 — Phase 4 starts
+  const may25 = new Date(2026,4,25);  // Mon May 25
+  const jun1  = new Date(2026,5,1);   // Mon Jun 1
+  const jun8  = new Date(2026,5,8);   // Mon Jun 8
+  const jun15 = new Date(2026,5,15);  // Mon Jun 15
 
-  if(d < apr6) return {protocol:'Phase 1 complete',intervals:'Run/Walk protocol finished',duration:'—',speed:'—',effort:'Zone 2',note:''};
-  if(d < apr14) return {protocol:'4×5 min run / 90 sec walk',intervals:'4×5 min run + 90s walk',duration:'~28 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'Keep it honest. Slow is right.'};
-  if(d < apr21) return {protocol:'3×8 min run / 2 min walk',intervals:'3×8 min run + 2 min walk',duration:'~34 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'3 longer reps. Same pace.'};
-  if(d < apr28) return {protocol:'3×10–12 min run / 2 min walk',intervals:'3×10–12 min run + 2 min walk',duration:'~40 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'Last week before continuous runs.'};
-  if(d < may5)  return {protocol:'2×15–18 min continuous / 2 min walk between',intervals:'2×15–18 min + 2 min walk between',duration:'~40 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'First truly continuous reps. Milestone.'};
-  if(d < may12) return {protocol:'20–25 min continuous',intervals:'1×20–25 min continuous run',duration:'~25 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'FIRST FULLY CONTINUOUS RUN. Easy pace.'};
-  if(d < may19) return {protocol:'25–30 min continuous',intervals:'1×25–30 min continuous run',duration:'~30 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'Building base.'};
-  return {protocol:'30–45 min easy continuous',intervals:'30–45 min at easy effort',duration:'30–45 min',speed:'9.0–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Phase 4 — fitness rebuild begins.'};
+  if(d < apr6)  return {protocol:'Phase 1 complete',intervals:'Run/Walk protocol finished',duration:'—',speed:'—',effort:'Zone 2',note:''};
+  if(d < apr13) return {protocol:'4×5 min run / 90 sec walk',intervals:'4×5 min + 90s walk × 4',duration:'~28 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'Keep it honest. Slow is right.'};
+  if(d < apr20) return {protocol:'3×8 min run / 2 min walk',intervals:'3×8 min + 2 min walk × 3',duration:'~34 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'3 longer reps. Same easy pace.'};
+  if(d < apr27) return {protocol:'3×10–12 min run / 2 min walk',intervals:'3×10–12 min + 2 min walk × 3',duration:'~40 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'Last interval week before continuous.'};
+  if(d < may4)  return {protocol:'2×15–18 min continuous / 2 min walk',intervals:'2×15–18 min + 2 min walk between',duration:'~40 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'First continuous reps. Big milestone.'};
+  if(d < may11) return {protocol:'22–25 min continuous',intervals:'1×22–25 min continuous run',duration:'~25 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'First single continuous block. Easy pace.'};
+  if(d < may18) return {protocol:'28 min continuous',intervals:'1×28 min continuous run',duration:'~28 min',speed:'9.0–9.5 kph',effort:'Zone 2 (HR 120–135)',note:'New distance PB. Stay easy, stay controlled.'};
+  if(d < may25) return {protocol:'30–32 min continuous',intervals:'1×30–32 min continuous run',duration:'~32 min',speed:'9.0–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Phase 4 — fitness rebuild. Keep it aerobic.'};
+  if(d < jun1)  return {protocol:'35 min continuous',intervals:'1×35 min continuous run',duration:'~35 min',speed:'9.5–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Building aerobic base week by week.'};
+  if(d < jun8)  return {protocol:'38–40 min continuous',intervals:'1×38–40 min continuous run',duration:'~40 min',speed:'9.5–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Steady base build.'};
+  if(d < jun15) return {protocol:'42–45 min continuous',intervals:'1×42–45 min continuous run',duration:'~45 min',speed:'9.5–10.0 kph',effort:'Zone 2 (HR 120–135)',note:'Strong base. Cadence 175–185 spm.'};
+  return {protocol:'45–60 min easy continuous',intervals:'45–60 min at easy effort',duration:'45–60 min',speed:'9.5–10.5 kph',effort:'Zone 2 (HR 120–135)',note:'Marathon base phase. Long and easy.'};
 }
 
 function getBikeWorkout(date) {
