@@ -150,6 +150,30 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .complete-btn{width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;letter-spacing:.3px;cursor:pointer;margin-top:14px;transition:all .15s}
 .complete-btn.done{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(0,168,120,.25)}
 .complete-btn.not-done{background:var(--surface3);color:var(--text-muted);border:1.5px solid var(--border)}
+/* WORKOUT TIMER */
+.workout-timer-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.wtimer-icon{font-size:26px;flex-shrink:0}
+.wtimer-info{flex:1}
+.wtimer-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1px}
+.wtimer-time{font-size:26px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1}
+.wtimer-running .wtimer-time{color:var(--green)}
+.wtimer-btns{display:flex;gap:6px;flex-shrink:0}
+.wtimer-btn{padding:7px 13px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.wtimer-btn.start{background:var(--green);color:#fff}
+.wtimer-btn.pause{background:var(--orange);color:#fff}
+.wtimer-btn.reset{background:var(--surface3);color:var(--text-muted);border:1.5px solid var(--border)}
+/* SET TIMER */
+.set-timer-btn{display:inline-flex;align-items:center;padding:2px 6px;border-radius:5px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:11px;cursor:pointer;font-family:inherit;margin-left:4px;vertical-align:middle;transition:all .15s}
+.set-timer-btn.active{background:var(--orange);color:#fff;border-color:var(--orange)}
+.set-timer-popup{display:none;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;margin-top:8px;align-items:center;gap:10px}
+.set-timer-popup.visible{display:flex}
+.set-timer-countdown{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--text);min-width:36px}
+.set-timer-countdown.done{color:var(--green)}
+.set-timer-countdown.low{color:var(--orange)}
+.set-timer-bar-wrap{flex:1;height:4px;background:var(--border);border-radius:4px;overflow:hidden}
+.set-timer-bar{height:100%;background:var(--green);border-radius:4px;transition:width .5s linear}
+.set-timer-bar.low{background:var(--orange)}
+.set-cancel-btn{padding:3px 9px;border-radius:6px;border:none;background:var(--surface3);color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 /* PHASE PROGRESS */
 .phase-progress{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
 .phase-progress h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text)}
@@ -785,6 +809,88 @@ function checkMark(){
   return `<svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 6.5L5.5 10L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
+/* ─── TIMERS ─── */
+let wTimerInterval=null,wTimerSeconds=0,wTimerRunning=false;
+const setTimers={};
+function wTimerFmt(s){return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function wTimerToggle(){
+  if(wTimerRunning){
+    clearInterval(wTimerInterval);wTimerRunning=false;
+  }else{
+    wTimerInterval=setInterval(()=>{
+      wTimerSeconds++;
+      const el=document.getElementById('wtimer-display');
+      if(el)el.textContent=wTimerFmt(wTimerSeconds);
+    },1000);
+    wTimerRunning=true;
+  }
+  const card=document.getElementById('workout-timer-card');
+  if(card)card.classList.toggle('wtimer-running',wTimerRunning);
+  const btn=document.getElementById('wtimer-toggle-btn');
+  if(btn){btn.textContent=wTimerRunning?'Pause':'Start';btn.className='wtimer-btn '+(wTimerRunning?'pause':'start');}
+}
+function wTimerReset(){
+  clearInterval(wTimerInterval);wTimerRunning=false;wTimerSeconds=0;
+  const el=document.getElementById('wtimer-display');if(el)el.textContent='00:00';
+  const card=document.getElementById('workout-timer-card');if(card)card.classList.remove('wtimer-running');
+  const btn=document.getElementById('wtimer-toggle-btn');if(btn){btn.textContent='Start';btn.className='wtimer-btn start';}
+}
+function restoreWorkoutTimerState(){
+  const el=document.getElementById('wtimer-display');if(!el)return;
+  el.textContent=wTimerFmt(wTimerSeconds);
+  const card=document.getElementById('workout-timer-card');if(card)card.classList.toggle('wtimer-running',wTimerRunning);
+  const btn=document.getElementById('wtimer-toggle-btn');
+  if(btn){btn.textContent=wTimerRunning?'Pause':'Start';btn.className='wtimer-btn '+(wTimerRunning?'pause':'start');}
+}
+function renderWorkoutTimer(){
+  return `<div class="workout-timer-card" id="workout-timer-card">
+    <div class="wtimer-icon">⏱</div>
+    <div class="wtimer-info">
+      <div class="wtimer-label">Workout Timer</div>
+      <div class="wtimer-time" id="wtimer-display">00:00</div>
+    </div>
+    <div class="wtimer-btns">
+      <button class="wtimer-btn start" id="wtimer-toggle-btn" onclick="wTimerToggle()">Start</button>
+      <button class="wtimer-btn reset" onclick="wTimerReset()">Reset</button>
+    </div>
+  </div>`;
+}
+function parseSetDuration(reps){
+  const m=(reps||'').match(/(\d+)\s*(?:sec(?:onds?)?|s(?=\/|\s|$))/i);
+  return m?parseInt(m[1],10):null;
+}
+function startSetTimer(key,seconds){
+  if(setTimers[key]&&setTimers[key].interval)clearInterval(setTimers[key].interval);
+  setTimers[key]={total:seconds,remaining:seconds,interval:null};
+  const popup=document.getElementById('stp-'+key);const btn=document.getElementById('stb-'+key);
+  if(popup)popup.classList.add('visible');if(btn)btn.classList.add('active');
+  updateSetTimerDisplay(key);
+  setTimers[key].interval=setInterval(()=>{
+    setTimers[key].remaining--;
+    updateSetTimerDisplay(key);
+    if(setTimers[key].remaining<=0){
+      clearInterval(setTimers[key].interval);setTimers[key].interval=null;
+      if(navigator.vibrate)navigator.vibrate([200,100,200]);
+      const cd=document.getElementById('stc-'+key);if(cd){cd.textContent='Done!';cd.className='set-timer-countdown done';}
+      const b=document.getElementById('stb-'+key);if(b){b.textContent='⏱';b.classList.remove('active');}
+    }
+  },1000);
+}
+function updateSetTimerDisplay(key){
+  const t=setTimers[key];if(!t)return;
+  const cd=document.getElementById('stc-'+key);const bar=document.getElementById('stbar-'+key);
+  const pct=t.remaining/t.total*100;
+  if(cd){cd.textContent=t.remaining+'s';cd.className='set-timer-countdown'+(t.remaining<=5?' low':'');}
+  if(bar){bar.style.width=pct+'%';bar.className='set-timer-bar'+(t.remaining<=5?' low':'');}
+}
+function cancelSetTimer(key){
+  if(setTimers[key]&&setTimers[key].interval)clearInterval(setTimers[key].interval);
+  delete setTimers[key];
+  const popup=document.getElementById('stp-'+key);const btn=document.getElementById('stb-'+key);
+  if(popup)popup.classList.remove('visible');
+  if(btn){btn.textContent='⏱';btn.classList.remove('active');}
+}
+
 /* ─── RENDER ─── */
 function renderHeader(){
   const phase=getCurrentPhase();
@@ -847,13 +953,21 @@ function renderExercise(ex, workoutKey, blockIdx, exIdx, isWarmup=false){
   const icon=getExIcon(ex.code,ex.cat);
   const detail=`${isWarmup?'':ex.sets+'× '}${ex.reps}${ex.rest&&ex.rest!=='—'?' · Rest '+ex.rest:''}`;
   const isWarning=ex.cue&&ex.cue.startsWith('⚠️');
+  const secs=parseSetDuration(ex.reps);
+  const timerBtn=secs?`<button class="set-timer-btn" id="stb-${key}" onclick="startSetTimer('${key}',${secs})">⏱</button>`:'';
+  const timerPopup=secs?`<div class="set-timer-popup" id="stp-${key}">
+      <div class="set-timer-countdown" id="stc-${key}">${secs}s</div>
+      <div class="set-timer-bar-wrap"><div class="set-timer-bar" id="stbar-${key}" style="width:100%"></div></div>
+      <button class="set-cancel-btn" onclick="cancelSetTimer('${key}')">✕</button>
+    </div>`:'';
   return `
   <div class="exercise-row" id="ex-${key}">
     <div class="ex-icon-wrap ${catClass(ex.cat)}">${icon}</div>
     <div class="exercise-info">
-      <div class="exercise-name">${ex.name}</div>
+      <div class="exercise-name">${ex.name}${timerBtn}</div>
       <div class="exercise-detail">${detail}</div>
       ${ex.cue?`<div class="cue-text ${isWarning?'cue-warning':''}">${ex.cue}</div>`:''}
+      ${timerPopup}
     </div>
     <div class="exercise-check ${done?'done':''}" onclick="toggleEx('${key}',this)">${checkMark()}</div>
   </div>`;
@@ -1025,6 +1139,7 @@ function renderTodayView(){
     </div>`;
   }else if(config.type==='long_run'){
     const run=getRunWorkout(ds);
+    html+=renderWorkoutTimer();
     html+=`<div class="section-label">Today's Workouts</div>`;
     if(run.type==='rest'){
       html+=`<div class="rest-card"><div class="rest-emoji">💤</div><h3>${run.label}</h3><p>${run.notes}</p></div>`;
@@ -1032,12 +1147,14 @@ function renderTodayView(){
       html+=renderRunCard(ds);
     }
   }else if(config.type==='legs_xt'){
+    html+=renderWorkoutTimer();
     html+=`<div class="section-label">Today's Workouts</div>`;
     html+=renderLiftCard(config.liftKey,ds);
     html+=renderXTCard(ds);
   }else{
     // run_upper
     const run=getRunWorkout(ds);
+    html+=renderWorkoutTimer();
     html+=`<div class="section-label">Today's Workouts</div>`;
     if(run.type==='rest'){
       html+=`<div class="rest-card"><div class="rest-emoji">💤</div><h3>${run.label}</h3><p>${run.notes}</p></div>`;
@@ -1050,6 +1167,7 @@ function renderTodayView(){
   html+=`<div class="section-label">Plan Progress</div>`;
   html+=renderPhaseProgress();
   view.innerHTML=html;
+  restoreWorkoutTimerState();
 }
 
 function renderPhaseProgress(){
