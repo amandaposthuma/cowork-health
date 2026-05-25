@@ -283,6 +283,10 @@ const ICON_MAP = {
   'CP2':'bench','SP':'shoulder-press',
   // Core
   'DB':'dead-bug','BD':'bird-dog','PL':'plank','PP':'pallof',
+  // Machines
+  'LGP':'squat','HCC':'hinge','ADM':'band-walk','ABM':'band-walk',
+  // Dumbbell arms
+  'BCC':'row','TRE':'shoulder-press',
   // Balance
   'SLB':'step-down','LSW':'stretch',
   // Mobility
@@ -331,6 +335,16 @@ const WORKOUTS = {
         ]
       },
       {
+        name:'MACHINES', color:'clr-green', badge:'2–3 rounds · 90 sec rest',
+        desc:'Use the machines in whatever order they\'re free. Adjust the seat before each set.',
+        exercises:[
+          { code:'LGP', cat:'cat-lower', name:'Leg Press', detail:'3 × 12 reps · moderate weight', muscles:'Quads · glutes · hamstrings', cue:'Feet hip-width on the platform, toes slightly out. Press through the whole foot. Don\'t lock knees at the top.', cueClass:'cue-blue' },
+          { code:'HCC', cat:'cat-lower', name:'Seated Leg Curl', detail:'3 × 12 reps', muscles:'Hamstrings', cue:'Pull the pad down smoothly, let it rise slowly — the slow return is where you get stronger.', cueClass:'cue-blue' },
+          { code:'ADM', cat:'cat-pt', name:'Adductor Machine (Inner Thigh)', detail:'3 × 15 reps · light-moderate', muscles:'Inner thighs · groin', cue:'Sit tall. Squeeze knees together slowly, hold 1 sec, release slowly. Inner thigh strength protects the knees.', cueClass:'cue-blue' },
+          { code:'ABM', cat:'cat-pt', name:'Abductor Machine (Outer Hip)', detail:'3 × 15 reps · light-moderate', muscles:'Outer hips · glutes', cue:'Push outward with control. This is your lateral stability for pickleball footwork.', cueClass:'cue-blue' },
+        ]
+      },
+      {
         name:'CORE + BALANCE', color:'clr-cyan', badge:'2 rounds',
         exercises:[
           { code:'DB', cat:'cat-core', name:'Dead Bug', detail:'2 × 6 each side', muscles:'Deep core · stability', cue:'Press low back to floor. Slow and deliberate — speed defeats the purpose.' },
@@ -361,6 +375,14 @@ const WORKOUTS = {
         exercises:[
           { code:'CP2', cat:'cat-upper', name:'Chest Press', detail:'3 × 10 reps · DB or machine', muscles:'Chest · triceps', cue:'Neutral grip (palms facing each other) is easier on the shoulders. Don\'t lock elbows at the top.' },
           { code:'SP', cat:'cat-upper', name:'Shoulder Press', detail:'2 × 10 reps · very light DB', muscles:'Shoulders · triceps', cue:'Build very slowly — 1–2 lb increases over months. Stop immediately if any shoulder pain or clicking.', cueClass:'cue-warning' },
+        ]
+      },
+      {
+        name:'ARMS — DUMBBELL', color:'clr-cyan', badge:'2–3 rounds',
+        exercises:[
+          { code:'BCC', cat:'cat-upper', name:'Bicep Curl', detail:'3 × 12 reps · light DB', muscles:'Biceps · forearms', cue:'Stand or sit. Palms face up. Curl up slowly, lower slowly. Don\'t swing — let the arms do the work.', cueClass:'cue-blue' },
+          { code:'TRE', cat:'cat-upper', name:'Overhead Tricep Extension', detail:'2 × 12 reps · one light DB', muscles:'Triceps', cue:'Hold one dumbbell with both hands behind your head. Press up, lower slowly. Keep elbows close to your head.', cueClass:'cue-blue' },
+          { code:'LR', cat:'cat-upper', name:'Lateral Raise', detail:'2 × 12 reps · very light DB', muscles:'Shoulders', cue:'Arms slightly bent, raise to shoulder height only. Go lighter than you think — this is shoulder health, not ego work.', cueClass:'cue-blue' },
         ]
       },
       {

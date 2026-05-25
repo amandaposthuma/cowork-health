@@ -282,6 +282,8 @@ const ICON_MAP = {
   'CPZ':'stretch','SPF':'stretch','MST':'stretch','HFS':'hip-flexor',
   // Pilates hip
   'CL':'clamshell','SLL':'hip-abduction','SLGB':'glute-bridge',
+  // Machines
+  'LGP':'squat','HCC':'hinge','ADM':'band-walk','ABM':'band-walk',
   // Balance
   'SLB':'step-down','SHA':'hip-abduction',
   // Mobility / stretch
@@ -330,6 +332,16 @@ const WORKOUTS = {
           { code:'SU', cat:'cat-lower', name:'Step-Up', detail:'3 × 10 each leg · low box', muscles:'Glutes · quads · hip bone', cue:'Press through the heel of your working foot. Single-leg weight-bearing is excellent for hip bone density — one of the key sites with osteopenia.' },
           { code:'RD', cat:'cat-lower', name:'Romanian Deadlift', detail:'3 × 12 reps · KB or DB', muscles:'Hamstrings · glutes', cue:'Hinge from hips, soft knees, long spine. Feel the hamstrings load.' },
           { code:'LBW', cat:'cat-pt', name:'Lateral Band Walk', detail:'2 × 15 steps each way', muscles:'Hip abductors · glutes', cue:'Toes forward, slight squat sit. Hip health for the pickleball court.', cueClass:'cue-purple' },
+        ]
+      },
+      {
+        name:'MACHINES', color:'clr-green', badge:'2–3 rounds · 60 sec rest',
+        desc:'Use the machines in whatever order they\'re free. Adjust the seat before each set.',
+        exercises:[
+          { code:'LGP', cat:'cat-lower', name:'Leg Press', detail:'3 × 12 reps · moderate weight', muscles:'Quads · glutes · hamstrings', cue:'Feet hip-width on the platform, toes slightly out. Press through the whole foot. Don\'t lock your knees at the top.', cueClass:'cue-purple' },
+          { code:'HCC', cat:'cat-lower', name:'Seated Leg Curl', detail:'3 × 12 reps', muscles:'Hamstrings', cue:'Pull the pad down smoothly, then let it rise slowly — the slow return is where you get stronger.', cueClass:'cue-purple' },
+          { code:'ADM', cat:'cat-pt', name:'Adductor Machine (Inner Thigh)', detail:'3 × 15 reps · light-moderate', muscles:'Inner thighs · groin', cue:'Sit tall. Squeeze knees together slowly, hold 1 sec, release slowly. Inner thigh strength protects knees on court.', cueClass:'cue-purple' },
+          { code:'ABM', cat:'cat-pt', name:'Abductor Machine (Outer Hip)', detail:'3 × 15 reps · light-moderate', muscles:'Outer hips · glutes', cue:'Push outward with control. This is your lateral stability — key for quick pickleball footwork.', cueClass:'cue-purple' },
         ]
       },
       {
