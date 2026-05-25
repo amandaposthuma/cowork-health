@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#7B2FBE">
+<title>Anne's Plan</title>
+<link rel="manifest" href="anne-manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Anne's Plan">
+<link rel="apple-touch-icon" href="anne-icon.svg">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0F2F7;
+  --surface:#FFFFFF;
+  --surface2:#F6F7FB;
+  --surface3:#ECEEF5;
+  --border:#E4E6EF;
+  --border2:#CDD0DF;
+  --green:#00A878;--green-light:#E5F7F2;--green-dark:#007A58;
+  --blue:#4361EE;--blue-light:#EEF1FD;
+  --orange:#F4831F;--orange-light:#FEF3E8;
+  --red:#E63946;--red-light:#FDECEE;
+  --cyan:#0096C7;--cyan-light:#E5F4FA;
+  --purple:#7B2FBE;--purple-light:#F3E8FA;
+  --yellow:#C18A00;--yellow-light:#FDF6E3;
+  --text:#111827;--text-muted:#6B7280;--text-dim:#9CA3AF;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-x:hidden}
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto}
+
+/* HEADER */
+#header{padding:20px 20px 0;position:sticky;top:0;background:var(--bg);z-index:100;border-bottom:1px solid transparent;transition:border-color .3s}
+#header.scrolled{border-color:var(--border)}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.phase-chip{background:var(--purple-light);color:var(--purple);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1px solid rgba(123,47,190,.25)}
+.season-chip{color:var(--text-muted);font-size:12px;font-weight:500}
+#header h1{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px}
+#header .date-line{font-size:13px;color:var(--text-muted);margin-bottom:16px}
+
+/* DAY STRIP */
+#day-strip{display:flex;gap:6px;padding:0 20px 16px;overflow-x:auto;scrollbar-width:none}
+#day-strip::-webkit-scrollbar{display:none}
+.day-btn{flex-shrink:0;width:52px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.day-btn:hover{border-color:var(--border2);background:var(--surface2)}
+.day-btn.active{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 4px 12px rgba(0,168,120,.3)}
+.day-btn.active.is-pilates{background:var(--purple);border-color:var(--purple);box-shadow:0 4px 12px rgba(123,47,190,.3)}
+.day-btn.active.is-strength{background:var(--orange);border-color:var(--orange);box-shadow:0 4px 12px rgba(244,131,31,.3)}
+.day-btn.active.is-rest{background:var(--text-dim);border-color:var(--text-dim);box-shadow:none}
+.day-btn.today:not(.active){border-color:var(--green);background:var(--green-light)}
+.day-btn.today.is-pilates:not(.active){border-color:var(--purple);background:var(--purple-light)}
+.day-btn.today.is-strength:not(.active){border-color:var(--orange);background:var(--orange-light)}
+.day-name{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:inherit}
+.day-num{font-size:18px;font-weight:800;color:inherit}
+.day-dots{display:flex;gap:2px;height:6px;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%}
+.dot.pickle{background:var(--green)}
+.dot.pilates{background:var(--purple)}
+.dot.strength{background:var(--orange)}
+.dot.rest{background:transparent}
+
+/* CONTENT */
+#content{flex:1;padding:0 16px 100px}
+.section-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);padding:16px 4px 8px}
+
+/* WORKOUT CARDS */
+.workout-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;margin-bottom:12px;overflow:hidden;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.workout-card.expanded{border-color:var(--border2);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.card-header{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer;user-select:none}
+.card-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.card-icon.pickle-icon{background:var(--green-light)}
+.card-icon.pilates-icon{background:var(--purple-light)}
+.card-icon.strength-icon{background:var(--orange-light)}
+.card-meta{flex:1;min-width:0}
+.card-title{font-size:16px;font-weight:700;letter-spacing:-.2px;color:var(--text)}
+.card-sub{font-size:13px;color:var(--text-muted);margin-top:1px}
+.card-chevron{color:var(--text-dim);font-size:20px;font-weight:300;transition:transform .2s;flex-shrink:0}
+.workout-card.expanded .card-chevron{transform:rotate(90deg)}
+.card-body{padding:0 16px 16px;display:none}
+.workout-card.expanded .card-body{display:block}
+
+/* JOINT CHECK */
+.joint-banner{background:var(--yellow-light);border:1.5px solid rgba(193,138,0,.25);border-radius:14px;padding:12px 16px;margin-bottom:12px}
+.joint-banner-top{display:flex;gap:10px;align-items:flex-start}
+.joint-banner-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.joint-banner-text h4{font-size:14px;font-weight:700;color:var(--yellow);margin-bottom:2px}
+.joint-banner-text p{font-size:12px;color:var(--text-muted);line-height:1.4}
+.joint-inputs{display:flex;gap:8px;margin-top:8px}
+.joint-input-group{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;display:flex;flex-direction:column;gap:2px;cursor:pointer;transition:border-color .15s}
+.joint-input-group:hover{border-color:var(--border2)}
+.joint-input-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.joint-score{font-size:20px;font-weight:800;color:var(--text);padding:2px 0}
+.joint-score.ok{color:var(--green)}
+.joint-score.caution{color:var(--yellow)}
+.joint-score.warning{color:var(--red)}
+
+/* BLOCKS */
+.block-section{border-radius:14px;overflow:hidden;margin-bottom:12px}
+.block-section-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:12px 12px 0 0}
+.block-section-header.clr-blue{background:var(--blue);color:#fff}
+.block-section-header.clr-orange{background:var(--orange);color:#fff}
+.block-section-header.clr-cyan{background:var(--cyan);color:#fff}
+.block-section-header.clr-green{background:var(--green);color:#fff}
+.block-section-header.clr-purple{background:var(--purple);color:#fff}
+.block-section-header.clr-gray{background:var(--surface3);color:var(--text-muted)}
+.block-part-name{font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.block-repeat-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.25);backdrop-filter:blur(4px)}
+.block-repeat-badge.dark{background:rgba(0,0,0,.08);color:var(--text-muted)}
+.block-section-body{background:var(--surface2);border-radius:0 0 12px 12px;padding:8px}
+.block-desc{font-size:12px;color:var(--text-muted);padding:8px 4px 4px;line-height:1.4;font-style:italic}
+
+/* EXERCISE ROW */
+.exercise-list{display:flex;flex-direction:column;gap:6px}
+.exercise-row{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border-radius:10px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.ex-icon-wrap{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.ex-icon-wrap.cat-pt{background:var(--red-light)}
+.ex-icon-wrap.cat-lower{background:var(--orange-light)}
+.ex-icon-wrap.cat-upper{background:var(--blue-light)}
+.ex-icon-wrap.cat-core{background:var(--cyan-light)}
+.ex-icon-wrap.cat-mob{background:var(--purple-light)}
+.ex-icon-wrap.cat-full{background:var(--yellow-light)}
+.ex-icon-wrap svg{width:32px;height:32px}
+.ex-icon-wrap.cat-pt svg{color:var(--red)}
+.ex-icon-wrap.cat-lower svg{color:var(--orange)}
+.ex-icon-wrap.cat-upper svg{color:var(--blue)}
+.ex-icon-wrap.cat-core svg{color:var(--cyan)}
+.ex-icon-wrap.cat-mob svg{color:var(--purple)}
+.ex-icon-wrap.cat-full svg{color:var(--yellow)}
+.exercise-info{flex:1;min-width:0}
+.exercise-name{font-size:14px;font-weight:600;letter-spacing:-.1px;color:var(--text)}
+.exercise-meta{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap}
+.ex-muscle-tag{font-size:11px;color:var(--text-muted)}
+.exercise-detail{font-size:13px;font-weight:700;color:var(--text);margin-top:2px}
+.exercise-check{width:26px;height:26px;border-radius:8px;border:2px solid var(--border2);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.exercise-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.exercise-check svg{width:13px;height:13px;opacity:0;transition:opacity .15s}
+.exercise-check.done svg{opacity:1}
+.cue-text{font-size:12px;color:#3D9A76;font-style:italic;padding:4px 0 0;line-height:1.4;border-left:2px solid var(--green-light);padding-left:8px;margin-top:4px}
+.cue-text.cue-purple{color:var(--purple);border-left-color:var(--purple-light)}
+.cue-text.cue-warning{color:var(--red);border-left-color:var(--red-light)}
+
+/* COMPLETE BUTTON */
+.complete-btn{width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;letter-spacing:.3px;cursor:pointer;margin-top:14px;transition:all .15s}
+.complete-btn.done{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(0,168,120,.25)}
+.complete-btn.not-done{background:var(--surface3);color:var(--text-muted);border:1.5px solid var(--border)}
+
+/* WORKOUT TIMER */
+.workout-timer-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.wtimer-icon{font-size:26px;flex-shrink:0}
+.wtimer-info{flex:1}
+.wtimer-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:1px}
+.wtimer-time{font-size:26px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1}
+.wtimer-running .wtimer-time{color:var(--purple)}
+.wtimer-btns{display:flex;gap:6px;flex-shrink:0}
+.wtimer-btn{padding:7px 13px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.wtimer-btn.start{background:var(--purple);color:#fff}
+.wtimer-btn.pause{background:var(--orange);color:#fff}
+.wtimer-btn.reset{background:var(--surface3);color:var(--text-muted);border:1.5px solid var(--border)}
+
+/* REST DAY */
+.rest-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:24px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.rest-emoji{font-size:48px;margin-bottom:12px}
+.rest-card h3{font-size:18px;font-weight:800;margin-bottom:6px;color:var(--text)}
+.rest-card p{font-size:14px;color:var(--text-muted);line-height:1.5}
+
+/* BOTTOM NAV */
+#bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 max(8px,env(safe-area-inset-bottom));display:flex;justify-content:space-around;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;cursor:pointer;color:var(--text-dim);transition:color .15s;border:none;background:none;font-family:inherit}
+.nav-btn.active{color:var(--purple)}
+.nav-icon{font-size:20px}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:.3px}
+
+/* VIEWS */
+.view{display:none}
+.view.active{display:block}
+
+/* PLAN VIEW */
+.plan-week{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.plan-week-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.plan-week-title{font-size:15px;font-weight:700;color:var(--text)}
+.plan-week-status{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px}
+.status-active{background:var(--purple-light);color:var(--purple)}
+.status-upcoming{background:var(--surface3);color:var(--text-muted)}
+.plan-week-body{padding:12px 16px;display:none}
+.plan-week.expanded .plan-week-body{display:block}
+.plan-day-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:center}
+.plan-day-row:last-child{border-bottom:none}
+.plan-day-name{width:32px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.plan-day-workout{flex:1;color:var(--text)}
+.plan-day-type{display:flex;gap:4px;flex-shrink:0}
+.type-tag{font-size:9px;font-weight:800;padding:2px 5px;border-radius:5px;text-transform:uppercase;letter-spacing:.5px}
+.tag-pickle{background:var(--green-light);color:var(--green-dark)}
+.tag-pilates{background:var(--purple-light);color:var(--purple)}
+.tag-strength{background:var(--orange-light);color:var(--orange)}
+.tag-rest{background:var(--surface3);color:var(--text-dim)}
+
+/* BONE HEALTH BANNER */
+.bone-banner{background:#FFF8E7;border:1.5px solid rgba(193,138,0,.3);border-radius:14px;padding:12px 16px;margin-bottom:12px}
+.bone-banner-top{display:flex;gap:10px;align-items:flex-start}
+.bone-banner-icon{font-size:20px;flex-shrink:0}
+.bone-banner-text h4{font-size:13px;font-weight:700;color:#92650A;margin-bottom:3px}
+.bone-banner-text p{font-size:12px;color:var(--text-muted);line-height:1.5}
+.bone-tip{display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--text-muted);margin-top:6px;padding:7px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);line-height:1.4}
+.bone-tip strong{color:#92650A}
+
+/* PROGRESSION CARD */
+.progress-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.progress-card h3{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.progress-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)}
+.progress-item:last-child{border-bottom:none}
+.progress-week-label{font-size:12px;font-weight:700;color:var(--purple);width:52px;flex-shrink:0;padding-top:1px}
+.progress-note{font-size:13px;color:var(--text-muted);flex:1;line-height:1.4}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <div class="header-top">
+      <div class="phase-chip">Active Season</div>
+      <div class="season-chip">🏓 Pickleball + Pilates</div>
+    </div>
+    <h1>Anne's Plan</h1>
+    <div class="date-line" id="date-line"></div>
+  </div>
+
+  <div id="day-strip"></div>
+
+  <div id="content">
+    <div id="view-today" class="view active"></div>
+    <div id="view-plan" class="view"></div>
+  </div>
+
+  <nav id="bottom-nav">
+    <button class="nav-btn active" onclick="switchView('today')" id="nav-today">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">TODAY</span>
+    </button>
+    <button class="nav-btn" onclick="switchView('plan')" id="nav-plan">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">PLAN</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+/* ─── SVG ICONS ─── */
+const SVGS = {
+  'run':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="7" r="3.5" fill="currentColor" stroke="none"/><line x1="24" y1="11" x2="20" y2="22"/><line x1="22" y1="15" x2="30" y2="20"/><line x1="22" y1="15" x2="14" y2="10"/><line x1="20" y1="22" x2="26" y2="16"/><line x1="26" y1="16" x2="33" y2="26"/><line x1="20" y1="22" x2="13" y2="32"/><line x1="13" y1="32" x2="9" y2="37"/></svg>`,
+  'bench':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="28" x2="36" y2="28" stroke-width="3" opacity="0.2"/><circle cx="8" cy="23" r="3" fill="currentColor" stroke="none"/><line x1="11" y1="23" x2="29" y2="23"/><line x1="16" y1="23" x2="14" y2="14"/><line x1="24" y1="23" x2="26" y2="14"/><line x1="10" y1="14" x2="30" y2="14" stroke-width="2.2"/><line x1="6" y1="14" x2="10" y2="14"/><line x1="30" y1="14" x2="34" y2="14"/></svg>`,
+  'row':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="31" cy="9" r="3.5" fill="currentColor" stroke="none"/><line x1="28" y1="12" x2="11" y2="20"/><line x1="11" y1="20" x2="12" y2="33"/><line x1="11" y1="20" x2="9" y2="33"/><line x1="25" y1="16" x2="18" y2="24"/><line x1="18" y1="24" x2="12" y2="29"/><circle cx="11" cy="31" r="3" stroke-width="2"/></svg>`,
+  'lateral-raise':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="7" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="11" x2="20" y2="24"/><line x1="20" y1="16" x2="6" y2="22"/><line x1="20" y1="16" x2="34" y2="22"/><circle cx="5" cy="23" r="2"/><circle cx="35" cy="23" r="2"/><line x1="20" y1="24" x2="14" y2="36"/><line x1="20" y1="24" x2="26" y2="36"/></svg>`,
+  'face-pull':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="35" y1="5" x2="35" y2="35" stroke-width="3" opacity="0.2"/><circle cx="13" cy="14" r="3.5" fill="currentColor" stroke="none"/><line x1="16" y1="13" x2="26" y2="18"/><line x1="26" y1="18" x2="35" y2="16"/><line x1="26" y1="18" x2="35" y2="20"/><line x1="16" y1="17" x2="13" y2="28"/><line x1="13" y1="28" x2="7" y2="36"/><line x1="13" y1="28" x2="19" y2="36"/></svg>`,
+  'shoulder-press':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="12" x2="20" y2="24"/><line x1="20" y1="15" x2="10" y2="10"/><line x1="10" y1="10" x2="6" y2="13"/><line x1="20" y1="15" x2="30" y2="10"/><line x1="30" y1="10" x2="34" y2="13"/><line x1="5" y1="13" x2="35" y2="13" stroke-width="2"/><line x1="20" y1="24" x2="14" y2="36"/><line x1="20" y1="24" x2="26" y2="36"/></svg>`,
+  'squat':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="5" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="9" x2="18" y2="21"/><line x1="18" y1="14" x2="10" y2="12"/><line x1="18" y1="14" x2="26" y2="12"/><line x1="18" y1="21" x2="9" y2="33"/><line x1="9" y1="33" x2="5" y2="26"/><line x1="18" y1="21" x2="27" y2="33"/><line x1="27" y1="33" x2="31" y2="26"/><line x1="4" y1="37" x2="36" y2="37" stroke-width="1" opacity="0.2"/></svg>`,
+  'step-down':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="28" x2="38" y2="28" stroke-width="3" opacity="0.25"/><circle cx="18" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="18" y1="12" x2="18" y2="24"/><line x1="18" y1="17" x2="12" y2="21"/><line x1="18" y1="17" x2="24" y2="21"/><line x1="18" y1="24" x2="14" y2="28"/><line x1="18" y1="24" x2="28" y2="36"/></svg>`,
+  'hinge':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="31" cy="9" r="3.5" fill="currentColor" stroke="none"/><line x1="28" y1="12" x2="8" y2="19"/><line x1="8" y1="19" x2="10" y2="34"/><line x1="8" y1="19" x2="6" y2="32"/><line x1="26" y1="16" x2="20" y2="26"/><line x1="20" y1="16" x2="15" y2="26"/><line x1="4" y1="36" x2="16" y2="36" stroke-width="1" opacity="0.2"/></svg>`,
+  'glute-bridge':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="36" x2="36" y2="36" opacity="0.2"/><circle cx="7" cy="29" r="3" fill="currentColor" stroke="none"/><line x1="10" y1="28" x2="24" y2="16"/><line x1="24" y1="16" x2="35" y2="25"/><line x1="35" y1="25" x2="35" y2="34"/><line x1="5" y1="33" x2="10" y2="28"/><line x1="8" y1="36" x2="36" y2="36" stroke-width="2" opacity="0.3"/></svg>`,
+  'clamshell':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="36" x2="36" y2="36" opacity="0.2"/><circle cx="9" cy="20" r="3" fill="currentColor" stroke="none"/><line x1="12" y1="20" x2="26" y2="23"/><line x1="26" y1="23" x2="31" y2="34"/><line x1="26" y1="23" x2="22" y2="13"/><line x1="22" y1="13" x2="15" y2="14"/></svg>`,
+  'hip-abduction':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="7" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="11" x2="20" y2="22"/><line x1="20" y1="16" x2="12" y2="20"/><line x1="20" y1="16" x2="28" y2="20"/><line x1="20" y1="22" x2="16" y2="36"/><line x1="20" y1="22" x2="36" y2="32"/><line x1="36" y1="32" x2="38" y2="37"/></svg>`,
+  'band-walk':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="12" x2="20" y2="24"/><line x1="20" y1="16" x2="12" y2="20"/><line x1="20" y1="16" x2="28" y2="20"/><line x1="20" y1="24" x2="12" y2="36"/><line x1="20" y1="24" x2="28" y2="36"/><path d="M12 31 Q20 27 28 31" fill="none" stroke-dasharray="2,2"/></svg>`,
+  'plank':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="20" r="3" fill="currentColor" stroke="none"/><line x1="11" y1="20" x2="32" y2="18"/><line x1="11" y1="20" x2="8" y2="29"/><line x1="8" y1="29" x2="15" y2="29"/><line x1="32" y1="18" x2="36" y2="24"/><line x1="36" y1="24" x2="36" y2="30"/></svg>`,
+  'dead-bug':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="36" x2="36" y2="36" opacity="0.15"/><circle cx="20" cy="26" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="22" x2="20" y2="11"/><line x1="20" y1="18" x2="8" y2="14"/><line x1="8" y1="14" x2="4" y2="20"/><line x1="20" y1="18" x2="32" y2="24"/><line x1="32" y1="24" x2="36" y2="18"/></svg>`,
+  'bird-dog':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="3" fill="currentColor" stroke="none"/><line x1="13" y1="14" x2="28" y2="14"/><line x1="16" y1="14" x2="14" y2="23"/><line x1="14" y1="23" x2="14" y2="30"/><line x1="26" y1="14" x2="28" y2="23"/><line x1="28" y1="23" x2="28" y2="30"/><line x1="13" y1="14" x2="4" y2="9"/><line x1="28" y1="14" x2="38" y2="19"/></svg>`,
+  'pallof':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="35" y1="4" x2="35" y2="36" stroke-width="3" opacity="0.2"/><circle cx="14" cy="16" r="3.5" fill="currentColor" stroke="none"/><line x1="17" y1="16" x2="28" y2="16"/><line x1="28" y1="16" x2="35" y2="16"/><line x1="17" y1="20" x2="14" y2="30"/><line x1="14" y1="30" x2="8" y2="38"/><line x1="14" y1="30" x2="20" y2="38"/></svg>`,
+  'calf-raise':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="6" r="3.5" fill="currentColor" stroke="none"/><line x1="20" y1="10" x2="20" y2="24"/><line x1="20" y1="16" x2="12" y2="19"/><line x1="20" y1="16" x2="28" y2="19"/><line x1="20" y1="24" x2="15" y2="32"/><line x1="15" y1="32" x2="13" y2="27"/><line x1="20" y1="24" x2="25" y2="32"/><line x1="25" y1="32" x2="27" y2="27"/></svg>`,
+  'stretch':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="19" y1="12" x2="15" y2="26"/><line x1="19" y1="17" x2="9" y2="13"/><line x1="19" y1="17" x2="32" y2="20"/><line x1="15" y1="26" x2="7" y2="34"/><line x1="15" y1="26" x2="27" y2="22"/><line x1="27" y1="22" x2="33" y2="30"/></svg>`,
+  'hip-flexor':`<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="8" r="3.5" fill="currentColor" stroke="none"/><line x1="18" y1="12" x2="20" y2="22"/><line x1="18" y1="17" x2="10" y2="14"/><line x1="18" y1="17" x2="26" y2="14"/><line x1="20" y1="22" x2="30" y2="30"/><line x1="30" y1="30" x2="36" y2="38"/><line x1="20" y1="22" x2="12" y2="30"/><line x1="12" y1="30" x2="12" y2="38"/></svg>`,
+};
+
+const ICON_MAP = {
+  // Strength lower
+  'GS':'squat','SU':'step-down','RD':'hinge','LBW':'band-walk',
+  'GB':'glute-bridge','CR':'calf-raise',
+  // Strength upper
+  'SBR':'row','FP':'face-pull','LR':'lateral-raise','SP':'shoulder-press',
+  // Core
+  'DB':'dead-bug','BD':'bird-dog','PL':'plank','PP':'pallof',
+  // Pilates
+  'PC':'glute-bridge','SLS':'stretch','SWN':'stretch','CCW':'stretch',
+  'CPZ':'stretch','SPF':'stretch','MST':'stretch','HFS':'hip-flexor',
+  // Pilates hip
+  'CL':'clamshell','SLL':'hip-abduction','SLGB':'glute-bridge',
+  // Balance
+  'SLB':'step-down','SHA':'hip-abduction',
+  // Mobility / stretch
+  'F4S':'stretch','HMS':'stretch','COW':'stretch','HCI':'hip-flexor',
+  // Pickleball
+  'ACR':'lateral-raise','LSH':'band-walk','WCI':'stretch',
+  'WST':'stretch','SCB':'stretch','CAW':'calf-raise','MPL':'run',
+};
+
+function getIcon(code, cat) {
+  const key = ICON_MAP[code] || 'stretch';
+  return SVGS[key] || SVGS['stretch'];
+}
+
+/* ─── SCHEDULE ─── */
+const SCHEDULE = {
+  1:{ type:'strength', id:'strength-a', label:'Strength A', emoji:'🏋️', sub:'Lower Body · ~45 min' },
+  2:{ type:'pickleball', id:'pickleball', label:'Pickleball', emoji:'🏓', sub:'60–90 min on court' },
+  3:{ type:'pilates', id:'pilates-a', label:'Pilates A', emoji:'🧘', sub:'Core & Spine · ~40 min' },
+  4:{ type:'pilates', id:'pilates-b', label:'Pilates B', emoji:'🧘', sub:'Balance & Hips · ~40 min' },
+  5:{ type:'strength', id:'strength-b', label:'Strength B', emoji:'🏋️', sub:'Upper Body + Full · ~45 min' },
+  6:{ type:'pickleball', id:'pickleball', label:'Pickleball', emoji:'🏓', sub:'60–90 min on court' },
+  0:{ type:'rest', id:'rest', label:'Rest Day', emoji:'💤', sub:'' }
+};
+
+/* ─── WORKOUT DATA ─── */
+const WORKOUTS = {
+  'strength-a': {
+    title:'Lower Body Strength',
+    sub:'Monday · ~45 min',
+    iconClass:'strength-icon',
+    emoji:'🏋️',
+    blocks:[
+      {
+        name:'WARM-UP', color:'clr-gray', badge:'2 rounds', badgeDark:true,
+        exercises:[
+          { code:'GB', cat:'cat-lower', name:'Glute Bridge', detail:'2 × 15 reps', muscles:'Glutes · hips', cue:'Drive through heels. Wakes up your glutes before loading.' },
+          { code:'HCI', cat:'cat-mob', name:'Hip Circles', detail:'2 × 10 each direction', muscles:'Hips · mobility', cue:'Big slow circles. One direction, then the other.', cueClass:'cue-purple' },
+          { code:'CR', cat:'cat-pt', name:'Heel Drops', detail:'2 × 20 reps · standing', muscles:'Bone loading signal · calves', cue:'Stand tall, rise slightly onto toes, then firmly lower heels to the floor. The gentle impact tells your bones to get stronger — one of the best exercises for osteopenia.' },
+        ]
+      },
+      {
+        name:'LOWER BODY', color:'clr-orange', badge:'3 rounds · 60 sec rest',
+        exercises:[
+          { code:'GS', cat:'cat-lower', name:'Goblet Squat', detail:'3 × 12 reps · light KB', muscles:'Quads · glutes', cue:'Chest up, elbows inside knees. Go only as deep as comfortable.' },
+          { code:'SU', cat:'cat-lower', name:'Step-Up', detail:'3 × 10 each leg · low box', muscles:'Glutes · quads · hip bone', cue:'Press through the heel of your working foot. Single-leg weight-bearing is excellent for hip bone density — one of the key sites with osteopenia.' },
+          { code:'RD', cat:'cat-lower', name:'Romanian Deadlift', detail:'3 × 12 reps · KB or DB', muscles:'Hamstrings · glutes', cue:'Hinge from hips, soft knees, long spine. Feel the hamstrings load.' },
+          { code:'LBW', cat:'cat-pt', name:'Lateral Band Walk', detail:'2 × 15 steps each way', muscles:'Hip abductors · glutes', cue:'Toes forward, slight squat sit. Hip health for the pickleball court.', cueClass:'cue-purple' },
+        ]
+      },
+      {
+        name:'CORE', color:'clr-cyan', badge:'2 rounds',
+        exercises:[
+          { code:'DB', cat:'cat-core', name:'Dead Bug', detail:'2 × 8 each side', muscles:'Deep core · stability', cue:'Press low back into the floor. Exhale as limbs extend. Slow is better.' },
+          { code:'BD', cat:'cat-core', name:'Bird Dog', detail:'2 × 8 each side', muscles:'Core · balance', cue:'Hips stay level. Reach long through arm and leg. No arching.' },
+          { code:'PL', cat:'cat-core', name:'Plank', detail:'2 × 20–30 sec', muscles:'Core · shoulders', cue:'Knees-down version is totally fine. Build duration gradually over weeks.', cueClass:'cue-purple' },
+        ]
+      }
+    ]
+  },
+
+  'strength-b': {
+    title:'Upper Body + Full Body',
+    sub:'Friday · ~45 min',
+    iconClass:'strength-icon',
+    emoji:'🏋️',
+    blocks:[
+      {
+        name:'UPPER PULL', color:'clr-blue', badge:'3 rounds · 60 sec rest',
+        exercises:[
+          { code:'SBR', cat:'cat-upper', name:'Seated Band Row', detail:'3 × 12 reps · band', muscles:'Back · rear delts', cue:'Squeeze shoulder blades together at the back. No shrugging.' },
+          { code:'FP', cat:'cat-upper', name:'Face Pull', detail:'3 × 15 reps · band', muscles:'Rotator cuff · rear delts', cue:'Pull to nose height. Essential for healthy shoulders after paddle swings.', cueClass:'cue-purple' },
+          { code:'LR', cat:'cat-upper', name:'Lateral Raise', detail:'3 × 12 reps · very light', muscles:'Shoulders', cue:'Light weight only. Slow and controlled. Stop if any shoulder pain.' },
+        ]
+      },
+      {
+        name:'LOWER + CORE', color:'clr-orange', badge:'3 rounds',
+        exercises:[
+          { code:'GB', cat:'cat-lower', name:'Glute Bridge', detail:'3 × 15 reps', muscles:'Glutes · hips', cue:'Drive through both heels. 1-second hold at the top. Protects your knees.' },
+          { code:'CR', cat:'cat-lower', name:'Calf Raise', detail:'3 × 15 reps', muscles:'Calves · ankle stability', cue:'Slow down phase. Ankle stability for fast lateral moves on court.', cueClass:'cue-purple' },
+          { code:'PP', cat:'cat-core', name:'Pallof Press', detail:'2 × 10 each side · band', muscles:'Anti-rotation core', cue:'Resist the pull — that\'s the point. Exhale as you press out.' },
+        ]
+      },
+      {
+        name:'UPPER PUSH', color:'clr-blue', badge:'2–3 rounds',
+        exercises:[
+          { code:'SP', cat:'cat-upper', name:'Shoulder Press', detail:'2–3 × 10 reps · light DB', muscles:'Shoulders · triceps', cue:'Neutral grip (palms face each other). Light weight only. Build very gradually.', cueClass:'cue-warning' },
+        ]
+      },
+      {
+        name:'COOL DOWN + BONE LOADING', color:'clr-gray', badge:'Hold each', badgeDark:true,
+        exercises:[
+          { code:'CR', cat:'cat-pt', name:'Heel Drops', detail:'2 × 20 reps · finish with these', muscles:'Bone loading · calves', cue:'Rise slightly, then firmly drop heels. The axial loading signal is most effective when muscles are warm. End every strength session with these.' },
+          { code:'HFS', cat:'cat-mob', name:'Hip Flexor Stretch', detail:'45 sec each side', muscles:'Hip flexors', cue:'Lunge position, sink forward and breathe.', cueClass:'cue-purple' },
+          { code:'COW', cat:'cat-mob', name:'Chest Opener Stretch', detail:'30 sec each arm', muscles:'Chest · front shoulder', cue:'Counteracts the paddle motion. Arm on wall, rotate gently away.', cueClass:'cue-purple' },
+        ]
+      }
+    ]
+  },
+
+  'pilates-a': {
+    title:'Core & Spine Pilates',
+    sub:'Wednesday · ~40 min',
+    iconClass:'pilates-icon',
+    emoji:'🧘',
+    blocks:[
+      {
+        name:'FOUNDATION', color:'clr-purple', badge:'Continuous flow',
+        exercises:[
+          { code:'PC', cat:'cat-mob', name:'Breathing + Imprint', detail:'5 deep breaths', muscles:'Spine · core activation', cue:'Soften your ribs down. Feel the length of your spine. This is your center.', cueClass:'cue-purple' },
+          { code:'PC', cat:'cat-mob', name:'Pelvic Curl', detail:'10 reps', muscles:'Spine · glutes', cue:'Peel one vertebra at a time off the mat. Articulate slowly — never rush.', cueClass:'cue-purple' },
+          { code:'SLS', cat:'cat-mob', name:'Single Leg Stretch', detail:'10 each side', muscles:'Core · hip flexors', cue:'Navel to spine. Head lifted but relaxed. Legs are the pendulum — core stays still.', cueClass:'cue-purple' },
+          { code:'DB', cat:'cat-core', name:'Dead Bug (Pilates)', detail:'8 each side', muscles:'Deep core', cue:'Exhale as you extend. Imprint stays. This is your powerhouse.', cueClass:'cue-purple' },
+        ]
+      },
+      {
+        name:'SPINE EXTENSION', color:'clr-cyan', badge:'2 rounds',
+        exercises:[
+          { code:'SWN', cat:'cat-mob', name:'Swan Prep', detail:'8 reps', muscles:'Spine extension · back', cue:'Lengthen through crown of head. Glutes stay soft — this is a back exercise.', cueClass:'cue-purple' },
+          { code:'CCW', cat:'cat-mob', name:'Cat-Cow', detail:'10 reps', muscles:'Spine mobility', cue:'Breathe into every direction of movement. No rushing.', cueClass:'cue-purple' },
+          { code:'CPZ', cat:'cat-mob', name:'Child\'s Pose', detail:'5 slow breaths', muscles:'Hips · spine', cue:'Rest and reset. Breathe into your lower back.', cueClass:'cue-purple' },
+        ]
+      },
+      {
+        name:'FINISHING', color:'clr-purple', badge:'Hold & breathe',
+        exercises:[
+          { code:'SPF', cat:'cat-mob', name:'Spine Stretch Forward', detail:'8 reps', muscles:'Hamstrings · spine', cue:'Round over your center. Reach beyond your toes.', cueClass:'cue-purple' },
+          { code:'MST', cat:'cat-mob', name:'Mermaid Side Stretch', detail:'6 each side', muscles:'Side body · hips', cue:'Create space in the side ribs. Feel the lateral lengthening.', cueClass:'cue-purple' },
+          { code:'HFS', cat:'cat-mob', name:'Hip Flexor Stretch', detail:'45 sec each side', muscles:'Hip flexors', cue:'Key for pickleball athletes — opens the front of the hip. Sink in and breathe.', cueClass:'cue-purple' },
+        ]
+      }
+    ]
+  },
+
+  'pilates-b': {
+    title:'Balance & Hip Stability',
+    sub:'Thursday · ~40 min',
+    iconClass:'pilates-icon',
+    emoji:'🧘',
+    blocks:[
+      {
+        name:'GROUND WORK', color:'clr-purple', badge:'2 rounds',
+        exercises:[
+          { code:'CL', cat:'cat-pt', name:'Clamshell', detail:'15 each side · band optional', muscles:'Hip abductors · glutes', cue:'Hips stacked. Pelvis stays still — that\'s the whole point. This is your pickleball stability.', cueClass:'cue-purple' },
+          { code:'SLL', cat:'cat-pt', name:'Side-lying Leg Lift', detail:'12 each side', muscles:'Hip abductors', cue:'Reach through your heel. Slow up, slow down. Feel the outer hip working.', cueClass:'cue-purple' },
+          { code:'SLGB', cat:'cat-lower', name:'Single Leg Glute Bridge', detail:'10 each side', muscles:'Glutes · hamstrings', cue:'Strong glutes = stable, protected knees on the court.', cueClass:'cue-purple' },
+        ]
+      },
+      {
+        name:'STANDING BALANCE', color:'clr-green', badge:'2 rounds · focus',
+        exercises:[
+          { code:'SLB', cat:'cat-pt', name:'Single Leg Stand', detail:'30 sec each leg', muscles:'Balance · ankles', cue:'Eyes fixed on one point. Soft knee — don\'t lock. Hold a chair if needed. Build to eyes-closed.', cueClass:'cue-purple' },
+          { code:'SHA', cat:'cat-pt', name:'Standing Hip Abduction', detail:'12 each side · slow', muscles:'Hip abductors · balance', cue:'Control beats height. The slow return is where the real work happens.', cueClass:'cue-purple' },
+        ]
+      },
+      {
+        name:'STRETCH & COOL DOWN', color:'clr-cyan', badge:'Hold each',
+        exercises:[
+          { code:'F4S', cat:'cat-mob', name:'Figure-4 Stretch', detail:'45 sec each side', muscles:'Piriformis · lateral hip', cue:'Critical for pickleball footwork. Lateral hip mobility lets you change direction safely.', cueClass:'cue-purple' },
+          { code:'HMS', cat:'cat-mob', name:'Hamstring Stretch', detail:'45 sec each side', muscles:'Hamstrings', cue:'Slight bend in knee. Never strain into it. Breathe and settle in.', cueClass:'cue-purple' },
+          { code:'COW', cat:'cat-mob', name:'Chest Opener at Wall', detail:'30 sec each arm', muscles:'Chest · front shoulder', cue:'One arm on wall, rotate gently away. Keeps shoulders flexible for overhead shots.', cueClass:'cue-purple' },
+        ]
+      }
+    ]
+  },
+
+  'pickleball': {
+    title:'Pickleball',
+    sub:'60–90 min on court',
+    iconClass:'pickle-icon',
+    emoji:'🏓',
+    blocks:[
+      {
+        name:'PRE-COURT PREP', color:'clr-green', badge:'10–15 min before play',
+        exercises:[
+          { code:'ACR', cat:'cat-pt', name:'Arm Circles + Shoulder Warm-up', detail:'10 each direction', muscles:'Shoulders · rotator cuff', cue:'Never skip this — a cold shoulder at 67 is an injured shoulder.', cueClass:'cue-warning' },
+          { code:'HCI', cat:'cat-mob', name:'Hip Circles', detail:'10 each direction', muscles:'Hips · mobility', cue:'Get those hips moving. You\'ll be pivoting and lunging out there.', cueClass:'cue-purple' },
+          { code:'LSH', cat:'cat-pt', name:'Lateral Shuffle', detail:'3 × 15 sec', muscles:'Lateral hips · ankles', cue:'Light and easy. Prepares your feet for court movement.', cueClass:'cue-purple' },
+          { code:'WCI', cat:'cat-mob', name:'Wrist Circles', detail:'10 each direction', muscles:'Wrists · forearms', cue:'Your paddle grip stresses the forearm. Warm it up before play.', cueClass:'cue-purple' },
+        ]
+      },
+      {
+        name:'PLAY', color:'clr-green', badge:'60–90 min',
+        exercises:[
+          { code:'MPL', cat:'cat-full', name:'Match Play / Drilling', detail:'60–90 min', muscles:'Full body · cardio', cue:'Stay around 7/10 effort. This is your cardio, coordination, and joy. Hydrate every 20 min.' },
+        ],
+        desc:'For 3x/week weeks: make one session drilling only (no full match). Your recovery will thank you.'
+      },
+      {
+        name:'POST-PLAY COOL DOWN', color:'clr-cyan', badge:'Hold each',
+        exercises:[
+          { code:'WST', cat:'cat-mob', name:'Wrist + Forearm Stretch', detail:'30 sec each direction', muscles:'Wrists · forearms', cue:'Both flexion and extension stretch. Your paddle arm worked hard.', cueClass:'cue-purple' },
+          { code:'HFS', cat:'cat-mob', name:'Hip Flexor Stretch', detail:'45 sec each side', muscles:'Hip flexors', cue:'Court movement loads the front of the hip. Always stretch after play.', cueClass:'cue-purple' },
+          { code:'CAW', cat:'cat-mob', name:'Calf Stretch at Wall', detail:'30 sec each · both legs', muscles:'Calves · ankles', cue:'Straight leg AND bent knee — gets both calf muscles.', cueClass:'cue-purple' },
+          { code:'SCB', cat:'cat-mob', name:'Shoulder Cross-Body', detail:'30 sec each arm', muscles:'Posterior shoulder', cue:'Arm across chest, hold at the elbow. Keeps the rotator cuff healthy.', cueClass:'cue-purple' },
+        ]
+      }
+    ]
+  }
+};
+
+/* ─── STATE ─── */
+const TODAY = new Date();
+TODAY.setHours(12,0,0,0);
+let selectedDate = new Date(TODAY);
+let currentView = 'today';
+let timerInterval = null;
+let timerSec = 0;
+let timerRunning = false;
+let completedDays = new Set(JSON.parse(localStorage.getItem('anne_done')||'[]'));
+let completedEx = new Set();
+let jointScores = { knees:0, shoulder:0, hips:0 };
+
+/* ─── HELPERS ─── */
+function dateStr(d){ return d.toISOString().slice(0,10); }
+function fmtDate(d){ return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}); }
+function getMonday(d){ const c=new Date(d); const day=c.getDay(); const diff=c.getDate()-(day===0?6:day-1); c.setDate(diff); return c; }
+function getDow(d){ return d.getDay(); } // 0=Sun,1=Mon,...
+function getSchedule(d){ return SCHEDULE[getDow(d)]; }
+function addDays(d,n){ const c=new Date(d); c.setDate(c.getDate()+n); return c; }
+
+function fmtTimer(s){
+  const m=Math.floor(s/60);
+  const sec=s%60;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+function saveCompleted(){ localStorage.setItem('anne_done',JSON.stringify([...completedDays])); }
+
+/* ─── BUILD DAY STRIP ─── */
+function buildDayStrip(){
+  const strip = document.getElementById('day-strip');
+  strip.innerHTML = '';
+  const mon = getMonday(TODAY);
+  const DAY_NAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  // Show Mon→Sun of current week
+  const weekOrder = [1,2,3,4,5,6,0]; // Mon=1...Sun=0
+  weekOrder.forEach(dow => {
+    const diff = dow === 0 ? 6 : dow - 1;
+    const d = addDays(mon, diff);
+    const sched = SCHEDULE[dow];
+    const isToday = dateStr(d) === dateStr(TODAY);
+    const isSelected = dateStr(d) === dateStr(selectedDate);
+    const isDone = completedDays.has(dateStr(d));
+
+    const btn = document.createElement('button');
+    btn.className = 'day-btn';
+    if(isToday) btn.classList.add('today');
+    if(isSelected) btn.classList.add('active');
+    if(sched.type==='pilates') btn.classList.add('is-pilates');
+    if(sched.type==='strength') btn.classList.add('is-strength');
+    if(sched.type==='rest') btn.classList.add('is-rest');
+
+    const dot = `<span class="dot ${sched.type==='pickleball'?'pickle':sched.type}"></span>`;
+
+    btn.innerHTML = `
+      <span class="day-name">${DAY_NAMES[dow].slice(0,3)}</span>
+      <span class="day-num">${d.getDate()}</span>
+      <div class="day-dots">${isDone?'<span class="dot" style="background:var(--green)"></span>':dot}</div>
+    `;
+    btn.onclick = () => selectDay(d);
+    strip.appendChild(btn);
+  });
+}
+
+function selectDay(d){
+  selectedDate = new Date(d);
+  buildDayStrip();
+  if(currentView==='today') renderToday();
+  updateDateLine();
+}
+
+function updateDateLine(){
+  const dl = document.getElementById('date-line');
+  const isToday = dateStr(selectedDate)===dateStr(TODAY);
+  const isTomorrow = dateStr(selectedDate)===dateStr(addDays(TODAY,1));
+  if(isToday) dl.textContent = 'Today — ' + fmtDate(selectedDate);
+  else if(isTomorrow) dl.textContent = 'Tomorrow — ' + fmtDate(selectedDate);
+  else dl.textContent = fmtDate(selectedDate);
+}
+
+/* ─── RENDER TODAY VIEW ─── */
+function renderToday(){
+  const container = document.getElementById('view-today');
+  const dow = getDow(selectedDate);
+  const sched = SCHEDULE[dow];
+  const ds = dateStr(selectedDate);
+  const isDone = completedDays.has(ds);
+  const isToday = ds === dateStr(TODAY);
+
+  if(sched.type === 'rest'){
+    container.innerHTML = `
+      <p class="section-label">Rest Day</p>
+      <div class="rest-card">
+        <div class="rest-emoji">💤</div>
+        <h3>Recovery Day</h3>
+        <p>Rest is where the gains happen. Let your body absorb the week's work.<br><br>Light walking, gentle stretching, or a leisurely swim is fine — but no structured training today.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const workout = WORKOUTS[sched.id];
+  let html = '';
+
+  // Bone health banner (always on workout days)
+  html += buildBoneBanner(sched.type);
+
+  // Joint check-in (on workout days, today only)
+  if(isToday){
+    html += buildJointBanner();
+  }
+
+  // Timer
+  html += `
+    <p class="section-label">Workout Timer</p>
+    <div class="workout-timer-card" id="wtimer-wrap">
+      <div class="wtimer-icon">⏱</div>
+      <div class="wtimer-info">
+        <div class="wtimer-label">Session Time</div>
+        <div class="wtimer-time" id="wtimer-display">00:00</div>
+      </div>
+      <div class="wtimer-btns">
+        <button class="wtimer-btn start" id="wtimer-start-btn" onclick="timerToggle()">Start</button>
+        <button class="wtimer-btn reset" onclick="timerReset()">Reset</button>
+      </div>
+    </div>
+  `;
+
+  // Workout label
+  html += `<p class="section-label">${sched.label.toUpperCase()}</p>`;
+
+  // Main workout card
+  html += `
+    <div class="workout-card expanded" id="main-workout-card">
+      <div class="card-header" onclick="toggleCard('main-workout-card')">
+        <div class="card-icon ${workout.iconClass}">${workout.emoji}</div>
+        <div class="card-meta">
+          <div class="card-title">${workout.title}</div>
+          <div class="card-sub">${workout.sub}</div>
+        </div>
+        <span class="card-chevron">›</span>
+      </div>
+      <div class="card-body">
+        ${buildBlocks(workout, ds)}
+        <button class="complete-btn ${isDone?'done':'not-done'}" id="complete-btn-${ds}" onclick="toggleComplete('${ds}')">
+          ${isDone ? '✓ Workout Complete!' : 'Mark as Complete'}
+        </button>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+  completedEx = new Set();
+}
+
+function buildBoneBanner(type){
+  const tips = {
+    strength: 'Weight-bearing strength work directly stimulates bone remodeling. Every set counts for bone density — not just muscle.',
+    pilates: 'Pilates here is modified to be spine-safe for osteopenia. Avoid loading the spine in deep flexion outside of class.',
+    pickleball: 'Weight-bearing sport — excellent for bone health. The impact and lateral loading signals your bones to stay strong.'
+  };
+  const tip = tips[type] || '';
+  return `
+    <div class="bone-banner">
+      <div class="bone-banner-top">
+        <div class="bone-banner-icon">🦴</div>
+        <div class="bone-banner-text">
+          <h4>Osteopenia — Bone Health Active</h4>
+          <p>This plan is designed to build bone density. Resistance training, balance work, and weight-bearing activity are your best tools.</p>
+        </div>
+      </div>
+      ${tip ? `<div class="bone-tip"><strong>Today:</strong> ${tip}</div>` : ''}
+    </div>
+  `;
+}
+
+function buildJointBanner(){
+  const s = jointScores;
+  function scoreClass(v){ return v===0?'':v<=3?'ok':v<=6?'caution':'warning'; }
+  function scoreDisplay(v){ return v===0?'–':v; }
+  return `
+    <div class="joint-banner">
+      <div class="joint-banner-top">
+        <div class="joint-banner-icon">🩺</div>
+        <div class="joint-banner-text">
+          <h4>Joint Check-In</h4>
+          <p>How do you feel today? Tap to rate 1–10. Modify if anything is above 5.</p>
+        </div>
+      </div>
+      <div class="joint-inputs">
+        <div class="joint-input-group" onclick="cycleJoint('knees')">
+          <div class="joint-input-label">Knees</div>
+          <div class="joint-score ${scoreClass(s.knees)}" id="joint-knees">${scoreDisplay(s.knees)}</div>
+        </div>
+        <div class="joint-input-group" onclick="cycleJoint('shoulder')">
+          <div class="joint-input-label">Shoulder</div>
+          <div class="joint-score ${scoreClass(s.shoulder)}" id="joint-shoulder">${scoreDisplay(s.shoulder)}</div>
+        </div>
+        <div class="joint-input-group" onclick="cycleJoint('hips')">
+          <div class="joint-input-label">Hips</div>
+          <div class="joint-score ${scoreClass(s.hips)}" id="joint-hips">${scoreDisplay(s.hips)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function buildBlocks(workout, ds){
+  let html = '';
+  workout.blocks.forEach((block, bi) => {
+    html += `
+      <div class="block-section">
+        <div class="block-section-header ${block.color}">
+          <span class="block-part-name">${block.name}</span>
+          <span class="block-repeat-badge ${block.badgeDark?'dark':''}">${block.badge}</span>
+        </div>
+        <div class="block-section-body">
+          ${block.desc?`<div class="block-desc">${block.desc}</div>`:''}
+          <div class="exercise-list">
+            ${block.exercises.map((ex,ei) => buildExRow(ex, `${ds}-${bi}-${ei}`)).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  return html;
+}
+
+function buildExRow(ex, uid){
+  const svg = getIcon(ex.code, ex.cat);
+  const cueClass = ex.cueClass || 'cue-text';
+  return `
+    <div class="exercise-row">
+      <div class="ex-icon-wrap ${ex.cat}">${svg}</div>
+      <div class="exercise-info">
+        <div class="exercise-name">${ex.name}</div>
+        <div class="exercise-meta"><span class="ex-muscle-tag">${ex.muscles}</span></div>
+        <div class="exercise-detail">${ex.detail}</div>
+        ${ex.cue?`<div class="${cueClass==='cue-text'?'cue-text':cueClass}">${ex.cue}</div>`:''}
+      </div>
+      <div class="exercise-check" id="excheck-${uid}" onclick="toggleEx('${uid}')">
+        <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5,10 11,3"/></svg>
+      </div>
+    </div>
+  `;
+}
+
+/* ─── RENDER PLAN VIEW ─── */
+function renderPlan(){
+  const container = document.getElementById('view-plan');
+  const DAYS = [
+    {dow:1,name:'Mon',label:'Strength A',sub:'Lower Body',tag:'strength'},
+    {dow:2,name:'Tue',label:'Pickleball',sub:'60–90 min',tag:'pickle'},
+    {dow:3,name:'Wed',label:'Pilates A',sub:'Core & Spine',tag:'pilates'},
+    {dow:4,name:'Thu',label:'Pilates B',sub:'Balance & Hips',tag:'pilates'},
+    {dow:5,name:'Fri',label:'Strength B',sub:'Upper + Full',tag:'strength'},
+    {dow:6,name:'Sat',label:'Pickleball',sub:'60–90 min',tag:'pickle'},
+    {dow:0,name:'Sun',label:'Rest Day',sub:'Recovery',tag:'rest'},
+  ];
+
+  const dayRows = DAYS.map(d=>`
+    <div class="plan-day-row">
+      <div class="plan-day-name">${d.name}</div>
+      <div class="plan-day-workout">${d.label}<span style="color:var(--text-dim);font-size:12px;margin-left:6px">${d.sub}</span></div>
+      <div class="plan-day-type"><span class="type-tag tag-${d.tag}">${d.tag==='pickle'?'PICKLE':d.tag.toUpperCase()}</span></div>
+    </div>
+  `).join('');
+
+  const progressItems = [
+    { week:'Wk 1–2', note:'Foundation. Learn the movements. Light-to-moderate intensity. Focus on form over reps.' },
+    { week:'Wk 3–4', note:'Build. Add 1–2 reps or a small weight increase to each strength exercise.' },
+    { week:'Wk 5–6', note:'Progression. Add a third strength set where it feels comfortable. Play hard on court.' },
+    { week:'Wk 7–8', note:'Recovery week (every 4th). Drop to 2 sets, lighter weight. Body absorbs the gains.' },
+  ];
+
+  let html = `
+    <p class="section-label">Weekly Template</p>
+    <div class="plan-week expanded">
+      <div class="plan-week-header" onclick="togglePlanWeek(this)">
+        <div class="plan-week-title">Every Week · Repeating</div>
+        <div class="plan-week-status status-active">Active</div>
+      </div>
+      <div class="plan-week-body">
+        ${dayRows}
+      </div>
+    </div>
+
+    <p class="section-label">Progression</p>
+    <div class="progress-card">
+      <h3>How to Progress Over Time</h3>
+      ${progressItems.map(p=>`
+        <div class="progress-item">
+          <div class="progress-week-label">${p.week}</div>
+          <div class="progress-note">${p.note}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <p class="section-label">Key Principles</p>
+    <div class="plan-week expanded">
+      <div class="plan-week-header" onclick="togglePlanWeek(this)">
+        <div class="plan-week-title">Training Guidelines</div>
+        <div class="plan-week-status status-active">Important</div>
+      </div>
+      <div class="plan-week-body">
+        <div class="plan-day-row">
+          <div style="flex:1;font-size:13px;color:var(--text);padding:4px 0">
+            <strong>Pickleball 3rd day:</strong> When playing 3x/week, make one session light drilling only — no full match. Keeps your joints happy.
+          </div>
+        </div>
+        <div class="plan-day-row">
+          <div style="flex:1;font-size:13px;color:var(--text);padding:4px 0">
+            <strong>Pilates is non-negotiable:</strong> Wed + Thu pilates supports everything else — balance, hip stability, and spine health all transfer directly to the court.
+          </div>
+        </div>
+        <div class="plan-day-row">
+          <div style="flex:1;font-size:13px;color:var(--text);padding:4px 0">
+            <strong>Joint check-in:</strong> Rate knees, shoulder, and hips before each session. Anything above 5/10 — reduce load or skip that movement and consult your physio.
+          </div>
+        </div>
+        <div class="plan-day-row">
+          <div style="flex:1;font-size:13px;color:var(--text);padding:4px 0">
+            <strong>Rest day is real:</strong> Sunday is full recovery. Light walking is fine. No structured training.
+          </div>
+        </div>
+        <div class="plan-day-row">
+          <div style="flex:1;font-size:13px;color:var(--text);padding:4px 0">
+            <strong>🦴 Osteopenia — what helps:</strong> Weight-bearing strength (Mon/Fri), heel drops after every strength session, pickleball (impact sport), and walking over biking for leisure cardio. All of this is already built in.
+          </div>
+        </div>
+        <div class="plan-day-row" style="border-bottom:none">
+          <div style="flex:1;font-size:13px;color:var(--text);padding:4px 0">
+            <strong>🦴 Osteopenia — what to avoid:</strong> Excessive spinal flexion under load (e.g. loaded sit-ups, heavy forward bending). The pilates here is modified to be spine-safe. When in doubt, less range of motion is better.
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+/* ─── INTERACTIONS ─── */
+function toggleCard(id){
+  document.getElementById(id).classList.toggle('expanded');
+}
+
+function togglePlanWeek(header){
+  header.closest('.plan-week').classList.toggle('expanded');
+}
+
+function toggleEx(uid){
+  const el = document.getElementById('excheck-'+uid);
+  if(completedEx.has(uid)){ completedEx.delete(uid); el.classList.remove('done'); }
+  else { completedEx.add(uid); el.classList.add('done'); }
+}
+
+function toggleComplete(ds){
+  const btn = document.getElementById('complete-btn-'+ds);
+  if(completedDays.has(ds)){
+    completedDays.delete(ds);
+    btn.className='complete-btn not-done';
+    btn.textContent='Mark as Complete';
+  } else {
+    completedDays.add(ds);
+    btn.className='complete-btn done';
+    btn.textContent='✓ Workout Complete!';
+  }
+  saveCompleted();
+  buildDayStrip();
+}
+
+function cycleJoint(joint){
+  jointScores[joint] = (jointScores[joint] + 1) % 11;
+  const el = document.getElementById('joint-'+joint);
+  const v = jointScores[joint];
+  el.textContent = v === 0 ? '–' : v;
+  el.className = 'joint-score ' + (v===0?'':v<=3?'ok':v<=6?'caution':'warning');
+}
+
+function timerToggle(){
+  if(timerRunning){
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('wtimer-wrap').classList.remove('wtimer-running');
+    document.getElementById('wtimer-start-btn').className='wtimer-btn start';
+    document.getElementById('wtimer-start-btn').textContent='Resume';
+  } else {
+    timerRunning = true;
+    document.getElementById('wtimer-wrap').classList.add('wtimer-running');
+    document.getElementById('wtimer-start-btn').className='wtimer-btn pause';
+    document.getElementById('wtimer-start-btn').textContent='Pause';
+    timerInterval = setInterval(()=>{
+      timerSec++;
+      const el = document.getElementById('wtimer-display');
+      if(el) el.textContent = fmtTimer(timerSec);
+    },1000);
+  }
+}
+
+function timerReset(){
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSec = 0;
+  const wrap = document.getElementById('wtimer-wrap');
+  if(wrap) wrap.classList.remove('wtimer-running');
+  const btn = document.getElementById('wtimer-start-btn');
+  if(btn){ btn.className='wtimer-btn start'; btn.textContent='Start'; }
+  const display = document.getElementById('wtimer-display');
+  if(display) display.textContent='00:00';
+}
+
+function switchView(v){
+  currentView = v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.getElementById('nav-'+v).classList.add('active');
+  if(v==='plan') renderPlan();
+}
+
+/* ─── SCROLL HEADER SHADOW ─── */
+document.getElementById('content').addEventListener('scroll', ()=>{
+  const h = document.getElementById('header');
+  h.classList.toggle('scrolled', document.getElementById('content').scrollTop > 10);
+});
+
+/* ─── INIT ─── */
+function init(){
+  updateDateLine();
+  buildDayStrip();
+  renderToday();
+}
+
+init();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>

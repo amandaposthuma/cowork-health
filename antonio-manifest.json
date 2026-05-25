@@ -1,0 +1,14 @@
+{
+  "name": "Antonio's Training Plan",
+  "short_name": "Antonio's Plan",
+  "description": "Pickleball + Strength + Cardio weekly training plan",
+  "start_url": "./antonio-plan.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F0F2F7",
+  "theme_color": "#4361EE",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "antonio-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

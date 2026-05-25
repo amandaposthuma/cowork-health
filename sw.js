@@ -1,10 +1,16 @@
-const CACHE = 'training-v6';
+const CACHE = 'training-v8';
 const FILES = [
   './training-mgmt.html',
   './workout-plan.html',
   './running-analytics.html',
+  './anne-plan.html',
+  './antonio-plan.html',
   './manifest.json',
+  './anne-manifest.json',
+  './antonio-manifest.json',
   './icon.svg',
+  './anne-icon.svg',
+  './antonio-icon.svg',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'
 ];
 
@@ -22,10 +28,8 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  const isHTML = e.request.destination === 'document' ||
-                 e.request.url.endsWith('.html');
+  const isHTML = e.request.destination === 'document' || e.request.url.endsWith('.html');
   if (isHTML) {
-    // Network-first for HTML: always get the latest, fall back to cache
     e.respondWith(
       fetch(e.request)
         .then(res => {
@@ -36,7 +40,6 @@ self.addEventListener('fetch', e => {
         .catch(() => caches.match(e.request))
     );
   } else {
-    // Cache-first for static assets (icons, chart.js, etc.)
     e.respondWith(
       caches.match(e.request).then(r => r || fetch(e.request).then(res => {
         const clone = res.clone();
