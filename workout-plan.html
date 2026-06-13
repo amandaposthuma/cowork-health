@@ -345,7 +345,7 @@ const ICON_MAP = {
   // New lower
   'RD': 'hinge', 'HT': 'glute-bridge', 'LPR': 'squat', 'WL': 'split-squat',
   // Full body
-  'RR': 'push-up', 'RL': 'split-squat', 'CP': 'curl',
+  'RR': 'push-up', 'RL': 'split-squat', 'CP': 'curl', 'CO': 'plank',
   // Mobility
   'WG': 'stretch', 'BD': 'bird-dog', 'HF': 'hip-flexor', 'TR': 'stretch',
   'HS': 'stretch', 'PP': 'pallof',
@@ -363,174 +363,161 @@ function getExIcon(code, cat) {
 const MARATHON_DATE = new Date('2026-11-01T00:00:00');
 
 const PHASES = [
-  {id:1,name:'Volume Build',shortName:'Volume',dates:'May 4 – Jun 14',start:'2026-05-04',end:'2026-06-14',status:'active'},
-  {id:2,name:'Intensity Build',shortName:'Intensity',dates:'Jun 15 – Aug 2',start:'2026-06-15',end:'2026-08-02',status:'upcoming'},
-  {id:3,name:'Marathon Specific',shortName:'Marathon',dates:'Aug 3 – Oct 11',start:'2026-08-03',end:'2026-10-11',status:'upcoming'},
-  {id:4,name:'Taper',shortName:'Taper',dates:'Oct 12 – Nov 1',start:'2026-10-12',end:'2026-11-01',status:'upcoming'},
+  {id:1,name:'Volume Build',shortName:'Volume',dates:'May 4 – Jul 6',start:'2026-05-04',end:'2026-07-06',status:'active'},
+  {id:2,name:'Intensity Build',shortName:'Intensity',dates:'Jul 7 – Aug 17',start:'2026-07-07',end:'2026-08-17',status:'upcoming'},
+  {id:3,name:'Marathon Specific',shortName:'Marathon',dates:'Aug 18 – Sep 21',start:'2026-08-18',end:'2026-09-21',status:'upcoming'},
+  {id:4,name:'Taper',shortName:'Taper',dates:'Sep 22 – Nov 1',start:'2026-09-22',end:'2026-11-01',status:'upcoming'},
 ];
 
 function getRunWorkout(dateStr) {
   const d = dateStr;
   const dow = new Date(dateStr+'T12:00:00').getDay();
-  const isSat=dow===6, isWed=dow===3, isFri=dow===5;
-  // ── Phase 1: Volume Build — Mon-anchored weeks ──
-  if(d>='2026-05-04'&&d<'2026-05-11'){  // Wk 7 (Mon May 4 – Sun May 10)
-    if(isSat)return{type:'zone2',label:'Wk 7 — First 4th Run!',duration:'20 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'First ever 4th run day (May 9). Easy and joyful. Run + swim to 2.5 hrs. No lift today.'};
-    return{type:'zone2',label:'Wk 7 — Phase 1',duration:'25 min',effort:'Zone 2',pace:'Conversational',notes:'25 min continuous. Comfortable. Run then swim/aqua jog to 2.5 hrs + 30 min upper body lift.'};
+  const isSat=dow===6, isWed=dow===3, isFri=dow===5, isMon=dow===1;
+  // ── Phase 1: Volume Build — PURE ZONE 2, zero intensity ──
+  // Core Principle: Volume and intensity are mutually exclusive. No strides, no tempo in Phase 1.
+  if(d>='2026-05-04'&&d<'2026-05-11'){
+    if(isSat)return{type:'zone2',label:'Wk 7 — First 4th Run!',duration:'20 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'First ever 4th run day. Easy and joyful. Run + swim to 2.5 hrs. No lift today.'};
+    return{type:'zone2',label:'Wk 7 — Phase 1',duration:'25 min',effort:'Zone 2',pace:'Conversational',notes:'25 min continuous. Pure Zone 2. Run then swim/aqua jog to 2.5 hrs + 30 min upper body lift.'};
   }
   if(d>='2026-05-11'&&d<'2026-05-18'){
     if(isSat||isFri)return{type:'zone2',label:'Wk 8 — Phase 1',duration:'31 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'Longer end of the 2+2 split. ~119 min swim after. No lift Fri or Sat.'};
-    return{type:'zone2',label:'Wk 8 — Phase 1',duration:'28 min',effort:'Zone 2',pace:'Conversational',notes:'Mon/Wed block. 20% volume increase this week. Run then swim to 2.5 hrs + 30 min upper body.'};
+    return{type:'zone2',label:'Wk 8 — Phase 1',duration:'28 min',effort:'Zone 2',pace:'Conversational',notes:'Mon/Wed block. 20% volume increase. Pure Zone 2 only — no strides in Phase 1. Run + swim + 30 min upper body.'};
   }
   if(d>='2026-05-18'&&d<'2026-05-25'){
     if(isSat||isFri)return{type:'zone2',label:'Wk 9 — Phase 1',duration:'37 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'Fri/Sat longer block. ~113 min swim after. No lift Fri or Sat.'};
-    return{type:'zone2',label:'Wk 9 — Phase 1',duration:'34 min',effort:'Zone 2',pace:'Conversational',notes:'Mon/Wed block. Zone 2 only. Run then swim + 30 min upper body lift.'};
+    return{type:'zone2',label:'Wk 9 — Phase 1',duration:'34 min',effort:'Zone 2',pace:'Conversational',notes:'Mon/Wed block. Pure Zone 2 — volume builds, zero intensity. Run + swim + 30 min upper body lift.'};
   }
   if(d>='2026-05-25'&&d<'2026-06-01'){
-    if(isSat||isFri)return{type:'zone2',label:'Wk 10 — Phase 1',duration:'45 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'Big milestone — 45 min continuous. ~105 min swim after. No lift.'};
-    if(isWed)return{type:'zone2',label:'Wk 10 — Phase 1 (+ 4 strides)',duration:'40 min + 4 strides',effort:'Zone 2 + strides',pace:'Conversational then 20s accelerations',notes:'4 strides at the end — 20 sec surges, walk back. First strides of the block. Then swim to 2.5 hrs + upper body.'};
-    return{type:'zone2',label:'Wk 10 — Phase 1',duration:'40 min',effort:'Zone 2',pace:'Conversational',notes:'Monday block. Volume 170 min this week. Run + swim + 30 min upper body.'};
+    if(isSat||isFri)return{type:'zone2',label:'Wk 10 — Phase 1',duration:'45 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'45 min continuous. ~105 min swim after. No lift Fri or Sat.'};
+    return{type:'zone2',label:'Wk 10 — Phase 1',duration:'40 min',effort:'Zone 2',pace:'Conversational',notes:'Pure Zone 2. Volume 170 min this week. No intensity in Phase 1. Run + swim + 30 min upper body.'};
   }
   if(d>='2026-06-01'&&d<'2026-06-08'){
-    if(isSat||isFri)return{type:'zone2',label:'Wk 11 — Phase 1',duration:'54 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'54 min — nearly an hour of continuous running. ~96 min swim after. No lift.'};
-    if(isWed)return{type:'zone2',label:'Wk 11 — Phase 1 (+ strides)',duration:'48 min + 4-6 strides',effort:'Zone 2 + strides',pace:'Easy then 20s surges',notes:'4–6 strides at end. Building neuromuscular stimulus. Then swim + upper body.'};
-    return{type:'zone2',label:'Wk 11 — Phase 1',duration:'48 min',effort:'Zone 2',pace:'Conversational',notes:'204 min total run volume this week. Run + swim + 30 min upper body.'};
+    if(isSat||isFri)return{type:'zone2',label:'Wk 11 — Phase 1',duration:'54 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'54 min continuous. ~96 min swim after. No lift Fri or Sat.'};
+    return{type:'zone2',label:'Wk 11 — Phase 1',duration:'48 min',effort:'Zone 2',pace:'Conversational',notes:'204 min total run volume this week. Pure Zone 2 only. Run + swim + 30 min upper body.'};
   }
-  if(d>='2026-06-08'&&d<'2026-06-15'){
-    if(isSat||isFri)return{type:'zone2',label:'Wk 12 — Phase 1 PEAK',duration:'65 min',effort:'Zone 2 Easy',pace:'Conversational',notes:'Phase 1 peak run — 65 min continuous. Volume locks at 246 min next phase. ~85 min swim after.'};
-    if(isWed)return{type:'zone2',label:'Wk 12 — Phase 1 (+ 6 strides)',duration:'58 min + 6 strides',effort:'Zone 2 + strides',pace:'Easy then 6 × 20s strides',notes:'6 strides — full count reached. Final Phase 1 quality session. Then swim + upper body.'};
-    return{type:'zone2',label:'Wk 12 — Phase 1',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Final Phase 1 Monday. Huge progress from 25 min in May. Run + swim + 30 min upper body.'};
+  if(d>='2026-06-08'&&d<'2026-06-15'){  // Wk 12 — CURRENT WEEK
+    if(isSat)return{type:'zone2',label:'Wk 12 — Phase 1',duration:'65 min easy',effort:'Zone 2',pace:'Conversational',notes:'Long run. Pure Zone 2. Easy effort throughout. No pace target. ~85 min swim after.'};
+    return{type:'zone2',label:'Wk 12 — Phase 1',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Mon/Wed/Fri hold at 58 min. Pure Zone 2 — no strides, no intensity. Pass all 4 runs clean before Wk 13. Run + swim + upper body.'};
   }
-  // ── Phase 2: Intensity Build (Jun 16 – Aug 3) ──
-  if(d>='2026-06-15'&&d<'2026-06-22'){
-    if(isSat)return{type:'zone2',label:'Wk 13 — Phase 2',duration:'75 min easy',effort:'Zone 2',pace:'Conversational',notes:'First long run of Phase 2. Easy, controlled, confident.'};
-    if(isWed)return{type:'zone2',label:'Wk 13 — Strides (intro quality)',duration:'58 min + 6 strides',effort:'Zone 2 + strides',pace:'Easy + 20s surges',notes:'First quality session — strides only. Feel what faster legs feel like. Nothing hard yet.'};
-    if(isFri)return{type:'zone2',label:'Wk 13 — Phase 2',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy recovery run. Volume locked at 246 min this phase.'};
-    return{type:'zone2',label:'Wk 13 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2. Quality is Wednesday only. Run + swim + upper body.'};
+  if(d>='2026-06-15'&&d<'2026-06-22'){  // Wk 13 — Phase 1 continues, pure Zone 2
+    if(isSat)return{type:'zone2',label:'Wk 13 — Phase 1',duration:'75 min easy',effort:'Zone 2',pace:'Conversational',notes:'Long run grows +10 min. Pure Zone 2. Easy effort throughout. No pace target.'};
+    return{type:'zone2',label:'Wk 13 — Phase 1',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Mon/Wed/Fri HOLD at 58 min. ZERO intensity — no strides, no quality. Volume and intensity are mutually exclusive. Run + swim + upper body.'};
   }
-  if(d>='2026-06-22'&&d<'2026-06-29'){
-    if(isSat)return{type:'zone2',label:'Wk 14 — Phase 2',duration:'80 min easy',effort:'Zone 2',pace:'Conversational',notes:'Saturday long run. Steady and comfortable.'};
-    if(isWed)return{type:'tempo',label:'Wk 14 — Tempo',duration:'~50 min w/ WU/CD',sets:'2 × 10 min @ 4:45/km',effort:'Threshold',pace:'4:45/km (~12.6 kph)',notes:'WU 10–15 min easy, 2 × 10 min tempo with 3 min jog recovery, CD 10 min easy. First tempo of the block.'};
-    if(isFri)return{type:'zone2',label:'Wk 14 — Phase 2',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2. Protect legs for next week.'};
-    return{type:'zone2',label:'Wk 14 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2.'};
+  if(d>='2026-06-22'&&d<'2026-06-29'){  // Wk 14
+    if(isSat)return{type:'zone2',label:'Wk 14 — Phase 1',duration:'85 min easy',effort:'Zone 2',pace:'Conversational',notes:'Long run grows +10 min. Pure Zone 2. Easy effort only.'};
+    return{type:'zone2',label:'Wk 14 — Phase 1',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Pure Zone 2. Still zero intensity. Only the Saturday long run variable moves. Run + swim + upper body.'};
   }
-  if(d>='2026-06-29'&&d<'2026-07-06'){
-    if(isSat)return{type:'zone2',label:'Wk 15 — Phase 2',duration:'80 min easy',effort:'Zone 2',pace:'Conversational',notes:'Saturday long run.'};
-    if(isWed)return{type:'track',label:'Wk 15 — Track 400s',duration:'~50 min w/ WU/CD',sets:'6 × 400m @ 5K effort',effort:'Hard (5K pace)',pace:'~4:20–4:30/km for 400m reps',notes:'WU 1–2 miles easy, 6 × 400m at 5K effort, jog 400m recovery between, CD easy. Short sharp reps.'};
-    if(isFri)return{type:'zone2',label:'Wk 15 — Phase 2',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 15 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2.'};
+  if(d>='2026-06-29'&&d<'2026-07-07'){  // Wk 15 — Final Phase 1 week
+    if(isSat)return{type:'zone2',label:'Wk 15 — Phase 1 Final',duration:'95 min easy',effort:'Zone 2',pace:'Conversational',notes:'Phase 1 peak long run — 95 min. If this passes twice clean → cleared to enter Phase 2. Easy effort throughout.'};
+    return{type:'zone2',label:'Wk 15 — Phase 1 Final',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Final Phase 1 week. Pure Zone 2. Pass all 4 runs clean, next-morning symptom check 0–2/10, then Phase 2 begins Jul 7. Run + swim + upper body.'};
   }
-  if(d>='2026-07-06'&&d<'2026-07-13'){
-    if(isSat)return{type:'zone2',label:'Wk 16 — Phase 2',duration:'80 min easy',effort:'Zone 2',pace:'Conversational',notes:'Saturday long run.'};
-    if(isWed)return{type:'tempo',label:'Wk 16 — Tempo',duration:'~55 min w/ WU/CD',sets:'3 × 10 min @ 4:45/km',effort:'Threshold',pace:'4:45/km',notes:'Step up from 2 to 3 reps. WU 10–15 min, 3 × 10 min tempo (2 min jog recovery), CD 10 min.'};
-    if(isFri)return{type:'zone2',label:'Wk 16 — Phase 2',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 16 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2.'};
+  // ── Phase 2: Intensity Build (Jul 7 – Aug 17) — Volume locked ~275 min/wk ──
+  // Rule: Volume locked. Wednesday quality only. Saturday stays 95 min easy throughout.
+  if(d>='2026-07-07'&&d<'2026-07-14'){  // Wk 16 — First quality: strides
+    if(isSat)return{type:'zone2',label:'Wk 16 — Phase 2',duration:'95 min easy',effort:'Zone 2',pace:'HR 110–125 bpm',notes:'Long run LOCKED at 95 min throughout Phase 2. Pure Zone 2. Easy effort.'};
+    if(isWed)return{type:'zone2',label:'Wk 16 — Strides (First Quality)',duration:'58 min + 6 strides',effort:'Zone 2 + strides',pace:'Easy + 6 × 20s surges with full recovery',notes:'After 50 min easy, 6 × 20 sec at 5K feel with FULL recovery between. First quality work of Phase 2. Nothing hard — just legs remembering what faster feels like.'};
+    return{type:'zone2',label:'Wk 16 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'HR 110–125 bpm',notes:'Phase 2: Volume locked at ~275 min/week. Only Wednesday quality develops. Saturday holds at 95 min. Run + swim + upper body.'};
   }
-  if(d>='2026-07-13'&&d<'2026-07-20'){
-    if(isSat)return{type:'zone2',label:'Wk 17 CUTBACK',duration:'55 min easy',effort:'Zone 2',pace:'Conversational',notes:'Cutback week — shorter long run. Let the body absorb the stimulus.'};
-    if(isWed)return{type:'track',label:'Wk 17 CUTBACK — Track',duration:'~40 min',sets:'4 × 400m @ 5K',effort:'Hard',pace:'5K effort',notes:'Cutback track — fewer reps, full recovery between. Just keeping the stimulus alive.'};
-    if(isFri)return{type:'zone2',label:'Wk 17 CUTBACK',duration:'30 min easy',effort:'Zone 2',pace:'Conversational',notes:'Short and easy. Cutback week.'};
-    return{type:'zone2',label:'Wk 17 CUTBACK',duration:'40 min',effort:'Zone 2',pace:'Conversational',notes:'Cutback Monday. ~170 min total this week.'};
+  if(d>='2026-07-14'&&d<'2026-07-21'){  // Wk 17 — First tempo
+    if(isSat)return{type:'zone2',label:'Wk 17 — Phase 2',duration:'95 min easy',effort:'Zone 2',pace:'Conversational',notes:'Long run holds 95 min. Volume locked. Easy throughout — no MP work in Phase 2.'};
+    if(isWed)return{type:'tempo',label:'Wk 17 — Tempo (First)',duration:'~50 min total',sets:'2 × 10 min @ 4:45/km',effort:'Threshold — 7/10',pace:'4:45/km (~12.6 kph)',notes:'WU 15 min easy, 2 × 10 min tempo with 3 min jog recovery, CD 10 min easy. Target 7/10 effort. Conversational is too easy, gasping is too hard.'};
+    return{type:'zone2',label:'Wk 17 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2. Volume locked. Quality only on Wednesday. Run + swim + upper body.'};
   }
-  if(d>='2026-07-20'&&d<'2026-07-27'){
-    if(isSat)return{type:'zone2',label:'Wk 18 — Phase 2',duration:'80 min easy',effort:'Zone 2',pace:'Conversational',notes:'Back to full Saturday long run after cutback.'};
-    if(isWed)return{type:'tempo',label:'Wk 18 — Tempo',duration:'~55 min w/ WU/CD',sets:'2 × 15 min @ 4:43/km',effort:'Threshold',pace:'4:43/km (slightly faster)',notes:'Longer reps — 15 min each. Slightly faster pace than Wks 14/16. Big step up.'};
-    if(isFri)return{type:'zone2',label:'Wk 18 — Phase 2',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 18 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2.'};
+  if(d>='2026-07-21'&&d<'2026-07-28'){  // Wk 18 — First track 400s
+    if(isSat)return{type:'zone2',label:'Wk 18 — Phase 2',duration:'95 min easy',effort:'Zone 2',pace:'Conversational',notes:'Long run holds 95 min. Easy effort.'};
+    if(isWed)return{type:'track',label:'Wk 18 — Track 400s (First)',duration:'~50 min total',sets:'6 × 400m @ 10K pace',effort:'Comfortably hard',pace:'~4:25–4:35/km for 400m reps',notes:'WU 1–2 miles easy, 6 × 400m at 10K pace, 90 sec recovery jog. 400m pace = comfortably hard, not sprint. Consistent splits matter most.'};
+    return{type:'zone2',label:'Wk 18 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2. Track Wednesday. Run + swim + upper body.'};
   }
-  if(d>='2026-07-27'&&d<'2026-08-03'){
-    if(isSat)return{type:'zone2',label:'Wk 19 — Phase 2',duration:'80 min easy',effort:'Zone 2',pace:'Conversational',notes:'Final Phase 2 Saturday. Strong and controlled.'};
-    if(isWed)return{type:'track',label:'Wk 19 — Track 800s',duration:'~60 min w/ WU/CD',sets:'6 × 800m @ 5K effort',effort:'Hard (5K pace)',pace:'~4:20–4:30/km for 800m reps',notes:'Longer intervals — 800m reps. Jog 400m recovery between. Bigger aerobic demand than 400s.'};
-    if(isFri)return{type:'zone2',label:'Wk 19 — Phase 2',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2. Final Phase 2 week.'};
-    return{type:'zone2',label:'Wk 19 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Final Phase 2 Monday.'};
+  if(d>='2026-07-28'&&d<'2026-08-04'){  // Wk 19 — CUTBACK
+    if(isSat)return{type:'zone2',label:'Wk 19 CUTBACK',duration:'70 min easy',effort:'Zone 2',pace:'Conversational',notes:'Cutback long run. Let adaptation consolidate. Easy effort.'};
+    if(isWed)return{type:'zone2',label:'Wk 19 CUTBACK — Strides',duration:'45 min + 4 strides',effort:'Zone 2 + light strides',pace:'Easy + 4 × 20s strides',notes:'Keep a little sharpness. 45 min easy then 4 strides only. This is a cutback — nothing hard.'};
+    return{type:'zone2',label:'Wk 19 CUTBACK',duration:'45 min',effort:'Zone 2',pace:'Conversational',notes:'Cutback week — ~70% of normal volume. Reduced lift (45 min) and XT (60 min). Adaptation happens during recovery, not during load.'};
   }
-  // ── Phase 3: Marathon Specific (Aug 4 – Oct 12) ──
-  if(d>='2026-08-03'&&d<'2026-08-10'){
-    if(isSat)return{type:'long',label:'Wk 20 — Long Run',duration:'90 min easy',effort:'Zone 2',pace:'Conversational',notes:'First extended long run of Phase 3. Easy and steady. No watch pressure. ~60 min swim after.'};
-    if(isWed)return{type:'tempo',label:'Wk 20 — Tempo',duration:'~55 min',sets:'25 min @ 4:43/km',effort:'Threshold',pace:'4:43/km',notes:'Single 25 min tempo block. Comfortable discomfort. WU + CD around it.'};
-    if(isFri)return{type:'zone2',label:'Wk 20 — Phase 3',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 20 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2. Volume ~273 min this week.'};
+  if(d>='2026-08-03'&&d<'2026-08-11'){  // Wk 20 — Back to full + Tempo 3×10
+    if(isSat)return{type:'zone2',label:'Wk 20 — Phase 2',duration:'95 min easy',effort:'Zone 2',pace:'Conversational',notes:'Back to full long run after cutback. Volume locked at 95 min.'};
+    if(isWed)return{type:'tempo',label:'Wk 20 — Tempo',duration:'~55 min total',sets:'3 × 10 min @ 4:45/km',effort:'Threshold',pace:'4:45/km',notes:'Step up from 2 to 3 reps. WU 10 min, 3 × 10 min tempo with 2 min jog recovery, CD 10 min. If harder than expected post-cutback, drop to 2 × 10.'};
+    return{type:'zone2',label:'Wk 20 — Phase 2',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Back to full volume. Quality Wednesday only. Run + swim + upper body.'};
   }
-  if(d>='2026-08-10'&&d<'2026-08-17'){
-    if(isSat)return{type:'long_mp',label:'Wk 21 — Long Run + MP',duration:'100 min total',mp_segment:'10 km @ Marathon Pace (4:37/km)',effort:'Easy + controlled MP segment',pace:'Easy then 4:37/km for MP portion',notes:'100 min long run with 10 km at marathon pace. Run easy, then hit MP — control is key, not race effort.'};
-    if(isWed)return{type:'track',label:'Wk 21 — Track 800s',duration:'~60 min',sets:'8 × 800m @ 5K effort',effort:'Hard',pace:'5K effort',notes:'8 reps of 800m — biggest track session yet. Patient warm-up, disciplined recovery jogs. Consistent splits matter more than fast splits.'};
-    if(isFri)return{type:'zone2',label:'Wk 21 — Phase 3',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 21 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2.'};
+  if(d>='2026-08-10'&&d<'2026-08-18'){  // Wk 21 — Track 800s, final Phase 2
+    if(isSat)return{type:'zone2',label:'Wk 21 — Phase 2 Final',duration:'95 min easy',effort:'Zone 2',pace:'Conversational',notes:'Final Phase 2 long run. Locked at 95 min easy. Volume ceiling reached. Phase 3 starts next week.'};
+    if(isWed)return{type:'track',label:'Wk 21 — Track 800s',duration:'~60 min total',sets:'6 × 800m @ 10K effort',effort:'Hard — 5K feel',pace:'5K effort for 800m reps',notes:'WU 10 min, 6 × 800m at 10K effort, 90 sec recovery jog. If 6×800 feel controlled, your aerobic base is ready for Phase 3.'};
+    return{type:'zone2',label:'Wk 21 — Phase 2 Final',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Final Phase 2 week. Easy Zone 2. Intensity stays Wednesday only. Run + swim + upper body.'};
   }
-  if(d>='2026-08-17'&&d<'2026-08-24'){
-    if(isSat)return{type:'long_mp',label:'Wk 22 — Long Run + MP',duration:'115 min total',mp_segment:'13 km @ Marathon Pace (4:37/km)',effort:'Easy + MP segment',pace:'Easy then 4:37/km',notes:'115 min with 13 km at marathon pace. Getting race-specific. ~35 min swim after.'};
-    if(isWed)return{type:'tempo',label:'Wk 22 — Tempo',duration:'~60 min',sets:'30 min @ 4:43/km',effort:'Threshold',pace:'4:43/km',notes:'30 min continuous tempo. Long sustained effort. WU + CD around it.'};
-    if(isFri)return{type:'zone2',label:'Wk 22 — Phase 3',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 22 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2.'};
+  // ── Phase 3: Marathon Specific (Aug 18 – Sep 21) ──
+  // Rule: Long run extends AND gains MP segments. Only ONE variable moves per week (duration OR MP length, not both).
+  if(d>='2026-08-17'&&d<'2026-08-25'){  // Wk 22 — Phase 3 start
+    if(isSat)return{type:'long_mp',label:'Wk 22 — Long Run + MP',duration:'100 min total',mp_segment:'Last 15 min at Marathon Pace (4:38–4:44/km)',effort:'Easy + controlled MP',pace:'Easy then 4:38–4:44/km for final 15 min',notes:'Phase 3 start: long run extends and gains MP segment. Easy for first 85 min, final 15 min at marathon pace. Introduce conservatively — should feel controlled, not race effort.'};
+    if(isWed)return{type:'tempo',label:'Wk 22 — Tempo',duration:'~60 min total',sets:'2 × 15 min @ 4:45/km',effort:'Threshold',pace:'4:45/km',notes:'WU 15 min, 2 × 15 min tempo with 3 min jog recovery, CD 10 min. Quality continues building.'};
+    return{type:'zone2',label:'Wk 22 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Phase 3: Mon/Fri hold at 58 min Zone 2. Long run and Wednesday quality develop. Run + swim + upper body.'};
   }
-  if(d>='2026-08-24'&&d<'2026-08-31'){
-    if(isSat)return{type:'long',label:'Wk 23 CUTBACK — Long Run',duration:'75 min easy',effort:'Zone 2',pace:'Conversational',notes:'Cutback long run. Body needs to absorb the previous 3 weeks.'};
-    if(isWed)return{type:'track',label:'Wk 23 CUTBACK — Track',duration:'~45 min',sets:'4 × 800m @ 5K',effort:'Hard',pace:'5K effort',notes:'Cutback track — fewer reps, full recovery between each.'};
-    if(isFri)return{type:'zone2',label:'Wk 23 CUTBACK',duration:'30 min easy',effort:'Zone 2',pace:'Conversational',notes:'Short and easy. Cutback week.'};
-    return{type:'zone2',label:'Wk 23 CUTBACK',duration:'40 min',effort:'Zone 2',pace:'Conversational',notes:'Cutback Monday. ~190 min total.'};
+  if(d>='2026-08-24'&&d<'2026-09-01'){  // Wk 23 — Track 8×400m
+    if(isSat)return{type:'long_mp',label:'Wk 23 — Long Run + MP',duration:'110 min total',mp_segment:'Last 20 min at Marathon Pace (4:38–4:44/km)',effort:'Easy + MP segment',pace:'Easy then 4:38–4:44/km for final 20 min',notes:'Long run grows +10 min. MP segment grows +5 min. Only extend if last week\'s MP felt controlled and sustainable.'};
+    if(isWed)return{type:'track',label:'Wk 23 — Track 400s',duration:'~55 min total',sets:'8 × 400m @ 10K pace',effort:'Comfortably hard',pace:'~4:25–4:35/km',notes:'WU 10 min, 8 × 400m at 10K pace, 90 sec recovery. 8 reps — step up from Wk 18. Consistent splits.'};
+    return{type:'zone2',label:'Wk 23 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2. Hold Mon/Fri at 58 min throughout Phase 3. Run + swim + upper body.'};
   }
-  if(d>='2026-08-31'&&d<'2026-09-07'){
-    if(isSat)return{type:'long_mp',label:'Wk 24 — Long Run + MP',duration:'130 min total',mp_segment:'16 km @ Marathon Pace (4:40/km)',effort:'Easy + MP segment',pace:'Easy then 4:40/km',notes:'Big long run — 130 min with 16 km at race pace. This is where the marathon is built. ~20 min swim after.'};
-    if(isWed)return{type:'tempo',label:'Wk 24 — Tempo',duration:'~65 min',sets:'35 min @ 4:40/km',effort:'Threshold',pace:'4:40/km (sharpening)',notes:'35 min tempo at slightly faster pace. Race specificity increasing.'};
-    if(isFri)return{type:'zone2',label:'Wk 24 — Phase 3',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 24 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2. Volume ~293 min.'};
+  if(d>='2026-08-31'&&d<'2026-09-08'){  // Wk 24 — CUTBACK
+    if(isSat)return{type:'zone2',label:'Wk 24 CUTBACK',duration:'75 min easy',effort:'Zone 2',pace:'Conversational',notes:'Cutback long run. No MP work this week. Legs need to absorb Phase 2 and early Phase 3 load.'};
+    if(isWed)return{type:'zone2',label:'Wk 24 CUTBACK — Strides',duration:'45 min + 4 strides',effort:'Zone 2 + light strides',pace:'Easy + 4 × 20s strides',notes:'Maintain sharpness. 45 min easy + 4 strides. Cutback week — no tempo, no real intensity.'};
+    return{type:'zone2',label:'Wk 24 CUTBACK',duration:'45 min',effort:'Zone 2',pace:'Conversational',notes:'Mandatory cutback. No MP work this week. Reduced lift (45 min) and XT (60 min). Recovery is training.'};
   }
-  if(d>='2026-09-07'&&d<'2026-09-14'){
-    if(isSat)return{type:'long_mp',label:'Wk 25 — Long Run + MP',duration:'140 min total',mp_segment:'18 km @ Marathon Pace (4:40/km)',effort:'Easy + MP segment',pace:'Easy then 4:40/km',notes:'140 min — approaching peak territory. 18 km at marathon pace. Respect this session. Fuel early and often.'};
-    if(isWed)return{type:'track',label:'Wk 25 — Track 800s',duration:'~65 min',sets:'10 × 800m @ 5K effort',effort:'Hard',pace:'5K effort',notes:'10 reps of 800m — biggest track session of the entire plan. Patient, disciplined, consistent splits.'};
-    if(isFri)return{type:'zone2',label:'Wk 25 — Phase 3',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 25 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2. Volume ~303 min.'};
+  if(d>='2026-09-07'&&d<'2026-09-15'){  // Wk 25 — Longest tempo
+    if(isSat)return{type:'long_mp',label:'Wk 25 — Long Run + MP',duration:'120 min total',mp_segment:'Last 25 min at Marathon Pace (4:38–4:44/km)',effort:'Easy + MP segment',pace:'Easy then 4:38–4:44/km for final 25 min',notes:'Key session. 2 hours easy, final 25 min at MP. The marathon fitness marker. If Saturday feels hard, that is normal and expected.'};
+    if(isWed)return{type:'tempo',label:'Wk 25 — Tempo (Longest)',duration:'~70 min total',sets:'2 × 20 min @ 4:45/km',effort:'Threshold',pace:'4:45/km',notes:'WU 15 min, 2 × 20 min tempo with 5 min jog recovery, CD 10 min. Longest tempo block of the plan.'};
+    return{type:'zone2',label:'Wk 25 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Big week. Easy Zone 2 Mon/Fri. Everything saved for Wednesday tempo and Saturday long run.'};
   }
-  if(d>='2026-09-14'&&d<'2026-09-21'){
-    if(isSat)return{type:'long_mp',label:'Wk 26 PEAK — ~32 km',duration:'~32 km steady',mp_segment:'Controlled steady effort throughout',effort:'Moderate — never race effort',pace:'4:45–4:55/km steady',notes:'THE PEAK RUN. ~32 km steady, controlled, never racing. Longest training run of the block. Treat it with respect — steady pace, good fueling, trust the legs.'};
-    if(isWed)return{type:'tempo',label:'Wk 26 PEAK — Tempo',duration:'~70 min',sets:'40 min @ 4:40/km',effort:'Threshold',pace:'4:40/km',notes:'Peak tempo — 40 min continuous. The hardest tempo of the entire plan. Everything clicks here.'};
-    if(isFri)return{type:'zone2',label:'Wk 26 PEAK',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2 before the peak weekend.'};
-    return{type:'zone2',label:'Wk 26 PEAK',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2. Volume ~323 min — highest of the plan.'};
+  if(d>='2026-09-14'&&d<'2026-09-22'){  // Wk 26 — PEAK WEEK
+    if(isSat)return{type:'long_mp',label:'Wk 26 PEAK — Long Run + MP',duration:'130 min total',mp_segment:'Last 30 min at Marathon Pace (4:38–4:44/km)',effort:'Easy + MP segment',pace:'Easy then 4:38–4:44/km for final 30 min',notes:'PEAK LONG RUN. 130 min with 30 min of marathon pace work. Race simulator. Do not attempt unless previous two weeks were clean. Fuel well, respect the distance.'};
+    if(isWed)return{type:'track',label:'Wk 26 PEAK — Track 800s',duration:'~65 min total',sets:'6 × 800m @ 10K effort',effort:'Hard',pace:'5K effort',notes:'Final track session before taper. WU 10 min, 6 × 800m at 10K effort, 90 sec recovery. Run well and confident.'};
+    return{type:'zone2',label:'Wk 26 PEAK',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Peak week. Easy Zone 2 Mon/Fri. Full effort saved for Wednesday track and Saturday long run.'};
   }
-  if(d>='2026-09-21'&&d<'2026-09-28'){
-    if(isSat)return{type:'long',label:'Wk 27 CUTBACK — Long Run',duration:'85 min easy',effort:'Zone 2',pace:'Conversational',notes:'Cutback after peak. Legs recovering. Keep it easy and joyful. ~65 min swim after.'};
-    if(isWed)return{type:'track',label:'Wk 27 CUTBACK — Track',duration:'~50 min',sets:'5 × 800m @ 5K',effort:'Hard',pace:'5K effort',notes:'Cutback track. Fewer reps, full recovery. Post-peak, no heroics.'};
-    if(isFri)return{type:'zone2',label:'Wk 27 CUTBACK',duration:'30 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy and short. Post-peak recovery.'};
-    return{type:'zone2',label:'Wk 27 CUTBACK',duration:'40 min',effort:'Zone 2',pace:'Conversational',notes:'Cutback Monday. ~205 min total.'};
+  // ── Phase 4: Taper (Sep 22 – Nov 1) ──
+  if(d>='2026-09-21'&&d<'2026-09-29'){  // Wk 27 — Taper Week 1 (~70% peak)
+    if(isSat)return{type:'long',label:'Wk 27 TAPER — Long Run',duration:'90 min easy',effort:'Zone 2',pace:'Conversational',notes:'Last longer long run. No MP work. Easy and comfortable. Taper starts here — trust it.'};
+    if(isWed)return{type:'tempo',label:'Wk 27 TAPER — Short Tempo',duration:'~40 min total',sets:'1 × 15 min @ 4:45/km',effort:'Threshold',pace:'4:45/km',notes:'Short quality. Stay sharp. WU 10 min, 1 × 15 min tempo, CD 10 min. Volume drops sharply this week.'};
+    if(isFri)return{type:'zone2',label:'Wk 27 TAPER',duration:'40 min',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2. Volume dropping.'};
+    return{type:'zone2',label:'Wk 27 TAPER',duration:'45 min',effort:'Zone 2',pace:'Conversational',notes:'Taper Week 1 — ~70% of peak volume. Legs may feel flat or heavy — normal adaptation, not fitness loss.'};
   }
-  if(d>='2026-09-28'&&d<'2026-10-05'){
-    if(isSat)return{type:'long_mp',label:'Wk 28 — Long Run + MP',duration:'125 min total',mp_segment:'15 km @ Marathon Pace (4:37/km)',effort:'Easy + goal race pace',pace:'4:37/km for MP segment',notes:'Final big long run. 15 km at goal marathon pace. Confidence-builder — you\'ve done more than this.'};
-    if(isWed)return{type:'tempo',label:'Wk 28 — Tempo @ Race Pace',duration:'~60 min',sets:'30 min @ Marathon Pace (4:37/km)',effort:'Marathon Pace',pace:'4:37/km — actual race pace',notes:'Running at marathon race pace. Should feel controlled and purposeful — not easy, not all-out.'};
-    if(isFri)return{type:'zone2',label:'Wk 28 — Phase 3',duration:'45 min easy',effort:'Zone 2',pace:'Conversational',notes:'Easy Zone 2.'};
-    return{type:'zone2',label:'Wk 28 — Phase 3',duration:'58 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2. Volume ~278 min.'};
+  if(d>='2026-09-28'&&d<'2026-10-06'){  // Wk 28 — Taper Week 2 (~50% peak)
+    if(isSat)return{type:'long',label:'Wk 28 TAPER — Short Long Run',duration:'60 min easy',effort:'Zone 2',pace:'Conversational',notes:'Short long run. No pace work. Volume ~50% of peak. Trust the training. The work is done.'};
+    if(isWed)return{type:'zone2',label:'Wk 28 TAPER — Strides',duration:'40 min + 6 strides',effort:'Zone 2 + strides',pace:'Easy + 6 × 20s strides',notes:'Keep legs feeling sharp. 40 min easy, 6 strides at end. Strides only — stay fresh.'};
+    if(isFri)return{type:'zone2',label:'Wk 28 TAPER',duration:'30 min',effort:'Zone 2',pace:'Conversational',notes:'Easy shakeout. Very short and relaxed.'};
+    return{type:'zone2',label:'Wk 28 TAPER',duration:'35 min',effort:'Zone 2',pace:'Conversational',notes:'Taper Week 2 — ~50% of peak volume. Trust the process.'};
   }
-  if(d>='2026-10-05'&&d<'2026-10-12'){
-    if(isSat)return{type:'long_mp',label:'Wk 29 — Long Run + MP',duration:'110 min total',mp_segment:'10 km @ Marathon Pace (4:37/km)',effort:'Easy + MP segment',pace:'4:37/km for MP segment',notes:'110 min with 10 km at marathon pace. Volume tapering. Last big long run effort.'};
-    if(isWed)return{type:'track',label:'Wk 29 — Track 800s',duration:'~55 min',sets:'6 × 800m @ 5K effort',effort:'Hard',pace:'5K effort',notes:'6 × 800m. Last big track session before taper. Run well and confident.'};
-    if(isFri)return{type:'zone2',label:'Wk 29 — Phase 3',duration:'35 min easy',effort:'Zone 2',pace:'Conversational',notes:'Short and easy. Volume tapering starts.'};
-    return{type:'zone2',label:'Wk 29 — Phase 3',duration:'55 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2. Volume ~255 min.'};
+  if(d>='2026-10-05'&&d<'2026-10-13'){  // Wk 29 — Taper Week 3 (minimal)
+    if(isSat)return{type:'long',label:'Wk 29 TAPER — Final Easy',duration:'40 min easy',effort:'Zone 2',pace:'Conversational',notes:'Final longer easy run. Minimal volume. Mental prep is now the priority.'};
+    if(isWed)return{type:'zone2',label:'Wk 29 TAPER — Strides',duration:'30 min + 4 strides',effort:'Zone 2 + strides',pace:'Easy + 4 × 20s strides',notes:'Keep legs feeling good. Short and sharp. 4 strides only.'};
+    if(isFri)return{type:'zone2',label:'Wk 29 TAPER',duration:'20 min',effort:'Zone 2',pace:'Conversational',notes:'Very easy shakeout. Minimal.'};
+    return{type:'zone2',label:'Wk 29 TAPER',duration:'30 min easy',effort:'Zone 2',pace:'Conversational',notes:'Final taper week. Volume minimal. Race week starts Oct 27. Stay mentally sharp.'};
   }
-  // ── Phase 4: Taper (Oct 13 – Nov 1) ──
-  if(d>='2026-10-12'&&d<'2026-10-19'){
-    if(isSat)return{type:'long',label:'Wk 30 TAPER — Long Run',duration:'70 min easy',effort:'Zone 2',pace:'Conversational',notes:'Volume dropping sharply. Short and comfortable. Legs will feel heavy — completely normal.'};
-    if(isWed)return{type:'tempo',label:'Wk 30 TAPER — MP Tune-up',duration:'~40 min',sets:'3 × 8 min @ Marathon Pace (4:37/km)',effort:'Marathon Pace',pace:'4:37/km — race pace',notes:'Short MP reps to stay sharp. 3 × 8 min with 2 min jog recovery. Just a tune-up, not a workout.'};
-    if(isFri)return{type:'zone2',label:'Wk 30 TAPER',duration:'25 min easy',effort:'Zone 2',pace:'Conversational',notes:'Very easy, very short. Taper week.'};
-    return{type:'zone2',label:'Wk 30 TAPER',duration:'45 min',effort:'Zone 2',pace:'Conversational',notes:'Monday Zone 2. Volume ~180 min.'};
+  if(d>='2026-10-12'&&d<'2026-10-27'){  // Pre-race period (Oct 13–26)
+    if(isSat)return{type:'zone2',label:'Pre-Race — Easy',duration:'20 min easy',effort:'Very light',pace:'Conversational',notes:'Very light easy run. Stay loose. No effort.'};
+    if(isWed)return{type:'zone2',label:'Pre-Race — Strides',duration:'15 min + 2 strides',effort:'Very light',pace:'Easy + 2 × 15s strides',notes:'Very light maintenance. 2 strides only. Stay sharp, stay rested.'};
+    return{type:'zone2',label:'Pre-Race Maintenance',duration:'15–20 min easy',effort:'Very light',pace:'Conversational',notes:'Pre-race period. Keep legs moving lightly. Rest and recovery is the job.'};
   }
-  if(d>='2026-10-19'&&d<'2026-10-26'){
-    if(isSat||isFri)return{type:'rest',label:'Wk 31 — Rest / Travel Prep',duration:'REST',effort:'Complete rest',pace:'—',notes:'Rest and travel prep. Feet up. Trust the training.'};
-    if(isWed)return{type:'track',label:'Wk 31 TAPER — Tune-up',duration:'~35 min',sets:'4 × 400m + strides',effort:'Moderate',pace:'5K effort for 400s',notes:'Very short tune-up. Just keeping legs feeling sharp. Not a workout — a reminder.'};
-    return{type:'zone2',label:'Wk 31 TAPER',duration:'25 min easy + strides',effort:'Zone 2 + strides',pace:'Easy + 4–6 × 20s strides',notes:'Short Monday run with strides. Feel sharp, stay relaxed.'};
-  }
-  if(d>='2026-10-26'&&d<'2026-11-02'){
-    return{type:'rest',label:'RACE WEEK — Complete Rest',duration:'REST',effort:'Complete rest',pace:'—',notes:'Sleep. Eat. Hydrate. Stay calm. Trust the plan. November 1 is yours.'};
+  if(d>='2026-10-26'&&d<'2026-11-02'){  // Race Week
+    const dow3=new Date(dateStr+'T12:00:00').getDay();
+    if(dow3===0)return{type:'race',label:'NYC MARATHON — Race Day',duration:'42.2 km',effort:'3:15–3:20',pace:'4:38–4:44/km',notes:'Everything you\'ve built since October 2025 comes together today. Trust the training. Run your race.'};
+    if(dow3===1)return{type:'zone2',label:'Race Week — Mon Shakeout',duration:'20 min easy',effort:'Very light',pace:'Conversational',notes:'Short shakeout. No effort. Nothing you do this week will make you fitter — rest is the job.'};
+    if(dow3===2)return{type:'zone2',label:'Race Week — Tue Strides',duration:'20 min + 4 strides',effort:'Very light',pace:'Easy + 4 × 15s strides',notes:'Keep legs sharp. 4 strides only. Hydrate. Sleep. Eat well.'};
+    if(dow3===3)return{type:'rest',label:'Race Week — Wed Rest',duration:'REST',effort:'Complete rest',pace:'—',notes:'Full rest day. Walk only if needed. Trust the training.'};
+    if(dow3===4)return{type:'zone2',label:'Race Week — Thu Shakeout',duration:'20 min easy',effort:'Very light',pace:'Conversational',notes:'Final shakeout. Easy effort only. Gear check tomorrow.'};
+    return{type:'rest',label:'Race Week — Rest',duration:'REST',effort:'Complete rest',pace:'—',notes:'Rest. Hydrate. Sleep. Eat well. November 1 is yours.'};
   }
   if(d>='2026-11-01'&&d<'2026-11-02'){
-    return{type:'race',label:'NYC MARATHON',duration:'42.2 km',effort:'3:15–3:20',pace:'4:37–4:44/km',notes:'You went from rock bottom in October 2025 to the NYC Marathon start line. Earned patience. Trust the plan.'};
+    return{type:'race',label:'NYC MARATHON',duration:'42.2 km',effort:'3:15–3:20',pace:'4:38–4:44/km',notes:'You went from rock bottom to the NYC Marathon start line. Earned patience. Trust the plan.'};
   }
   return{type:'zone2',label:'Training Plan',duration:'Zone 2 Easy',effort:'Zone 2',pace:'Conversational',notes:'Follow your plan.'};
 }
 
 function getXTWorkout(dateStr) {
-  const isCutback=(dateStr>='2026-07-13'&&dateStr<'2026-07-20')||(dateStr>='2026-08-24'&&dateStr<'2026-08-31')||(dateStr>='2026-09-21'&&dateStr<'2026-09-28')||(dateStr>='2026-10-12'&&dateStr<'2026-10-19');
-  if(dateStr>='2026-10-19'&&dateStr<'2026-11-02') return{duration:'Easy 30 min only',effort:'Very light',notes:'Taper — easy bike or swim only. No intensity. Rest.',options:'Bike easy / Easy swim'};
-  if(isCutback) return{duration:'90 min easy',effort:'Easy',notes:'Cutback week — bike easy or swim. Recovery focused. No intensity.',options:'Bike easy / Swim / Elliptical light'};
-  return{duration:'90 min',effort:'Zone 2',notes:'Bike, swim, aqua jog, or elliptical. Zone 2 the whole time — HR 120–135. This completes your ~2.5 hr daily training block alongside legs heavy lifting.',options:'Bike / Swim / Aqua jog / Elliptical'};
+  const isCutback=(dateStr>='2026-07-28'&&dateStr<'2026-08-04')||(dateStr>='2026-08-31'&&dateStr<'2026-09-08');
+  const isTaperWk1=(dateStr>='2026-09-21'&&dateStr<'2026-09-29');
+  const isTaperWk2plus=(dateStr>='2026-09-28'&&dateStr<'2026-11-02');
+  if(dateStr>='2026-10-26'&&dateStr<'2026-11-02') return{duration:'Rest or easy walk only',effort:'Complete rest',notes:'Race week — rest is the job. No structured XT.',options:'Easy walk only'};
+  if(isTaperWk2plus) return{duration:'30 min easy',effort:'Very light',notes:'Taper — easy bike or swim only. No intensity. Let legs recover fully.',options:'Bike easy / Easy swim'};
+  if(isTaperWk1) return{duration:'45 min easy',effort:'Very light',notes:'Taper Week 1 — easy bike or swim only. HR stays below 120. Volume dropping.',options:'Bike easy / Swim'};
+  if(isCutback) return{duration:'60 min easy',effort:'Easy Zone 2',notes:'Cutback week — bike easy or swim. Recovery focused. No intensity. ~70% of normal XT volume.',options:'Bike easy / Swim / Elliptical light'};
+  return{duration:'90 min',effort:'Zone 2',notes:'Bike, swim, aqua jog, or elliptical. Zone 2 the whole time — HR 110–125 bpm. Watch for drift above 125. Completes your daily training block.',options:'Bike / Swim / Aqua jog / Elliptical'};
 }
 
 /* ─── LIFT WORKOUTS ─── */
@@ -704,60 +691,78 @@ const LIFTS = {
       ]},
     ]
   },
-  LEGS_TUE: {
-    name:'Lower Body — Tuesday',focus:'Squats · RDLs · Hip Thrusts · Femoral Neck',color:'#0096C7',
+  FB_TUE: {
+    name:'Full Body Compound A — Deadlift Day',focus:'Hip Hinge · Glutes · Posterior Chain · Upper Body',color:'#0096C7',
     warmup:[
-      {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:2,reps:'20/side',rest:'—',cue:'Femoral neck activation.'},
-      {code:'HA',cat:'ex-pt',name:'Standing Banded Hip Abduction',sets:2,reps:'15/side',rest:'—',cue:'Straight leg. No trunk lean.'},
-      {code:'GB',cat:'ex-pt',name:'Glute Bridge (Double Leg)',sets:2,reps:'15',rest:'—',cue:'Full hip extension.'},
-      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: anterior tib activation.'},
-      {code:'SQ',cat:'ex-lower',name:'Bodyweight Squat',sets:2,reps:'10',rest:'—',cue:'Full depth. Knees track toes.'},
+      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: toes lifted, anterior tib activated. Every session, forever.'},
+      {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:2,reps:'15/side',rest:'—',cue:'Femoral neck activation. Light band, full ROM.'},
+      {code:'GB',cat:'ex-pt',name:'Glute Bridge (Double Leg)',sets:2,reps:'15',rest:'—',cue:'Full hip extension. Drive through heels. Hip primer for deadlift.'},
+      {code:'DB',cat:'ex-core',name:'Dead Bug',sets:2,reps:'8/side',rest:'—',cue:'Lower back pressed to floor. Core bracing for deadlift.'},
+      {code:'WG',cat:'ex-mob',name:"World's Greatest Stretch",sets:2,reps:'5/side',rest:'—',cue:'Hip flexor + thoracic rotation. Essential pre-deadlift mobility.'},
     ],
     blocks:[
-      {label:'A — Femoral Neck Bone Density',clr:'clr-red',note:'NON-NEGOTIABLE — complete BEFORE main lifts',rptLabel:'',exercises:[
-        {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Femoral neck stimulus. Always first.'},
-        {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:3,reps:'20/side',rest:'45s',cue:'Side-lying, hips stacked. Increase band weekly.'},
-        {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'60s',cue:'Drive through heel. Pause 2 sec at top.'},
-        {code:'SR',cat:'ex-pt',name:'Single Leg RDL',sets:3,reps:'10/side',rest:'75s',cue:'Build weight weekly. Hamstring load.'},
+      {label:'A — Femoral Neck Protocol',clr:'clr-red',note:'NON-NEGOTIABLE — complete before all barbell work',rptLabel:'',exercises:[
+        {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Femoral neck bone density stimulus. Cable at ankle height. Controlled tempo. Always first.'},
+        {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:3,reps:'20/side',rest:'45s',cue:'Side-lying, hips stacked. Increase band resistance weekly.'},
+        {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'60s',cue:'Drive through heel. Hold 2 sec at top. Hips level throughout.'},
       ]},
-      {label:'B — Main Lifts (Squats / Hip Hinge / Hip Thrust)',clr:'clr-cyan',note:'Tuesday emphasis — posterior chain + quads',rptLabel:'',exercises:[
-        {code:'BS',cat:'ex-lower',name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2min',cue:'Progressive overload. Depth to parallel+. Chest tall, knees out.'},
-        {code:'RD',cat:'ex-lower',name:'Romanian Deadlift (Barbell)',sets:3,reps:'8–10',rest:'90s',cue:'Hip hinge. Neutral spine. Load the hamstrings. Build weight weekly.'},
-        {code:'HT',cat:'ex-lower',name:'Hip Thrust (Barbell)',sets:3,reps:'10–12',rest:'90s',cue:'Upper back on bench. Full hip extension. Pause 1 sec at top.'},
-        {code:'BU',cat:'ex-lower',name:'Bulgarian Split Squat (DB)',sets:3,reps:'8–10/side',rest:'90s',cue:'Rear foot elevated. Drive through front heel. Best femoral neck builder.'},
+      {label:'B — Hip Hinge Compound',clr:'clr-cyan',note:'Runner power — posterior chain dominance. No plyometrics, no tibial impact.',rptLabel:'4 sets',exercises:[
+        {code:'RD',cat:'ex-lower',name:'Barbell Romanian Deadlift',sets:4,reps:'5–6',rest:'2min',cue:'Hip hinge, not back rounding. 3-sec eccentric (slow lower). Build weight weekly. Primary posterior chain strength for runners — more hip hinge = less tibial stress.'},
+        {code:'HT',cat:'ex-lower',name:'Barbell Hip Thrust',sets:4,reps:'8–10',rest:'90s',cue:'Upper back on bench. Full hip extension. Pause 1 sec at top. Glute power directly transfers to running economy and forward propulsion.'},
+        {code:'SR',cat:'ex-pt',name:'Single Leg RDL (DB)',sets:3,reps:'10/side',rest:'75s',cue:'Balance + posterior chain integration. Hinge at hip, not back rounding. Essential for single-leg running mechanics. Build weight when form is solid.'},
       ]},
-      {label:'C — Close-Out Protocol',clr:'clr-orange',note:'Finish every leg day with these',rptLabel:'',exercises:[
-        {code:'SH',cat:'ex-lower',name:'Seated Hip Abduction (Machine)',sets:3,reps:'20',rest:'45s',cue:'Controlled. Directly loads femoral neck.'},
-        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ SHIN PREVENTION: 4-sec slow descent. PERMANENT.'},
+      {label:'C — Upper Body Compound',clr:'clr-blue',note:'Running posture + balanced push/pull. Upper back strength = better late-race form.',rptLabel:'3 sets',exercises:[
+        {code:'BR',cat:'ex-upper',name:'Barbell Bent-Over Row',sets:3,reps:'8',rest:'90s',cue:'Upper back strength = better running posture in miles 18–26. Hinge at hip, row to lower chest. Control the eccentric.'},
+        {code:'BB',cat:'ex-upper',name:'Barbell Bench Press',sets:3,reps:'8–10',rest:'90s',cue:'3-sec eccentric. Balanced push/pull for upper body symmetry. Progressive overload weekly.'},
+        {code:'PU',cat:'ex-upper',name:'Pull-Up / Lat Pulldown',sets:3,reps:'8–10',rest:'75s',cue:'Lats engage during running arm swing and trunk stabilization. Full ROM. Add weight when bodyweight is easy.'},
       ]},
+      {label:'D — Core + Tibial Protection',clr:'clr-orange',note:'Non-negotiable close-out — every single session without exception',rptLabel:'3 rounds',exercises:[
+        {code:'CO',cat:'ex-core',name:'Copenhagen Plank',sets:3,reps:'30s/side',rest:'30s',cue:'Side plank with top leg elevated on bench. Adductor strength reduces tibial bending moment during running. Progress to 45 sec as strength builds.'},
+        {code:'PP',cat:'ex-core',name:'Pallof Press',sets:3,reps:'30s/side',rest:'30s',cue:'Anti-rotation. Stand tall. Zero hip shift. Core stability = better force transfer through the running stride.'},
+        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ TIBIAL STRESS REACTION PROTOCOL: 4-sec slow descent on one leg. Loads soleus and reduces tibial stress. PERMANENT — never remove from program.'},
+      ]},
+    ],
+    cooldown:[
+      {code:'PP',cat:'ex-mob',name:'Pigeon Pose',sets:1,reps:'60s/side',rest:'—',cue:'Deep hip flexor and glute release after deadlifts.'},
+      {code:'HS',cat:'ex-mob',name:'Lying Hamstring Stretch',sets:1,reps:'45s/side',rest:'—',cue:''},
+      {code:'WD',cat:'ex-pt',name:'Wall Lean Dorsiflexion',sets:1,reps:'15',rest:'—',cue:'Maintain ankle mobility for running.'},
     ]
   },
-  LEGS_THU: {
-    name:'Lower Body — Thursday',focus:'Lunges · Step-Ups · Leg Press · RDLs · Femoral Neck',color:'#F4831F',
+  FB_THU: {
+    name:'Full Body Compound B — Squat Day',focus:'Squats · Single Leg · Hip Power · Upper Body',color:'#F4831F',
     warmup:[
-      {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:2,reps:'20/side',rest:'—',cue:'Femoral neck activation.'},
+      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: toes lifted, anterior tib activated. Every session, forever.'},
+      {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:2,reps:'15/side',rest:'—',cue:'Femoral neck activation.'},
       {code:'HA',cat:'ex-pt',name:'Standing Banded Hip Abduction',sets:2,reps:'15/side',rest:'—',cue:'Straight leg. No trunk lean.'},
-      {code:'GB',cat:'ex-pt',name:'Glute Bridge (Double Leg)',sets:2,reps:'15',rest:'—',cue:'Full hip extension.'},
-      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: anterior tib activation.'},
+      {code:'SQ',cat:'ex-lower',name:'Bodyweight Squat',sets:2,reps:'10',rest:'—',cue:'Full depth. Knees track toes. Squat pattern warm-up.'},
+      {code:'GB',cat:'ex-pt',name:'Glute Bridge',sets:1,reps:'15',rest:'—',cue:'Hip activation before squats.'},
     ],
     blocks:[
-      {label:'A — Femoral Neck Bone Density',clr:'clr-red',note:'NON-NEGOTIABLE — complete BEFORE main lifts',rptLabel:'',exercises:[
-        {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Femoral neck stimulus. Always first.'},
+      {label:'A — Femoral Neck Protocol',clr:'clr-red',note:'NON-NEGOTIABLE — complete before all barbell work',rptLabel:'',exercises:[
+        {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Femoral neck bone density stimulus. Always first.'},
         {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:3,reps:'20/side',rest:'45s',cue:'Side-lying. Increase band resistance weekly.'},
-        {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'60s',cue:'Drive through heel. Pause 2 sec at top.'},
-        {code:'SR',cat:'ex-pt',name:'Single Leg RDL',sets:3,reps:'10/side',rest:'75s',cue:'Build weight weekly.'},
+        {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'60s',cue:'Drive through heel. Pause 2 sec. Hips level.'},
       ]},
-      {label:'B — Main Lifts (Lunges / Step-Ups / Press)',clr:'clr-orange',note:'Thursday emphasis — single leg + push pattern',rptLabel:'',exercises:[
-        {code:'WL',cat:'ex-lower',name:'Reverse Lunge (DB)',sets:3,reps:'10/side',rest:'90s',cue:'Step BACK — less tibial stress than forward lunge. Control the descent.'},
-        {code:'SD',cat:'ex-lower',name:'Box Step-Up (DB)',sets:3,reps:'10/side',rest:'90s',cue:'Drive through front heel. Don\'t push off back foot.'},
-        {code:'LPR',cat:'ex-lower',name:'Leg Press',sets:3,reps:'12',rest:'90s',cue:'Full ROM. Don\'t lock knees. Feet shoulder-width.'},
-        {code:'RD',cat:'ex-lower',name:'Romanian Deadlift (Barbell)',sets:3,reps:'8–10',rest:'90s',cue:'Hip hinge. Posterior chain focus. Same weight as Tuesday or heavier.'},
+      {label:'B — Squat + Single Leg Compound',clr:'clr-orange',note:'Knee + hip dominant. No jumping, no forward lunge — tibial stress safe.',rptLabel:'',exercises:[
+        {code:'BS',cat:'ex-lower',name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2min',cue:'Build weight gradually. Depth to parallel+. Chest tall, knees track over toes. Strong quad development for hills, surges, and late-race power.'},
+        {code:'BU',cat:'ex-lower',name:'Bulgarian Split Squat (DB)',sets:3,reps:'8–10/side',rest:'90s',cue:'Rear foot elevated. Drive through front heel. Best femoral neck + glute builder in the program. Mirrors single-leg running mechanics.'},
+        {code:'WL',cat:'ex-lower',name:'Reverse Lunge (DB)',sets:3,reps:'10/side',rest:'75s',cue:'Step BACK — significantly less tibial stress than forward lunge. Control the descent 3 sec. Closely mirrors running stride loading pattern.'},
       ]},
-      {label:'C — Close-Out Protocol',clr:'clr-orange',note:'Finish every leg day with these',rptLabel:'',exercises:[
-        {code:'LB',cat:'ex-lower',name:'Lateral Band Walk',sets:3,reps:'15 steps/side',rest:'45s',cue:'Stay low. Hip abductor focus.'},
-        {code:'SH',cat:'ex-lower',name:'Seated Hip Abduction (Machine)',sets:3,reps:'20',rest:'45s',cue:'Controlled. Femoral neck protocol continuation.'},
-        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ SHIN PREVENTION: 4-sec slow descent. PERMANENT.'},
+      {label:'C — Upper Body Compound',clr:'clr-blue',note:'Push + pull balance. Shoulder strength supports arm drive in racing.',rptLabel:'3 sets',exercises:[
+        {code:'BB',cat:'ex-upper',name:'Barbell Bench Press',sets:3,reps:'8–10',rest:'90s',cue:'Progressive overload. 3-sec eccentric. Upper body balance to the rows.'},
+        {code:'BR',cat:'ex-upper',name:'Barbell Bent-Over Row',sets:3,reps:'8',rest:'90s',cue:'Hinge at hip. Row to lower chest. Strong upper back for late-race posture.'},
+        {code:'SP',cat:'ex-upper',name:'Seated DB Shoulder Press',sets:3,reps:'10–12',rest:'75s',cue:'Controlled eccentric. Shoulder and arm strength supports efficient arm drive in marathon racing.'},
       ]},
+      {label:'D — Core + Tibial Protection',clr:'clr-orange',note:'Non-negotiable close-out — every single session without exception',rptLabel:'3 rounds',exercises:[
+        {code:'LB',cat:'ex-lower',name:'Lateral Band Walk',sets:3,reps:'15 steps/side',rest:'45s',cue:'Stay low throughout. Hip abductor load. Reduced hip drop during running = less tibial torsion and stress.'},
+        {code:'SH',cat:'ex-lower',name:'Seated Hip Abduction (Machine)',sets:3,reps:'20',rest:'45s',cue:'Controlled tempo. No momentum. Femoral neck protocol continuation.'},
+        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ TIBIAL STRESS REACTION PROTOCOL: 4-sec slow descent. Loads soleus, reduces tibial bending force. PERMANENT — never remove from program.'},
+      ]},
+    ],
+    cooldown:[
+      {code:'HF',cat:'ex-mob',name:'Hip Flexor Stretch',sets:1,reps:'60s/side',rest:'—',cue:'Deep lunge. Tuck pelvis. Critical post-squat + for running stride length.'},
+      {code:'HS',cat:'ex-mob',name:'Lying Hamstring Stretch',sets:1,reps:'45s/side',rest:'—',cue:''},
+      {code:'TR',cat:'ex-mob',name:'Thoracic Spine Rotation',sets:1,reps:'10/side',rest:'—',cue:'Upper back mobility for running posture.'},
     ]
   }
 };
@@ -765,9 +770,9 @@ const LIFTS = {
 const DAY_CONFIG = {
   0: {type:'recovery'},
   1: {type:'run_upper', liftKey:'UPPER', runDay:true, runLabel:'Zone 2 / Quality Run'},
-  2: {type:'legs_xt', liftKey:'LEGS_TUE'},
+  2: {type:'legs_xt', liftKey:'FB_TUE'},
   3: {type:'run_upper', liftKey:'UPPER', runDay:true, runLabel:'Quality / Zone 2 Run'},
-  4: {type:'legs_xt', liftKey:'LEGS_THU'},
+  4: {type:'legs_xt', liftKey:'FB_THU'},
   5: {type:'run_upper', liftKey:'UPPER', runDay:true, runLabel:'Zone 2 Run'},
   6: {type:'long_run', runDay:true, runLabel:'Long Run'},
 };
@@ -800,10 +805,10 @@ function getPhaseProgress(){
 }
 function getWeekLabel(d){
   const ds=dateStr(d);
-  if(ds>='2026-05-04'&&ds<'2026-06-15')return 'Phase 1 · Volume Build';
-  if(ds>='2026-06-15'&&ds<'2026-08-03')return 'Phase 2 · Intensity Build';
-  if(ds>='2026-08-03'&&ds<'2026-10-12')return 'Phase 3 · Marathon Specific';
-  if(ds>='2026-10-12'&&ds<'2026-11-02')return 'Phase 4 · Taper';
+  if(ds>='2026-05-04'&&ds<'2026-07-07')return 'Phase 1 · Volume Build';
+  if(ds>='2026-07-07'&&ds<'2026-08-18')return 'Phase 2 · Intensity Build';
+  if(ds>='2026-08-18'&&ds<'2026-09-22')return 'Phase 3 · Marathon Specific';
+  if(ds>='2026-09-22'&&ds<'2026-11-02')return 'Phase 4 · Taper';
   if(ds>='2026-11-01')return 'NYC Marathon 2026';
   return 'NYC Marathon Training';
 }
@@ -1201,44 +1206,43 @@ function renderPlanView(){
     return'upcoming';
   }
   const weeks=[
-    // Phase 1 - Volume Build
-    {label:'Wk 7',dates:'May 4–10',phase:'Phase 1 — Volume Build',runMin:'~95',monWed:'25 min Zone 2',wedNote:'',fri:'25 min Zone 2',sat:'20 min easy (4th run day!)',start:'2026-05-04',end:'2026-05-11'},
-    {label:'Wk 8',dates:'May 11–17',phase:'Phase 1 — Volume Build',runMin:'~118',monWed:'28 min Zone 2',wedNote:'',fri:'31 min Zone 2',sat:'31 min easy',start:'2026-05-11',end:'2026-05-18'},
-    {label:'Wk 9',dates:'May 18–24',phase:'Phase 1 — Volume Build',runMin:'~142',monWed:'34 min Zone 2',wedNote:'',fri:'37 min Zone 2',sat:'37 min easy',start:'2026-05-18',end:'2026-05-25'},
-    {label:'Wk 10',dates:'May 25–31',phase:'Phase 1 — Volume Build',runMin:'~170',monWed:'40 min Zone 2',wedNote:'+ 4 strides',fri:'45 min Zone 2',sat:'45 min easy',start:'2026-05-25',end:'2026-06-01'},
-    {label:'Wk 11',dates:'Jun 1–7',phase:'Phase 1 — Volume Build',runMin:'~204',monWed:'48 min Zone 2',wedNote:'+ 4–6 strides',fri:'54 min Zone 2',sat:'54 min easy',start:'2026-06-01',end:'2026-06-08'},
-    {label:'Wk 12',dates:'Jun 8–14',phase:'Phase 1 — Volume Build (Peak)',runMin:'~246',monWed:'58 min Zone 2',wedNote:'+ 6 strides',fri:'65 min Zone 2',sat:'65 min easy',start:'2026-06-08',end:'2026-06-15'},
-    // Phase 2 - Intensity Build
-    {label:'Wk 13',dates:'Jun 15–21',phase:'Phase 2 — Intensity Build',runMin:'~246',monWed:'58 min Zone 2',wedNote:'+ 6 strides (intro quality)',fri:'45 min Zone 2',sat:'75 min easy',start:'2026-06-15',end:'2026-06-22'},
-    {label:'Wk 14',dates:'Jun 22–28',phase:'Phase 2 — Intensity Build',runMin:'~246',monWed:'58 min Zone 2',wedNote:'TEMPO 2×10 min @ 4:45/km',fri:'45 min Zone 2',sat:'80 min easy',start:'2026-06-22',end:'2026-06-29'},
-    {label:'Wk 15',dates:'Jun 29–Jul 5',phase:'Phase 2 — Intensity Build',runMin:'~246',monWed:'58 min Zone 2',wedNote:'TRACK 6×400m @ 5K effort',fri:'45 min Zone 2',sat:'80 min easy',start:'2026-06-29',end:'2026-07-06'},
-    {label:'Wk 16',dates:'Jul 6–12',phase:'Phase 2 — Intensity Build',runMin:'~246',monWed:'58 min Zone 2',wedNote:'TEMPO 3×10 min @ 4:45/km',fri:'45 min Zone 2',sat:'80 min easy',start:'2026-07-06',end:'2026-07-13'},
-    {label:'Wk 17 CUTBACK',dates:'Jul 13–19',phase:'Phase 2 — Cutback',runMin:'~170',monWed:'40 min Zone 2',wedNote:'TRACK 4×400m @ 5K',fri:'30 min Zone 2',sat:'55 min easy',start:'2026-07-13',end:'2026-07-20'},
-    {label:'Wk 18',dates:'Jul 20–26',phase:'Phase 2 — Intensity Build',runMin:'~246',monWed:'58 min Zone 2',wedNote:'TEMPO 2×15 min @ 4:43/km',fri:'45 min Zone 2',sat:'80 min easy',start:'2026-07-20',end:'2026-07-27'},
-    {label:'Wk 19',dates:'Jul 27–Aug 2',phase:'Phase 2 — Intensity Build',runMin:'~246',monWed:'58 min Zone 2',wedNote:'TRACK 6×800m @ 5K effort',fri:'45 min Zone 2',sat:'80 min easy',start:'2026-07-27',end:'2026-08-03'},
-    // Phase 3 - Marathon Specific
-    {label:'Wk 20',dates:'Aug 3–9',phase:'Phase 3 — Marathon Specific',runMin:'~273',monWed:'58 min Zone 2',wedNote:'TEMPO 25 min @ 4:43/km',fri:'45 min Zone 2',sat:'LONG 90 min easy',start:'2026-08-03',end:'2026-08-10'},
-    {label:'Wk 21',dates:'Aug 10–16',phase:'Phase 3 — Marathon Specific',runMin:'~263',monWed:'58 min Zone 2',wedNote:'TRACK 8×800m @ 5K',fri:'45 min Zone 2',sat:'LONG 100 min / 10 km@MP',start:'2026-08-10',end:'2026-08-17'},
-    {label:'Wk 22',dates:'Aug 17–23',phase:'Phase 3 — Marathon Specific',runMin:'~273',monWed:'58 min Zone 2',wedNote:'TEMPO 30 min @ 4:43/km',fri:'45 min Zone 2',sat:'LONG 115 min / 13 km@MP',start:'2026-08-17',end:'2026-08-24'},
-    {label:'Wk 23 CUTBACK',dates:'Aug 24–30',phase:'Phase 3 — Cutback',runMin:'~190',monWed:'40 min Zone 2',wedNote:'TRACK 4×800m @ 5K',fri:'30 min Zone 2',sat:'LONG 75 min easy',start:'2026-08-24',end:'2026-08-31'},
-    {label:'Wk 24',dates:'Aug 31–Sep 6',phase:'Phase 3 — Marathon Specific',runMin:'~293',monWed:'58 min Zone 2',wedNote:'TEMPO 35 min @ 4:40/km',fri:'45 min Zone 2',sat:'LONG 130 min / 16 km@MP',start:'2026-08-31',end:'2026-09-07'},
-    {label:'Wk 25',dates:'Sep 7–13',phase:'Phase 3 — Marathon Specific',runMin:'~303',monWed:'58 min Zone 2',wedNote:'TRACK 10×800m @ 5K',fri:'45 min Zone 2',sat:'LONG 140 min / 18 km@MP',start:'2026-09-07',end:'2026-09-14'},
-    {label:'Wk 26 PEAK',dates:'Sep 14–20',phase:'Phase 3 — Peak Week',runMin:'~323',monWed:'58 min Zone 2',wedNote:'TEMPO 40 min @ 4:40/km',fri:'45 min Zone 2',sat:'LONG ~32 km steady',start:'2026-09-14',end:'2026-09-21'},
-    {label:'Wk 27 CUTBACK',dates:'Sep 21–27',phase:'Phase 3 — Cutback',runMin:'~205',monWed:'40 min Zone 2',wedNote:'TRACK 5×800m @ 5K',fri:'30 min Zone 2',sat:'LONG 85 min easy',start:'2026-09-21',end:'2026-09-28'},
-    {label:'Wk 28',dates:'Sep 28–Oct 4',phase:'Phase 3 — Marathon Specific',runMin:'~278',monWed:'58 min Zone 2',wedNote:'TEMPO 30 min @ MP (4:37/km)',fri:'45 min Zone 2',sat:'LONG 125 min / 15 km@MP',start:'2026-09-28',end:'2026-10-05'},
-    {label:'Wk 29',dates:'Oct 5–11',phase:'Phase 3 — Marathon Specific',runMin:'~255',monWed:'55 min Zone 2',wedNote:'TRACK 6×800m @ 5K',fri:'35 min Zone 2',sat:'LONG 110 min / 10 km@MP',start:'2026-10-05',end:'2026-10-12'},
+    // Phase 1 - Volume Build (Pure Zone 2, zero intensity throughout)
+    {label:'Wk 7',dates:'May 4–10',phase:'Phase 1 — Volume Build',runMin:'~95',monWed:'25 min Zone 2',wedNote:'Pure Zone 2',fri:'25 min Zone 2',sat:'20 min easy (4th run!)',start:'2026-05-04',end:'2026-05-11'},
+    {label:'Wk 8',dates:'May 11–17',phase:'Phase 1 — Volume Build',runMin:'~118',monWed:'28 min Zone 2',wedNote:'Pure Zone 2',fri:'31 min Zone 2',sat:'31 min easy',start:'2026-05-11',end:'2026-05-18'},
+    {label:'Wk 9',dates:'May 18–24',phase:'Phase 1 — Volume Build',runMin:'~142',monWed:'34 min Zone 2',wedNote:'Pure Zone 2',fri:'37 min Zone 2',sat:'37 min easy',start:'2026-05-18',end:'2026-05-25'},
+    {label:'Wk 10',dates:'May 25–31',phase:'Phase 1 — Volume Build',runMin:'~170',monWed:'40 min Zone 2',wedNote:'Pure Zone 2',fri:'45 min Zone 2',sat:'45 min easy',start:'2026-05-25',end:'2026-06-01'},
+    {label:'Wk 11',dates:'Jun 1–7',phase:'Phase 1 — Volume Build',runMin:'~204',monWed:'48 min Zone 2',wedNote:'Pure Zone 2',fri:'54 min Zone 2',sat:'54 min easy',start:'2026-06-01',end:'2026-06-08'},
+    {label:'Wk 12 ◀ NOW',dates:'Jun 8–14',phase:'Phase 1 — Volume Build',runMin:'~239',monWed:'58 min Zone 2',wedNote:'Pure Zone 2',fri:'58 min Zone 2',sat:'65 min easy',start:'2026-06-08',end:'2026-06-15'},
+    {label:'Wk 13',dates:'Jun 15–21',phase:'Phase 1 — Volume Build',runMin:'~249',monWed:'58 min Zone 2',wedNote:'Pure Zone 2',fri:'58 min Zone 2',sat:'75 min easy',start:'2026-06-15',end:'2026-06-22'},
+    {label:'Wk 14',dates:'Jun 22–28',phase:'Phase 1 — Volume Build',runMin:'~259',monWed:'58 min Zone 2',wedNote:'Pure Zone 2',fri:'58 min Zone 2',sat:'85 min easy',start:'2026-06-22',end:'2026-06-29'},
+    {label:'Wk 15',dates:'Jun 29–Jul 6',phase:'Phase 1 — Volume Build (Final)',runMin:'~269',monWed:'58 min Zone 2',wedNote:'Pure Zone 2',fri:'58 min Zone 2',sat:'95 min easy (PEAK)',start:'2026-06-29',end:'2026-07-07'},
+    // Phase 2 - Intensity Build (Volume locked, Wednesday quality only, Sat = 95 min locked)
+    {label:'Wk 16',dates:'Jul 7–13',phase:'Phase 2 — Intensity Build',runMin:'~275',monWed:'58 min Zone 2',wedNote:'6 × strides (first quality)',fri:'58 min Zone 2',sat:'95 min easy (LOCKED)',start:'2026-07-07',end:'2026-07-14'},
+    {label:'Wk 17',dates:'Jul 14–20',phase:'Phase 2 — Intensity Build',runMin:'~275',monWed:'58 min Zone 2',wedNote:'TEMPO 2×10 min @ 4:45/km',fri:'58 min Zone 2',sat:'95 min easy',start:'2026-07-14',end:'2026-07-21'},
+    {label:'Wk 18',dates:'Jul 21–27',phase:'Phase 2 — Intensity Build',runMin:'~275',monWed:'58 min Zone 2',wedNote:'TRACK 6×400m @ 10K pace',fri:'58 min Zone 2',sat:'95 min easy',start:'2026-07-21',end:'2026-07-28'},
+    {label:'Wk 19 CUTBACK',dates:'Jul 28–Aug 3',phase:'Phase 2 — Cutback',runMin:'~205',monWed:'45 min Zone 2',wedNote:'45 min + 4 strides',fri:'45 min Zone 2',sat:'70 min easy',start:'2026-07-28',end:'2026-08-04'},
+    {label:'Wk 20',dates:'Aug 3–10',phase:'Phase 2 — Intensity Build',runMin:'~275',monWed:'58 min Zone 2',wedNote:'TEMPO 3×10 min @ 4:45/km',fri:'58 min Zone 2',sat:'95 min easy',start:'2026-08-03',end:'2026-08-11'},
+    {label:'Wk 21',dates:'Aug 10–17',phase:'Phase 2 — Intensity Build (Final)',runMin:'~275',monWed:'58 min Zone 2',wedNote:'TRACK 6×800m @ 10K effort',fri:'58 min Zone 2',sat:'95 min easy',start:'2026-08-10',end:'2026-08-18'},
+    // Phase 3 - Marathon Specific (long run grows + MP segments)
+    {label:'Wk 22',dates:'Aug 18–24',phase:'Phase 3 — Marathon Specific',runMin:'~282',monWed:'58 min Zone 2',wedNote:'TEMPO 2×15 min @ 4:45/km',fri:'58 min Zone 2',sat:'100 min / last 15 min@MP',start:'2026-08-17',end:'2026-08-25'},
+    {label:'Wk 23',dates:'Aug 25–31',phase:'Phase 3 — Marathon Specific',runMin:'~292',monWed:'58 min Zone 2',wedNote:'TRACK 8×400m @ 10K pace',fri:'58 min Zone 2',sat:'110 min / last 20 min@MP',start:'2026-08-24',end:'2026-09-01'},
+    {label:'Wk 24 CUTBACK',dates:'Sep 1–7',phase:'Phase 3 — Cutback',runMin:'~210',monWed:'45 min Zone 2',wedNote:'45 min + 4 strides',fri:'45 min Zone 2',sat:'75 min easy (no MP)',start:'2026-08-31',end:'2026-09-08'},
+    {label:'Wk 25',dates:'Sep 8–14',phase:'Phase 3 — Marathon Specific',runMin:'~302',monWed:'58 min Zone 2',wedNote:'TEMPO 2×20 min @ 4:45/km',fri:'58 min Zone 2',sat:'120 min / last 25 min@MP',start:'2026-09-07',end:'2026-09-15'},
+    {label:'Wk 26 PEAK',dates:'Sep 15–21',phase:'Phase 3 — Peak Week',runMin:'~314',monWed:'58 min Zone 2',wedNote:'TRACK 6×800m @ 10K effort',fri:'58 min Zone 2',sat:'130 min / last 30 min@MP',start:'2026-09-14',end:'2026-09-22'},
     // Phase 4 - Taper
-    {label:'Wk 30',dates:'Oct 12–18',phase:'Phase 4 — Taper',runMin:'~180',monWed:'45 min Zone 2',wedNote:'TEMPO 3×8 min @ MP',fri:'25 min Zone 2',sat:'LONG 70 min easy',start:'2026-10-12',end:'2026-10-19'},
-    {label:'Wk 31',dates:'Oct 19–25',phase:'Phase 4 — Taper',runMin:'~60',monWed:'25 min easy + strides',wedNote:'TRACK 4×400m + strides',fri:'REST',sat:'REST',start:'2026-10-19',end:'2026-10-26'},
-    {label:'Race Week',dates:'Oct 26–Nov 1',phase:'NYC Marathon — November 1, 2026',runMin:'42.2 km',monWed:'REST',wedNote:'',fri:'REST',sat:'NYC MARATHON',start:'2026-10-26',end:'2026-11-02'},
+    {label:'Wk 27',dates:'Sep 22–28',phase:'Phase 4 — Taper Week 1 (~70%)',runMin:'~220',monWed:'45 min Zone 2',wedNote:'TEMPO 1×15 min @ 4:45/km',fri:'40 min Zone 2',sat:'90 min easy',start:'2026-09-21',end:'2026-09-29'},
+    {label:'Wk 28',dates:'Sep 29–Oct 5',phase:'Phase 4 — Taper Week 2 (~50%)',runMin:'~165',monWed:'35 min Zone 2',wedNote:'40 min + 6 strides',fri:'30 min Zone 2',sat:'60 min easy',start:'2026-09-28',end:'2026-10-06'},
+    {label:'Wk 29',dates:'Oct 6–12',phase:'Phase 4 — Taper Week 3 (minimal)',runMin:'~120',monWed:'30 min Zone 2',wedNote:'30 min + 4 strides',fri:'20 min Zone 2',sat:'40 min easy',start:'2026-10-05',end:'2026-10-13'},
+    {label:'Pre-Race',dates:'Oct 13–26',phase:'Phase 4 — Pre-Race Maintenance',runMin:'Very light',monWed:'15–20 min easy',wedNote:'15 min + 2 strides',fri:'15 min easy',sat:'20 min easy',start:'2026-10-12',end:'2026-10-27'},
+    {label:'Race Week',dates:'Oct 27–Nov 1',phase:'NYC Marathon — November 1, 2026',runMin:'42.2 km',monWed:'20 min easy',wedNote:'REST',fri:'REST',sat:'NYC MARATHON 🏁',start:'2026-10-26',end:'2026-11-02'},
   ];
 
   const dayLabels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const dayTypes=[
     {label:'Run + Upper Body 30 min',types:['run','lift']},
-    {label:'Legs Heavy (Squats/RDLs/Hip Thrusts) + XT 90 min',types:['lift']},
+    {label:'Full Body Compound A (Deadlift Day) + XT 90 min',types:['lift']},
     {label:'Quality Run + Upper Body 30 min',types:['run','lift']},
-    {label:'Legs Heavy (Lunges/Step-Ups/Press) + XT 90 min',types:['lift']},
+    {label:'Full Body Compound B (Squat Day) + XT 90 min',types:['lift']},
     {label:'Run + Upper Body 30 min',types:['run','lift']},
     {label:'Long Run (no lift)',types:['run']},
     {label:'Active Recovery (swim / yoga / walk)',types:['rest']},
