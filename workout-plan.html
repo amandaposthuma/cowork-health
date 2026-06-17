@@ -1562,9 +1562,17 @@ async function sendAIMessage() {
     aiHistory.push({ role: 'assistant', content: reply });
   } catch(err) {
     clearThinking();
-    const msg = err.message.includes('401')
-      ? 'API key issue — tap "Change API key" below to update it.'
-      : 'Something went wrong. Check your connection and try again.';
+    let msg;
+    const e = err.message || '';
+    if (e.includes('Failed to fetch') || e.includes('NetworkError') || e.includes('network:')) {
+      msg = 'Could not reach the API. This is usually a CORS issue when calling from a browser — try the workaround below.\n\nOpen console.anthropic.com on your phone, go to Workspaces → your key, and make sure it has no IP restrictions. Or share your screen and I can help debug.';
+    } else if (e.includes('401')) {
+      msg = 'API key not recognised. Tap "Change API key" to re-enter it.';
+    } else if (e.includes('429')) {
+      msg = 'Rate limited — wait a moment and try again.';
+    } else {
+      msg = 'Error: ' + (e || 'unknown');
+    }
     addBubble('assistant', msg);
   }
 
@@ -1574,24 +1582,29 @@ async function sendAIMessage() {
 }
 
 async function callClaude(messages) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': aiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-allow-browser': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
-      system: buildSystemPrompt(),
-      messages
-    })
-  });
+  let res;
+  try {
+    res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': aiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-allow-browser': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        system: buildSystemPrompt(),
+        messages
+      })
+    });
+  } catch(netErr) {
+    throw new Error('network: ' + netErr.message);
+  }
   if (!res.ok) {
     const e = await res.json().catch(() => ({}));
-    throw new Error(res.status + ': ' + (e.error?.message || 'API error'));
+    throw new Error(res.status + ': ' + (e.error?.message || 'HTTP ' + res.status));
   }
   const data = await res.json();
   return data.content[0].text;

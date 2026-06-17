@@ -1,4 +1,4 @@
-const CACHE = 'training-v13';
+const CACHE = 'training-v14';
 const FILES = [
   './training-mgmt.html',
   './workout-plan.html',
