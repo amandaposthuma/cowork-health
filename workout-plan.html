@@ -346,6 +346,8 @@ const ICON_MAP = {
   'RD': 'hinge', 'HT': 'glute-bridge', 'LPR': 'squat', 'WL': 'split-squat',
   // Full body
   'RR': 'push-up', 'RL': 'split-squat', 'CP': 'curl', 'CO': 'plank',
+  // Myrtle + tibial
+  'TW': 'calf-raise', 'FH': 'hip-abduction', 'DK': 'glute-bridge', 'MW': 'band-walk', 'HC': 'stretch',
   // Mobility
   'WG': 'stretch', 'BD': 'bird-dog', 'HF': 'hip-flexor', 'TR': 'stretch',
   'HS': 'stretch', 'PP': 'pallof',
@@ -692,88 +694,85 @@ const LIFTS = {
     ]
   },
   FB_TUE: {
-    name:'Full Body Compound A — Deadlift Day',focus:'Hip Hinge · Glutes · Posterior Chain · Upper Body',color:'#0096C7',
-    warmup:[
-      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: toes lifted, anterior tib activated. Every session, forever.'},
-      {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:2,reps:'15/side',rest:'—',cue:'Femoral neck activation. Light band, full ROM.'},
-      {code:'GB',cat:'ex-pt',name:'Glute Bridge (Double Leg)',sets:2,reps:'15',rest:'—',cue:'Full hip extension. Drive through heels. Hip primer for deadlift.'},
-      {code:'DB',cat:'ex-core',name:'Dead Bug',sets:2,reps:'8/side',rest:'—',cue:'Lower back pressed to floor. Core bracing for deadlift.'},
-      {code:'WG',cat:'ex-mob',name:"World's Greatest Stretch",sets:2,reps:'5/side',rest:'—',cue:'Hip flexor + thoracic rotation. Essential pre-deadlift mobility.'},
-    ],
+    name:'Full Body Compound A — Deadlift Day',focus:'Myrtle · Tibial Pumps · Hip Hinge · Glutes · Upper Body',color:'#0096C7',
+    warmup:[],
     blocks:[
+      {label:'Myrtle Routine + Tibial Activation',clr:'clr-green',note:'Start every session here — running-specific activation, builds strong shins',rptLabel:'',exercises:[
+        {code:'TW',cat:'ex-pt',name:'Tibial Wall Pump',sets:3,reps:'20',rest:'30s',cue:'Lie on back, legs straight up wall. Pump foot up toward shin (dorsiflexion) then back. Feel the anterior tibialis working. BUILD STRONG SHINS — key recovery exercise for tibial stress reaction.'},
+        {code:'CL',cat:'ex-pt',name:'Clamshell',sets:2,reps:'15/side',rest:'—',cue:'Side-lying, hips stacked. Open like a clamshell. Hip abductor activation for running.'},
+        {code:'FH',cat:'ex-pt',name:'Fire Hydrant',sets:2,reps:'15/side',rest:'—',cue:'All fours. Lift knee out to side. Hip abduction + external rotation. Glute med activation.'},
+        {code:'DK',cat:'ex-lower',name:'Donkey Kick',sets:2,reps:'15/side',rest:'—',cue:'All fours. Drive heel to ceiling. Full glute extension at top. Running propulsion pattern.'},
+        {code:'MW',cat:'ex-lower',name:'Monster Walk (forward + back)',sets:2,reps:'10 steps each way',rest:'30s',cue:'Banded above knees. Walk forward 10 steps, back 10 steps. Constant tension. Hip abductor endurance for running economy.'},
+        {code:'LB',cat:'ex-lower',name:'Lateral Band Walk',sets:2,reps:'15 steps/side',rest:'30s',cue:'Stay low. Mini band above knees. Constant tension throughout. Hip abductor activation.'},
+        {code:'HC',cat:'ex-mob',name:'Hip Circle (standing)',sets:1,reps:'10 each direction/side',rest:'—',cue:'Stand on one leg. Draw large circles with the other knee. Hip joint mobility for full running stride range.'},
+      ]},
       {label:'A — Femoral Neck Protocol',clr:'clr-red',note:'NON-NEGOTIABLE — complete before all barbell work',rptLabel:'',exercises:[
         {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Femoral neck bone density stimulus. Cable at ankle height. Controlled tempo. Always first.'},
-        {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:3,reps:'20/side',rest:'45s',cue:'Side-lying, hips stacked. Increase band resistance weekly.'},
         {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'60s',cue:'Drive through heel. Hold 2 sec at top. Hips level throughout.'},
+        {code:'SR',cat:'ex-pt',name:'Single Leg RDL (DB)',sets:3,reps:'10/side',rest:'75s',cue:'Hinge at hip, not back rounding. Essential for single-leg running mechanics. Build weight when form is solid.'},
       ]},
-      {label:'B — Hip Hinge Compound',clr:'clr-cyan',note:'Runner power — posterior chain dominance. No plyometrics, no tibial impact.',rptLabel:'4 sets',exercises:[
-        {code:'RD',cat:'ex-lower',name:'Barbell Romanian Deadlift',sets:4,reps:'5–6',rest:'2min',cue:'Hip hinge, not back rounding. 3-sec eccentric (slow lower). Build weight weekly. Primary posterior chain strength for runners — more hip hinge = less tibial stress.'},
-        {code:'HT',cat:'ex-lower',name:'Barbell Hip Thrust',sets:4,reps:'8–10',rest:'90s',cue:'Upper back on bench. Full hip extension. Pause 1 sec at top. Glute power directly transfers to running economy and forward propulsion.'},
-        {code:'SR',cat:'ex-pt',name:'Single Leg RDL (DB)',sets:3,reps:'10/side',rest:'75s',cue:'Balance + posterior chain integration. Hinge at hip, not back rounding. Essential for single-leg running mechanics. Build weight when form is solid.'},
+      {label:'B — Hip Hinge Compound',clr:'clr-cyan',note:'Runner power — posterior chain. No plyometrics, no tibial impact.',rptLabel:'4 sets',exercises:[
+        {code:'RD',cat:'ex-lower',name:'Barbell Romanian Deadlift',sets:4,reps:'5–6',rest:'2min',cue:'Hip hinge, not back rounding. 3-sec eccentric (slow lower). Build weight weekly. More hip hinge = less tibial stress in running.'},
+        {code:'HT',cat:'ex-lower',name:'Barbell Hip Thrust',sets:4,reps:'8–10',rest:'90s',cue:'Upper back on bench. Full hip extension. Pause 1 sec at top. Glute power = running economy.'},
       ]},
-      {label:'C — Upper Body Compound',clr:'clr-blue',note:'Running posture + balanced push/pull. Upper back strength = better late-race form.',rptLabel:'3 sets',exercises:[
-        {code:'BR',cat:'ex-upper',name:'Barbell Bent-Over Row',sets:3,reps:'8',rest:'90s',cue:'Upper back strength = better running posture in miles 18–26. Hinge at hip, row to lower chest. Control the eccentric.'},
-        {code:'BB',cat:'ex-upper',name:'Barbell Bench Press',sets:3,reps:'8–10',rest:'90s',cue:'3-sec eccentric. Balanced push/pull for upper body symmetry. Progressive overload weekly.'},
-        {code:'PU',cat:'ex-upper',name:'Pull-Up / Lat Pulldown',sets:3,reps:'8–10',rest:'75s',cue:'Lats engage during running arm swing and trunk stabilization. Full ROM. Add weight when bodyweight is easy.'},
+      {label:'C — Upper Body Compound',clr:'clr-blue',note:'Strong upper back = better running posture miles 18–26',rptLabel:'3 sets',exercises:[
+        {code:'BR',cat:'ex-upper',name:'Barbell Bent-Over Row',sets:3,reps:'8',rest:'90s',cue:'Hinge at hip, row to lower chest. Control the eccentric.'},
+        {code:'BB',cat:'ex-upper',name:'Barbell Bench Press',sets:3,reps:'8–10',rest:'90s',cue:'3-sec eccentric. Progressive overload weekly.'},
+        {code:'PU',cat:'ex-upper',name:'Pull-Up / Lat Pulldown',sets:3,reps:'8–10',rest:'75s',cue:'Lats engage during running arm swing. Full ROM.'},
       ]},
-      {label:'D — Core + Tibial Protection',clr:'clr-orange',note:'Non-negotiable close-out — every single session without exception',rptLabel:'3 rounds',exercises:[
-        {code:'CO',cat:'ex-core',name:'Copenhagen Plank',sets:3,reps:'30s/side',rest:'30s',cue:'Side plank with top leg elevated on bench. Adductor strength reduces tibial bending moment during running. Progress to 45 sec as strength builds.'},
-        {code:'PP',cat:'ex-core',name:'Pallof Press',sets:3,reps:'30s/side',rest:'30s',cue:'Anti-rotation. Stand tall. Zero hip shift. Core stability = better force transfer through the running stride.'},
-        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ TIBIAL STRESS REACTION PROTOCOL: 4-sec slow descent on one leg. Loads soleus and reduces tibial stress. PERMANENT — never remove from program.'},
+      {label:'D — Core + Tibial Protection',clr:'clr-orange',note:'Never skip — every session',rptLabel:'3 rounds',exercises:[
+        {code:'CO',cat:'ex-core',name:'Copenhagen Plank',sets:3,reps:'30s/side',rest:'30s',cue:'Side plank with top leg on bench. Adductor strength reduces tibial bending moment during running. Progress to 45 sec.'},
+        {code:'PP',cat:'ex-core',name:'Pallof Press',sets:3,reps:'30s/side',rest:'30s',cue:'Anti-rotation. Stand tall. Zero hip shift. Core stability = better force transfer in running stride.'},
+        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ TIBIAL PROTOCOL: 4-sec slow descent. Loads soleus, reduces tibial stress. PERMANENT — never remove.'},
       ]},
     ],
-    cooldown:[
-      {code:'PP',cat:'ex-mob',name:'Pigeon Pose',sets:1,reps:'60s/side',rest:'—',cue:'Deep hip flexor and glute release after deadlifts.'},
-      {code:'HS',cat:'ex-mob',name:'Lying Hamstring Stretch',sets:1,reps:'45s/side',rest:'—',cue:''},
-      {code:'WD',cat:'ex-pt',name:'Wall Lean Dorsiflexion',sets:1,reps:'15',rest:'—',cue:'Maintain ankle mobility for running.'},
-    ]
+    cooldown:[]
   },
   FB_THU: {
-    name:'Full Body Compound B — Squat Day',focus:'Squats · Single Leg · Hip Power · Upper Body',color:'#F4831F',
-    warmup:[
-      {code:'HW',cat:'ex-pt',name:'Banded Heel Walk',sets:2,reps:'20m',rest:'—',cue:'⚠️ SHIN PREVENTION: toes lifted, anterior tib activated. Every session, forever.'},
-      {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:2,reps:'15/side',rest:'—',cue:'Femoral neck activation.'},
-      {code:'HA',cat:'ex-pt',name:'Standing Banded Hip Abduction',sets:2,reps:'15/side',rest:'—',cue:'Straight leg. No trunk lean.'},
-      {code:'SQ',cat:'ex-lower',name:'Bodyweight Squat',sets:2,reps:'10',rest:'—',cue:'Full depth. Knees track toes. Squat pattern warm-up.'},
-      {code:'GB',cat:'ex-pt',name:'Glute Bridge',sets:1,reps:'15',rest:'—',cue:'Hip activation before squats.'},
-    ],
+    name:'Full Body Compound B — Squat Day',focus:'Myrtle · Tibial Pumps · Squats · Single Leg · Upper Body',color:'#F4831F',
+    warmup:[],
     blocks:[
+      {label:'Myrtle Routine + Tibial Activation',clr:'clr-green',note:'Start every session here — running-specific activation, builds strong shins',rptLabel:'',exercises:[
+        {code:'TW',cat:'ex-pt',name:'Tibial Wall Pump',sets:3,reps:'20',rest:'30s',cue:'Lie on back, legs straight up wall. Pump foot up toward shin (dorsiflexion) then back. Feel the anterior tibialis working. BUILD STRONG SHINS — key recovery exercise for tibial stress reaction.'},
+        {code:'CL',cat:'ex-pt',name:'Clamshell',sets:2,reps:'15/side',rest:'—',cue:'Side-lying, hips stacked. Open like a clamshell. Hip abductor activation for running.'},
+        {code:'FH',cat:'ex-pt',name:'Fire Hydrant',sets:2,reps:'15/side',rest:'—',cue:'All fours. Lift knee out to side. Hip abduction + external rotation. Glute med activation.'},
+        {code:'DK',cat:'ex-lower',name:'Donkey Kick',sets:2,reps:'15/side',rest:'—',cue:'All fours. Drive heel to ceiling. Full glute extension at top. Running propulsion pattern.'},
+        {code:'MW',cat:'ex-lower',name:'Monster Walk (forward + back)',sets:2,reps:'10 steps each way',rest:'30s',cue:'Banded above knees. Forward 10 steps, back 10 steps. Constant tension. Hip abductor endurance.'},
+        {code:'LB',cat:'ex-lower',name:'Lateral Band Walk',sets:2,reps:'15 steps/side',rest:'30s',cue:'Stay low. Mini band above knees. Constant tension. Hip abductor activation.'},
+        {code:'HC',cat:'ex-mob',name:'Hip Circle (standing)',sets:1,reps:'10 each direction/side',rest:'—',cue:'Stand on one leg. Draw large circles with the other knee. Hip mobility for full running stride range.'},
+      ]},
       {label:'A — Femoral Neck Protocol',clr:'clr-red',note:'NON-NEGOTIABLE — complete before all barbell work',rptLabel:'',exercises:[
         {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Femoral neck bone density stimulus. Always first.'},
-        {code:'CL',cat:'ex-pt',name:'Clamshells Banded',sets:3,reps:'20/side',rest:'45s',cue:'Side-lying. Increase band resistance weekly.'},
         {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'60s',cue:'Drive through heel. Pause 2 sec. Hips level.'},
+        {code:'SB',cat:'ex-lower',name:'Bulgarian Split Squat (BW)',sets:2,reps:'8/side',rest:'60s',cue:'Rear foot elevated, bodyweight only. Squat pattern activation before loading.'},
       ]},
-      {label:'B — Squat + Single Leg Compound',clr:'clr-orange',note:'Knee + hip dominant. No jumping, no forward lunge — tibial stress safe.',rptLabel:'',exercises:[
-        {code:'BS',cat:'ex-lower',name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2min',cue:'Build weight gradually. Depth to parallel+. Chest tall, knees track over toes. Strong quad development for hills, surges, and late-race power.'},
-        {code:'BU',cat:'ex-lower',name:'Bulgarian Split Squat (DB)',sets:3,reps:'8–10/side',rest:'90s',cue:'Rear foot elevated. Drive through front heel. Best femoral neck + glute builder in the program. Mirrors single-leg running mechanics.'},
-        {code:'WL',cat:'ex-lower',name:'Reverse Lunge (DB)',sets:3,reps:'10/side',rest:'75s',cue:'Step BACK — significantly less tibial stress than forward lunge. Control the descent 3 sec. Closely mirrors running stride loading pattern.'},
+      {label:'B — Squat + Single Leg Compound',clr:'clr-orange',note:'No jumping, no forward lunge — tibial stress safe',rptLabel:'',exercises:[
+        {code:'BS',cat:'ex-lower',name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2min',cue:'Build weight gradually. Depth to parallel+. Chest tall, knees track over toes. Quad strength for hills and late-race power.'},
+        {code:'BU',cat:'ex-lower',name:'Bulgarian Split Squat (DB)',sets:3,reps:'8–10/side',rest:'90s',cue:'Rear foot elevated. Drive through front heel. Best femoral neck + glute builder. Mirrors single-leg running mechanics.'},
+        {code:'WL',cat:'ex-lower',name:'Reverse Lunge (DB)',sets:3,reps:'10/side',rest:'75s',cue:'Step BACK — less tibial stress than forward lunge. 3-sec descent. Mirrors running stride loading.'},
       ]},
-      {label:'C — Upper Body Compound',clr:'clr-blue',note:'Push + pull balance. Shoulder strength supports arm drive in racing.',rptLabel:'3 sets',exercises:[
-        {code:'BB',cat:'ex-upper',name:'Barbell Bench Press',sets:3,reps:'8–10',rest:'90s',cue:'Progressive overload. 3-sec eccentric. Upper body balance to the rows.'},
+      {label:'C — Upper Body Compound',clr:'clr-blue',note:'Shoulder strength supports arm drive in marathon racing',rptLabel:'3 sets',exercises:[
+        {code:'BB',cat:'ex-upper',name:'Barbell Bench Press',sets:3,reps:'8–10',rest:'90s',cue:'3-sec eccentric. Progressive overload weekly.'},
         {code:'BR',cat:'ex-upper',name:'Barbell Bent-Over Row',sets:3,reps:'8',rest:'90s',cue:'Hinge at hip. Row to lower chest. Strong upper back for late-race posture.'},
-        {code:'SP',cat:'ex-upper',name:'Seated DB Shoulder Press',sets:3,reps:'10–12',rest:'75s',cue:'Controlled eccentric. Shoulder and arm strength supports efficient arm drive in marathon racing.'},
+        {code:'SP',cat:'ex-upper',name:'Seated DB Shoulder Press',sets:3,reps:'10–12',rest:'75s',cue:'Controlled eccentric. Arm drive strength for marathon racing.'},
       ]},
-      {label:'D — Core + Tibial Protection',clr:'clr-orange',note:'Non-negotiable close-out — every single session without exception',rptLabel:'3 rounds',exercises:[
-        {code:'LB',cat:'ex-lower',name:'Lateral Band Walk',sets:3,reps:'15 steps/side',rest:'45s',cue:'Stay low throughout. Hip abductor load. Reduced hip drop during running = less tibial torsion and stress.'},
-        {code:'SH',cat:'ex-lower',name:'Seated Hip Abduction (Machine)',sets:3,reps:'20',rest:'45s',cue:'Controlled tempo. No momentum. Femoral neck protocol continuation.'},
-        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ TIBIAL STRESS REACTION PROTOCOL: 4-sec slow descent. Loads soleus, reduces tibial bending force. PERMANENT — never remove from program.'},
+      {label:'D — Core + Tibial Protection',clr:'clr-orange',note:'Never skip — every session',rptLabel:'3 rounds',exercises:[
+        {code:'LB',cat:'ex-lower',name:'Lateral Band Walk',sets:3,reps:'15 steps/side',rest:'45s',cue:'Stay low. Hip abductor load. Reduced hip drop = less tibial torsion in running.'},
+        {code:'SH',cat:'ex-lower',name:'Seated Hip Abduction (Machine)',sets:3,reps:'20',rest:'45s',cue:'Controlled. No momentum. Femoral neck protocol continuation.'},
+        {code:'EC',cat:'ex-pt',name:'Eccentric Single Leg Calf Raise',sets:3,reps:'12/side',rest:'60s',cue:'⚠️ TIBIAL PROTOCOL: 4-sec slow descent. Loads soleus, reduces tibial stress. PERMANENT — never remove.'},
       ]},
     ],
-    cooldown:[
-      {code:'HF',cat:'ex-mob',name:'Hip Flexor Stretch',sets:1,reps:'60s/side',rest:'—',cue:'Deep lunge. Tuck pelvis. Critical post-squat + for running stride length.'},
-      {code:'HS',cat:'ex-mob',name:'Lying Hamstring Stretch',sets:1,reps:'45s/side',rest:'—',cue:''},
-      {code:'TR',cat:'ex-mob',name:'Thoracic Spine Rotation',sets:1,reps:'10/side',rest:'—',cue:'Upper back mobility for running posture.'},
-    ]
+    cooldown:[]
   }
 };
 
 const DAY_CONFIG = {
   0: {type:'recovery'},
-  1: {type:'run_upper', liftKey:'UPPER', runDay:true, runLabel:'Zone 2 / Quality Run'},
-  2: {type:'legs_xt', liftKey:'FB_TUE'},
-  3: {type:'run_upper', liftKey:'UPPER', runDay:true, runLabel:'Quality / Zone 2 Run'},
-  4: {type:'legs_xt', liftKey:'FB_THU'},
-  5: {type:'run_upper', liftKey:'UPPER', runDay:true, runLabel:'Zone 2 Run'},
+  1: {type:'run_upper', liftKey:'FB_TUE', runDay:true, runLabel:'Zone 2 / Quality Run'},
+  2: {type:'legs_xt', liftKey:'UPPER'},
+  3: {type:'run_upper', liftKey:'FB_THU', runDay:true, runLabel:'Quality / Zone 2 Run'},
+  4: {type:'legs_xt', liftKey:'UPPER'},
+  5: {type:'run_upper', liftKey:'FB_TUE', runDay:true, runLabel:'Zone 2 Run'},
   6: {type:'long_run', runDay:true, runLabel:'Long Run'},
 };
 
@@ -1239,11 +1238,11 @@ function renderPlanView(){
 
   const dayLabels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const dayTypes=[
-    {label:'Run + Upper Body 30 min',types:['run','lift']},
-    {label:'Full Body Compound A (Deadlift Day) + XT 90 min',types:['lift']},
-    {label:'Quality Run + Upper Body 30 min',types:['run','lift']},
-    {label:'Full Body Compound B (Squat Day) + XT 90 min',types:['lift']},
-    {label:'Run + Upper Body 30 min',types:['run','lift']},
+    {label:'Run + Full Body Compound A (Myrtle · Deadlift Day)',types:['run','lift']},
+    {label:'Upper Body 30 min + XT 90 min',types:['lift']},
+    {label:'Run + Full Body Compound B (Myrtle · Squat Day)',types:['run','lift']},
+    {label:'Upper Body 30 min + XT 90 min',types:['lift']},
+    {label:'Run + Full Body Compound A (Myrtle · Deadlift Day)',types:['run','lift']},
     {label:'Long Run (no lift)',types:['run']},
     {label:'Active Recovery (swim / yoga / walk)',types:['rest']},
   ];
