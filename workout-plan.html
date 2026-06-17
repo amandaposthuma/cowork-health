@@ -99,23 +99,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .block-desc{font-size:12px;color:var(--text-muted);padding:4px 2px 8px;line-height:1.5}
 /* EXERCISE ROW — Runna style */
 .exercise-list{display:flex;flex-direction:column;gap:6px}
-.exercise-row{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border-radius:10px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.ex-icon-wrap{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
-.ex-icon-wrap.cat-pt{background:var(--red-light)}
-.ex-icon-wrap.cat-lower{background:var(--orange-light)}
-.ex-icon-wrap.cat-upper{background:var(--blue-light)}
-.ex-icon-wrap.cat-core{background:var(--cyan-light)}
-.ex-icon-wrap.cat-mob{background:var(--purple-light)}
-.ex-icon-wrap.cat-full{background:var(--yellow-light)}
-.ex-icon-wrap svg{width:32px;height:32px}
-.ex-icon-wrap.cat-pt svg{color:var(--red)}
-.ex-icon-wrap.cat-lower svg{color:var(--orange)}
-.ex-icon-wrap.cat-upper svg{color:var(--blue)}
-.ex-icon-wrap.cat-core svg{color:var(--cyan)}
-.ex-icon-wrap.cat-mob svg{color:var(--purple)}
-.ex-icon-wrap.cat-full svg{color:var(--yellow)}
+.exercise-row{display:flex;align-items:center;gap:12px;padding:14px 14px 14px 16px;background:var(--surface);border-radius:10px;border:1px solid var(--border);border-left:3px solid var(--border2);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.exercise-row.cat-pt{border-left-color:var(--red)}
+.exercise-row.cat-lower{border-left-color:var(--orange)}
+.exercise-row.cat-upper{border-left-color:var(--blue)}
+.exercise-row.cat-core{border-left-color:var(--cyan)}
+.exercise-row.cat-mob{border-left-color:var(--purple)}
+.exercise-row.cat-full{border-left-color:var(--yellow)}
 .exercise-info{flex:1;min-width:0}
-.exercise-name{font-size:14px;font-weight:600;letter-spacing:-.1px;color:var(--text)}
+.exercise-name{font-size:15px;font-weight:700;letter-spacing:-.2px;color:var(--text)}
 .exercise-meta{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap}
 .ex-muscle-tag{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
 .exercise-detail{font-size:14px;font-weight:800;color:var(--text);margin-top:3px;letter-spacing:-.2px}
@@ -985,8 +977,7 @@ function renderExercise(ex, workoutKey, blockIdx, exIdx, isWarmup=false){
       <button class="set-cancel-btn" onclick="cancelSetTimer('${key}')">✕</button>
     </div>`:'';
   return `
-  <div class="exercise-row" id="ex-${key}">
-    <div class="ex-icon-wrap ${catClass(ex.cat)}">${icon}</div>
+  <div class="exercise-row ${catClass(ex.cat)}" id="ex-${key}">
     <div class="exercise-info">
       <div class="exercise-name">${ex.name}${timerBtn}</div>
       <div class="exercise-detail">${detail}</div>
