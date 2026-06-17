@@ -4,27 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#00A878">
+<meta name="theme-color" content="#7D9B76">
 <title>Amanda's Training Plan</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#F0F2F7;
+  --bg:#FAF8F5;
   --surface:#FFFFFF;
-  --surface2:#F6F7FB;
-  --surface3:#ECEEF5;
-  --border:#E4E6EF;
-  --border2:#CDD0DF;
+  --surface2:#F5F1EC;
+  --surface3:#EDE8E1;
+  --border:#E5DDD4;
+  --border2:#CEC4B8;
 
-  --green:#00A878;--green-light:#E5F7F2;--green-dark:#007A58;
-  --blue:#4361EE;--blue-light:#EEF1FD;
-  --orange:#F4831F;--orange-light:#FEF3E8;
-  --red:#E63946;--red-light:#FDECEE;
-  --cyan:#0096C7;--cyan-light:#E5F4FA;
-  --purple:#7B2FBE;--purple-light:#F3E8FA;
-  --yellow:#C18A00;--yellow-light:#FDF6E3;
+  --green:#7D9B76;--green-light:#EEF3ED;--green-dark:#4E6B49;
+  --blue:#7A8FA6;--blue-light:#ECF1F5;
+  --orange:#B8785A;--orange-light:#F6EDE7;
+  --red:#C47878;--red-light:#F6ECEC;
+  --cyan:#6E9E9E;--cyan-light:#EAF1F1;
+  --purple:#9B8BA8;--purple-light:#F0ECEF;
+  --yellow:#B09060;--yellow-light:#F2EAE0;
 
-  --text:#111827;--text-muted:#6B7280;--text-dim:#9CA3AF;
+  --text:#1A1814;--text-muted:#8A7F74;--text-dim:#B5ADA5;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-x:hidden}
 #app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto}
@@ -32,7 +32,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 #header{padding:20px 20px 0;position:sticky;top:0;background:var(--bg);z-index:100;border-bottom:1px solid transparent;transition:border-color .3s}
 #header.scrolled{border-color:var(--border)}
 .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.phase-chip{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1px solid rgba(0,168,120,.25)}
+.phase-chip{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:4px 12px;border-radius:20px;border:1px solid rgba(125,155,118,.2)}
 .marathon-chip{color:var(--text-muted);font-size:12px;font-weight:500}
 .marathon-days{color:var(--orange);font-weight:700}
 #header h1{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px}
@@ -42,7 +42,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 #day-strip::-webkit-scrollbar{display:none}
 .day-btn{flex-shrink:0;width:52px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .day-btn:hover{border-color:var(--border2);background:var(--surface2)}
-.day-btn.active{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 4px 12px rgba(0,168,120,.3)}
+.day-btn.active{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 4px 12px rgba(125,155,118,.3)}
 .day-btn.today:not(.active){border-color:var(--green);background:var(--green-light)}
 .day-btn.rest-day{opacity:.5}
 .day-name{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:inherit}
@@ -56,9 +56,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 /* CONTENT */
 #content{flex:1;padding:0 16px 100px}
 /* SECTION HEADERS */
-.section-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);padding:16px 4px 8px}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--text-dim);padding:16px 4px 8px}
 /* WORKOUT CARDS */
-.workout-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;margin-bottom:12px;overflow:hidden;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.workout-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;margin-bottom:12px;overflow:hidden;transition:all .2s;box-shadow:0 1px 6px rgba(0,0,0,.04)}
 .workout-card.expanded{border-color:var(--border2);box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .card-header{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer;user-select:none}
 .card-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
@@ -81,13 +81,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .pain-input-group{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;display:flex;flex-direction:column;gap:2px}
 .pain-input-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
 .pain-score{font-size:20px;font-weight:800;color:var(--text);cursor:pointer;padding:2px 0}
-/* BLOCK SECTION — Runna-style dark navy */
-.block-section{border-radius:14px;overflow:hidden;margin-bottom:12px}
-.block-section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#0F2044;color:#fff}
-.block-section-header.clr-green{background:#065F46}
-.block-section-header.clr-red{background:#991B1B}
-.block-section-header.clr-gray{background:#F1F3F9;color:var(--text-muted)}
-.block-section-header.clr-blue,.block-section-header.clr-orange,.block-section-header.clr-cyan,.block-section-header.clr-purple{background:#0F2044}
+/* BLOCK SECTION — clean girl */
+.block-section{border-radius:16px;overflow:hidden;margin-bottom:12px}
+.block-section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#2A2520;color:#fff}
+.block-section-header.clr-green{background:#4A6B45}
+.block-section-header.clr-red{background:#9B5A5A}
+.block-section-header.clr-gray{background:var(--surface3);color:var(--text-muted)}
+.block-section-header.clr-blue,.block-section-header.clr-orange,.block-section-header.clr-cyan,.block-section-header.clr-purple{background:#2A2520}
 .block-header-meta{flex:1;min-width:0}
 .block-part-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.5);display:block;margin-bottom:2px}
 .block-section-header.clr-gray .block-part-label{color:var(--text-dim)}
@@ -95,7 +95,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .block-section-header.clr-gray .block-part-name{color:var(--text-muted)}
 .block-repeat-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.15);color:#fff;flex-shrink:0}
 .block-section-header.clr-gray .block-repeat-badge{background:rgba(0,0,0,.06);color:var(--text-muted)}
-.block-section-body{background:#F8F9FC;border-radius:0 0 14px 14px;padding:10px}
+.block-section-body{background:var(--surface2);border-radius:0 0 16px 16px;padding:10px}
 .block-desc{font-size:12px;color:var(--text-muted);padding:4px 2px 8px;line-height:1.5}
 /* EXERCISE ROW — Runna style */
 .exercise-list{display:flex;flex-direction:column;gap:6px}
@@ -116,10 +116,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .exercise-check svg{width:13px;height:13px;opacity:0;transition:opacity .15s}
 .exercise-check.done svg{opacity:1}
 /* COACHING CUE */
-.cue-text{font-size:12px;color:#3D9A76;font-style:italic;padding:4px 0 0;line-height:1.4;border-left:2px solid var(--green-light);padding-left:8px;margin-top:4px}
+.cue-text{font-size:12px;color:var(--green-dark);font-style:italic;padding:4px 0 0;line-height:1.4;border-left:2px solid var(--green-light);padding-left:8px;margin-top:4px}
 .cue-text.cue-warning{color:var(--red);border-left-color:var(--red-light)}
 /* RUN DETAIL */
-.run-detail{background:var(--green-light);border-radius:12px;padding:14px;margin-top:12px;border:1px solid rgba(0,168,120,.15)}
+.run-detail{background:var(--green-light);border-radius:14px;padding:14px;margin-top:12px;border:1px solid rgba(125,155,118,.15)}
 .run-detail h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--green-dark)}
 .run-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(0,168,120,.15)}
 .run-row:last-child{border-bottom:none}
@@ -143,7 +143,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .bike-detail h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--blue)}
 /* COMPLETE BUTTON */
 .complete-btn{width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;letter-spacing:.3px;cursor:pointer;margin-top:14px;transition:all .15s}
-.complete-btn.done{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(0,168,120,.25)}
+.complete-btn.done{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(125,155,118,.25)}
 .complete-btn.not-done{background:var(--surface3);color:var(--text-muted);border:1.5px solid var(--border)}
 /* WORKOUT TIMER */
 .workout-timer-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
@@ -176,7 +176,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .phase-item{display:flex;align-items:center;gap:10px}
 .phase-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .phase-item.complete .phase-dot{background:var(--green)}
-.phase-item.active .phase-dot{background:var(--orange);box-shadow:0 0 6px rgba(244,131,31,.5)}
+.phase-item.active .phase-dot{background:var(--orange);box-shadow:0 0 6px rgba(184,120,90,.4)}
 .phase-item.upcoming .phase-dot{background:var(--border2)}
 .phase-text{flex:1}
 .phase-name{font-size:13px;font-weight:600;color:var(--text)}
@@ -1043,7 +1043,6 @@ function renderLiftCard(liftKey, dateStr_val){
   return `
   <div class="workout-card" id="lift-card-${workoutKey}">
     <div class="card-header" onclick="toggleCard('lift-card-${workoutKey}')">
-      <div class="card-icon lift-icon">💪</div>
       <div class="card-meta">
         <div class="card-title">${lift.name}</div>
         <div class="card-sub">${lift.focus}</div>
