@@ -384,6 +384,9 @@ const ICON_MAP = {
   'PX': 'core-twist', 'FD': 'calf-raise', 'FR': 'squat', 'SU': 'step-down',
   'XB': 'bench', 'TS': 'squat', 'FC': 'pull-through', 'PL': 'plank',
   'SN': 'lateral-raise', 'LC': 'calf-raise',
+  // Runner's core circuit
+  'TA': 'dead-bug', 'BV': 'core-twist', 'QP': 'plank',
+  'LL': 'dead-bug', 'SLS': 'core-twist', 'SM': 'bird-dog',
   // Mobility
   'WG': 'stretch', 'BD': 'bird-dog', 'HF': 'hip-flexor', 'TR': 'stretch',
   'HS': 'stretch', 'PP': 'pallof',
@@ -757,11 +760,11 @@ const LIFTS = {
         {code:'SC',cat:'ex-full',name:'Single Arm Clean and Press',sets:2,reps:'8/side',rest:'75s',cue:'DB at side. Explosive hip drive to clean to shoulder, then press overhead. Full-body power. The explosive hip extension used in running stride — translates directly to race speed.'},
         {code:'BR',cat:'ex-upper',name:'Barbell Bent-Over Row',sets:3,reps:'8',rest:'75s',cue:'Hinge at hip, row to lower chest. Upper back strength = better running posture in miles 18–26. Control the eccentric.'},
       ]},
-      {label:'D — Deep Core',clr:'clr-purple',note:'Runna deep core — anti-extension, anti-rotation, rotational. 3 rounds.',rptLabel:'3 rounds',exercises:[
-        {code:'BDB',cat:'ex-core',name:'Banded Dead Bug',sets:3,reps:'8/side',rest:'30s',cue:'Band above hands and below knees. Lower opposite arm+leg while pressing into band. Deep transverse abdominis + multifidus activation — the deepest core stability possible. Breath out on every rep.'},
-        {code:'SS',cat:'ex-core',name:'Swiss Ball Stir the Pot',sets:3,reps:'30s',rest:'30s',cue:'Forearms on Swiss ball, plank position. Draw small circles with forearms — clockwise then counter. Incredible deep oblique + core stabilization. No Swiss ball? Use Ab Wheel instead.'},
-        {code:'HP',cat:'ex-core',name:'Side Plank with Hip Flexion',sets:3,reps:'30s/side',rest:'30s',cue:'Side plank on forearm. Drive top knee forward toward chest. Lateral core + hip flexor at full range. Running-specific — directly trains the lateral stability needed to stay upright at race pace.'},
-        {code:'PX',cat:'ex-core',name:'Plank Twist',sets:3,reps:'30s',rest:'30s',cue:'High plank. Rotate hips side to side, feet planted. Controlled tempo — no momentum. Deep rotational core. Anti-rotation endurance for running trunk stability.'},
+      {label:'D — Runner\'s Core A',clr:'clr-purple',note:'Runner-specific core circuit — anti-extension + rotational stability. Flow as a circuit, 3 rounds.',rptLabel:'3 rounds',exercises:[
+        {code:'TA',cat:'ex-core',name:'Taps (Dead Bug Heel Tap)',sets:3,reps:'10/side',rest:'20s',cue:'Lie on back, arms to ceiling, legs in tabletop. Lower one heel to lightly tap the floor while keeping hips completely still — no rocking, no arching. The stillness IS the exercise. Core must brace before the leg moves.'},
+        {code:'BDB',cat:'ex-core',name:'Banded Dead Bug',sets:3,reps:'8/side',rest:'20s',cue:'Band above hands and below knees. Lower opposite arm+leg while pressing into band. Transverse abdominis + multifidus — the deepest layer possible. Exhale on every rep. Superset with Taps.'},
+        {code:'BV',cat:'ex-core',name:'Boat Pose Series',sets:3,reps:'6 cycles',rest:'30s',cue:'Sit on tailbone, knees bent, feet off floor — HIGH BOAT. Hold 2 sec. Lower legs toward floor — LOW BOAT. Hold 2 sec. Return and add a Russian Twist at top. 6 cycles total. Challenges hip flexors AND obliques in the exact position running demands.'},
+        {code:'SS',cat:'ex-core',name:'Swiss Ball Stir the Pot',sets:3,reps:'30s',rest:'30s',cue:'Forearms on Swiss ball, plank position. Draw slow circles with forearms — 15s clockwise, 15s counter. Deep oblique + core stabilization under load. No ball? Use Ab Wheel with rollouts instead.'},
       ]},
       {label:'E — Shin + Tibial Protocol',clr:'clr-orange',note:'Permanent — never remove. Builds the strong shins you need.',rptLabel:'',exercises:[
         {code:'FD',cat:'ex-pt',name:'Floating Heel Drop',sets:3,reps:'15',rest:'45s',cue:'Stand on a step. Rise onto toes, then slowly lower ONE heel below step level (4-sec descent). Eccentrically loads both calf and anterior tibialis. Brilliant Runna tibial exercise — specifically targets the tissue that was stressed.'},
@@ -798,11 +801,12 @@ const LIFTS = {
         {code:'TS',cat:'ex-full',name:'Thruster (DB or Barbell)',sets:2,reps:'8–10',rest:'90s',cue:'Squat to front rack, then explosive overhead press at the top. Full-body power endurance. Hip extension drives into the press — same hip power pattern as pushing off in your running stride.'},
         {code:'FC',cat:'ex-full',name:"Farmer's Carry",sets:2,reps:'30m',rest:'60s',cue:'Heavy DBs at sides. Tall posture, core braced hard, zero lateral sway. Develops the anti-sway stability that keeps your form clean in miles 20–26. If this feels easy, go heavier.'},
       ]},
-      {label:'D — Deep Core',clr:'clr-purple',note:'Runna deep core — lateral, rotational, anti-rotation. 3 rounds.',rptLabel:'3 rounds',exercises:[
-        {code:'CO',cat:'ex-core',name:'Long Lever Copenhagen Plank',sets:3,reps:'30s/side',rest:'30s',cue:'Side plank with TOP FOOT (not knee) elevated on bench — long lever. Much harder than standard Copenhagen. Adductor + lateral core strength reduces tibial bending moment during running. Progress to 45 sec.'},
-        {code:'RT',cat:'ex-core',name:'Russian Twist',sets:3,reps:'20',rest:'30s',cue:'Feet elevated. Hold plate or DB. Rotate fully side to side. Oblique + rotational core. Deep abdominal strength for trunk stability during long efforts.'},
-        {code:'PL',cat:'ex-core',name:'Side Plank Leg Raise',sets:3,reps:'30s/side',rest:'30s',cue:'Side plank on forearm. Raise top leg to hip height, hold or pulse. Lateral core + glute med + hip abductor. Directly targets the muscles that prevent hip drop in running — hip drop = tibial torsion.'},
-        {code:'SN',cat:'ex-core',name:'Standing Side Bend',sets:2,reps:'15/side',rest:'30s',cue:'Hold DB in one hand. Bend directly to that side. Feel the OPPOSITE oblique work eccentrically. Lateral core and quadratus lumborum — the lateral stabilizers that keep you upright across the race distance.'},
+      {label:'D — Runner\'s Core B',clr:'clr-purple',note:'Runner-specific core circuit — back extensors + stabilization. The posterior chain of your core. 3 rounds.',rptLabel:'3 rounds',exercises:[
+        {code:'SM',cat:'ex-core',name:'Superman + Diver',sets:3,reps:'10 each',rest:'20s',cue:'SUPERMAN: Lie face down, arms extended overhead. Lift arms + chest + legs simultaneously. Hold 2 sec at top. DIVER: Same start, arms sweep back like a diver — lift and hold. Back extensors (erector spinae, multifidus) are critically undertrained in runners. These prevent the forward lean collapse in miles 18–26.'},
+        {code:'QP',cat:'ex-core',name:'Push-up Position Leg + Arm Lifts',sets:3,reps:'8/side each',rest:'20s',cue:'Full push-up position (hands under shoulders). Lift ONE leg to hip height — hold 2 sec, lower. Then lift the OPPOSITE arm to shoulder height — hold 2 sec. Alternate. Forces anti-rotation stability through the entire kinetic chain. Harder than it looks.'},
+        {code:'LL',cat:'ex-core',name:'Stabilizing Leg Lifts',sets:3,reps:'10 single + 10 double',rest:'30s',cue:'Lie on back, hands under low back for support. Single leg: lower one leg toward floor (straight), return. Double leg: both legs together. Keep lower back pressed to floor throughout — the moment it lifts you\'ve lost it. Hip flexor + deep abdominal co-activation.'},
+        {code:'SLS',cat:'ex-core',name:'Straight Leg Sit-up',sets:3,reps:'12',rest:'20s',cue:'Legs straight on floor, hands resting on thighs (not behind head — this protects your neck). Curl up smoothly, sliding hands toward knees. Slow and controlled. Full abdominal range of motion. This trains the hip flexor–core connection that powers your running cadence.'},
+        {code:'CO',cat:'ex-core',name:'Long Lever Copenhagen Plank',sets:3,reps:'30s/side',rest:'30s',cue:'Side plank with TOP FOOT elevated on bench — long lever, not knee. Adductor + lateral core. Reduces tibial bending moment during running. This one stays in every session permanently. Progress to 45 sec.'},
       ]},
       {label:'E — Shin + Tibial Protocol',clr:'clr-orange',note:'Permanent — never remove. Builds the strong shins you need.',rptLabel:'',exercises:[
         {code:'LC',cat:'ex-pt',name:'Loaded Walking Calf Raises',sets:3,reps:'20 steps',rest:'45s',cue:'Hold DBs at sides. Rise fully onto toes on every step. Walk 20 steps. Combines calf load with movement — builds strength the way running actually uses it. Great tibial rehab from Runna.'},
