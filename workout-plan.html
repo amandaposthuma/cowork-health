@@ -1081,7 +1081,6 @@ function renderRunCard(dateStr_val){
   const done=completedWorkouts[workoutKey]||false;
   if(run.type==='rest')return '';
   const color=runTypeColor(run.type);
-  const iconSvg=EXERCISE_SVGS['run'].replace('viewBox="0 0 40 40"','viewBox="0 0 40 40" width="28" height="28"').replace(/stroke="currentColor"/g,`stroke="${color}"`).replace(/fill="currentColor" stroke="none"/g,`fill="${color}" stroke="none"`);
   let detailHtml=`<div class="run-detail"><h4>${runTypeLabel(run.type)}</h4>`;
   detailHtml+=`<div class="run-row"><span class="run-key">Duration</span><span class="run-val">${run.duration}</span></div>`;
   detailHtml+=`<div class="run-row"><span class="run-key">Effort</span><span class="run-val">${run.effort}</span></div>`;
@@ -1093,7 +1092,6 @@ function renderRunCard(dateStr_val){
   return `
   <div class="workout-card" id="run-card-${workoutKey}">
     <div class="card-header" onclick="toggleCard('run-card-${workoutKey}')">
-      <div class="card-icon run-icon">${iconSvg}</div>
       <div class="card-meta">
         <div class="card-title">${runTypeLabel(run.type)}</div>
         <div class="card-sub">${run.label} · ${run.duration}</div>
@@ -1122,7 +1120,6 @@ function renderXTCard(dateStr_val){
   return `
   <div class="workout-card" id="xt-card-${workoutKey}">
     <div class="card-header" onclick="toggleCard('xt-card-${workoutKey}')">
-      <div class="card-icon bike-icon">${EXERCISE_SVGS['bike'].replace('viewBox="0 0 40 40"','viewBox="0 0 40 40" width="28" height="28"').replace('stroke="currentColor"','stroke="#4361EE"').replace('fill="currentColor" stroke="none"','fill="#4361EE" stroke="none"')}</div>
       <div class="card-meta">
         <div class="card-title">Cross-Training</div>
         <div class="card-sub">${xt.duration} · ${xt.effort}</div>
