@@ -138,9 +138,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .pz-red .pz-dot{background:var(--red)}
 .pz-text{font-size:11px;flex:1;color:var(--text-muted)}
 .pz-text strong{color:var(--text);font-weight:700}
-/* BIKE DETAIL */
-.bike-detail{background:var(--blue-light);border-radius:12px;padding:14px;margin-top:12px;border:1px solid rgba(67,97,238,.15)}
-.bike-detail h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--blue)}
+/* XT MODE CARDS */
+.xt-mode-card{background:var(--surface2);border-radius:14px;padding:14px;margin-top:10px;border:1px solid var(--border)}
+.xt-mode-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:-.1px}
+.xt-structure{font-size:12px;color:var(--text-muted);margin-top:10px;line-height:1.55;border-left:2px solid var(--border2);padding-left:10px}
 /* COMPLETE BUTTON */
 .complete-btn{width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;letter-spacing:.3px;cursor:pointer;margin-top:14px;transition:all .15s}
 .complete-btn.done{background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(125,155,118,.25)}
@@ -551,14 +552,137 @@ function getRunWorkout(dateStr) {
 }
 
 function getXTWorkout(dateStr) {
-  const isCutback=(dateStr>='2026-07-28'&&dateStr<'2026-08-04')||(dateStr>='2026-08-31'&&dateStr<'2026-09-08');
-  const isTaperWk1=(dateStr>='2026-09-21'&&dateStr<'2026-09-29');
-  const isTaperWk2plus=(dateStr>='2026-09-28'&&dateStr<'2026-11-02');
-  if(dateStr>='2026-10-26'&&dateStr<'2026-11-02') return{duration:'Rest or easy walk only',effort:'Complete rest',notes:'Race week — rest is the job. No structured XT.',options:'Easy walk only'};
-  if(isTaperWk2plus) return{duration:'30 min easy',effort:'Very light',notes:'Taper — easy bike or swim only. No intensity. Let legs recover fully.',options:'Bike easy / Easy swim'};
-  if(isTaperWk1) return{duration:'45 min easy',effort:'Very light',notes:'Taper Week 1 — easy bike or swim only. HR stays below 120. Volume dropping.',options:'Bike easy / Swim'};
-  if(isCutback) return{duration:'60 min easy',effort:'Easy Zone 2',notes:'Cutback week — bike easy or swim. Recovery focused. No intensity. ~70% of normal XT volume.',options:'Bike easy / Swim / Elliptical light'};
-  return{duration:'90 min',effort:'Zone 2',notes:'Bike, swim, aqua jog, or elliptical. Zone 2 the whole time — HR 110–125 bpm. Watch for drift above 125. Completes your daily training block.',options:'Bike / Swim / Aqua jog / Elliptical'};
+  const d = dateStr;
+
+  // Race week
+  if(d>='2026-10-26') return {
+    label:'Race Week — Rest',duration:'Off',effort:'Complete rest',hr:'—',type:'rest',
+    bike:null,elliptical:null,
+    notes:'Zero structured XT this week. Walk if you need to move. Legs are loading for race day.'
+  };
+
+  // Taper Wk 3 (Oct 6–25)
+  if(d>='2026-10-05'&&d<'2026-10-26') return {
+    label:'Taper — Very Easy',duration:'30 min',effort:'Zone 1–2',hr:'Under 125 bpm',type:'steady',
+    bike:{target:'~12–15 km',cadence:'80–90 rpm',structure:'30 min flat and easy. No effort. This is legs-stay-fresh riding, not training.'},
+    elliptical:{resistance:'Level 3–4',cadence:'60–65 strides/min',structure:'30 min. Barely breaking a sweat. This is just to feel loose.'},
+    notes:'Taper is not the time to make fitness — it\'s already banked. The goal is to arrive at the start line fresh. Resist the urge to do more.'
+  };
+
+  // Taper Wk 2 (Sep 28–Oct 5)
+  if(d>='2026-09-28'&&d<'2026-10-06') return {
+    label:'Taper Wk 2 — Light',duration:'45 min',effort:'Zone 2',hr:'115–128 bpm',type:'steady',
+    bike:{target:'~18–20 km',cadence:'85–90 rpm',structure:'45 min easy. Flat route. Keep HR under 128. One 10-min pick-up to Zone 2 top end is fine if legs feel heavy.'},
+    elliptical:{resistance:'Level 4–5',cadence:'62–68 strides/min',structure:'45 min steady. Arms engaged. No surges.'},
+    notes:'Volume is dropping — trust it. Heavy legs during taper are normal (glycogen supercompensation). Do not add extra volume.'
+  };
+
+  // Taper Wk 1 (Sep 21–28)
+  if(d>='2026-09-21'&&d<'2026-09-29') return {
+    label:'Taper Wk 1 — ~70%',duration:'60 min',effort:'Zone 2',hr:'118–130 bpm',type:'steady',
+    bike:{target:'~22–26 km',cadence:'85–95 rpm',structure:'60 min easy with 2 × 5 min at Zone 2 top end (HR 128–132). Easy the rest. Keeps feel without adding fatigue.'},
+    elliptical:{resistance:'Level 5–6',cadence:'65–70 strides/min',structure:'60 min. Include 2 × 5 min at slightly elevated resistance (Level 7). Stay controlled.'},
+    notes:'First taper week — reduce total XT volume by ~30%. Sharpness comes from rest, not more work.'
+  };
+
+  // Cutback weeks
+  const isCutback=(d>='2026-07-28'&&d<'2026-08-04')||(d>='2026-08-31'&&d<'2026-09-08');
+  if(isCutback) return {
+    label:'Cutback — Easy 60 min',duration:'60 min',effort:'Zone 2 easy',hr:'115–125 bpm',type:'steady',
+    bike:{target:'~22–26 km',cadence:'80–90 rpm',structure:'60 min flat and easy. No intervals this week. Zone 2 only. Let the previous weeks consolidate.'},
+    elliptical:{resistance:'Level 4–5',cadence:'62–68 strides/min',structure:'60 min steady state. Conversational effort. Arms moving naturally.'},
+    notes:'Cutback week — adaptation happens during recovery, not during loading. Keep it honest: if it doesn\'t feel easy, you\'re going too hard.'
+  };
+
+  // Phase 3 (Aug 18 – Sep 21) — Marathon specific, longer XT + MP-effort
+  if(d>='2026-08-18'&&d<'2026-09-21') {
+    const isWk25=(d>='2026-09-07'&&d<'2026-09-15');
+    const isWk26=(d>='2026-09-14'&&d<'2026-09-22');
+    if(isWk26) return {
+      label:'Peak Wk 26 — 90 min Threshold Build',duration:'90 min',effort:'Zone 2 + threshold',hr:'120–142 bpm',type:'intervals',
+      bike:{target:'34–38 km',cadence:'88–96 rpm',structure:'WU 15 min easy → 3 × 12 min @ threshold effort (RPE 7.5/10, HR 138–145) / 5 min Zone 2 recovery → CD 10 min easy. Hardest XT session of the plan.'},
+      elliptical:{resistance:'Level 7–9 during intervals, 5 recovery',cadence:'72–78 strides/min hard / 65 easy',structure:'Same structure as bike. 3 × 12 min hard / 5 min easy. Drive arms hard during effort intervals.'},
+      notes:'Peak week XT mirrors peak run week. Total aerobic load is highest here. Threshold intervals on non-impact equipment = same stimulus, zero tibial stress.'
+    };
+    if(isWk25) return {
+      label:'Wk 25 — 90 min + MP Effort',duration:'90 min',effort:'Zone 2 + MP effort',hr:'118–140 bpm',type:'intervals',
+      bike:{target:'32–36 km',cadence:'88–96 rpm',structure:'WU 15 min easy → 2 × 15 min @ marathon pace equivalent effort (RPE 6.5/10, HR 132–140) / 5 min Zone 2 → CD 10 min. MP effort on bike = sustainable but not comfortable.'},
+      elliptical:{resistance:'Level 6–8 during efforts, 5 easy',cadence:'70–75 hard / 65 easy',structure:'WU 15 min → 2 × 15 min elevated resistance / 5 min easy → CD 10 min. Mirrors the bike structure.'},
+      notes:'Marathon-specific: training the body to sustain effort for long periods. Your XT pace should feel like the effort of marathon pace, not threshold.'
+    };
+    return {
+      label:'Phase 3 — 90 min + Threshold',duration:'90 min',effort:'Zone 2 + intervals',hr:'118–142 bpm',type:'intervals',
+      bike:{target:'30–35 km',cadence:'88–96 rpm',structure:'WU 15 min easy → 2 × 10 min @ threshold (RPE 7/10, HR 135–142) / 5 min Zone 2 recovery → CD 15 min easy. Build toward 3 × 12 min in peak weeks.'},
+      elliptical:{resistance:'Level 6–8 intervals / Level 5 recovery',cadence:'70–75 hard / 63–68 easy',structure:'Same structure. Focus on full arm drive during hard efforts — mimics running arm swing and adds upper body aerobic stimulus.'},
+      notes:'Phase 3 XT supports marathon-specific training. The threshold intervals on bike/elliptical build the same lactate clearance as tempo runs — with zero tibial stress.'
+    };
+  }
+
+  // Phase 2 — Intensity build weeks
+  // Wk 18 (Jul 21–27) — Track week XT: VO2 intervals
+  if(d>='2026-07-21'&&d<'2026-07-28') return {
+    label:'Wk 18 — VO2 Intervals',duration:'75 min total',effort:'Zone 2 + VO2 efforts',hr:'118–148 bpm',type:'intervals',
+    bike:{target:'26–30 km',cadence:'90–100 rpm efforts / 85 easy',structure:'WU 15 min easy → 6 × 3 min HARD (RPE 8.5/10, HR 142–150+, cadence 100+ rpm) / 3 min easy spin → CD 10 min. This is your track day equivalent on the bike. Go properly hard on the intervals.'},
+    elliptical:{resistance:'Level 9–11 intervals / Level 5 recovery',cadence:'78–85 strides/min hard / 64 easy',structure:'WU 15 min → 6 × 3 min at max sustainable effort / 3 min very easy → CD 10 min. Drive arms explosively during efforts.'},
+    notes:'VO2 intervals mirror your Wednesday track session. Short and sharp — the 3-min efforts should feel very hard by rep 5 and 6. Full recovery between efforts matters as much as the effort itself.'
+  };
+
+  // Wk 17 (Jul 14–20) — Tempo week XT: threshold intervals
+  if(d>='2026-07-14'&&d<'2026-07-21') return {
+    label:'Wk 17 — Threshold Intervals',duration:'75 min total',effort:'Zone 2 + threshold',hr:'118–142 bpm',type:'intervals',
+    bike:{target:'26–30 km',cadence:'88–96 rpm efforts / 82 easy',structure:'WU 15 min easy → 2 × 12 min @ threshold (RPE 7/10, HR 135–142, cadence 92–96 rpm) / 5 min easy spin recovery → CD 10 min. Threshold on bike = talking is difficult but possible. Hold the effort for the full 12 min.'},
+    elliptical:{resistance:'Level 7–8 intervals / Level 5 recovery',cadence:'70–75 hard / 63–68 easy',structure:'WU 15 min easy → 2 × 12 min elevated resistance / 5 min recovery → CD 10 min. Arms driving strongly during effort.'},
+    notes:'Threshold XT mirrors your Wednesday tempo run. The lactate system doesn\'t care whether you\'re on a bike or running — this builds the same metabolic fitness with zero impact on your shins.'
+  };
+
+  // Wk 16 (Jul 7–13) — First intensity XT: cadence surges
+  if(d>='2026-07-07'&&d<'2026-07-14') return {
+    label:'Wk 16 — Cadence Surges (First Intensity)',duration:'90 min',effort:'Zone 2 + surges',hr:'118–130 bpm + spikes',type:'intervals',
+    bike:{target:'28–32 km',cadence:'85–95 rpm base / 105+ rpm surges',structure:'85 min Zone 2 easy → after 50 min: 6 × 20 sec cadence surge (spin as fast as possible with no extra resistance, 105+ rpm) / 3 min easy between each → final 10 min easy cool-down. Surges are just spinning fast — not grinding hard.'},
+    elliptical:{resistance:'Level 5–6 base / same during surges (no resistance add)',cadence:'65–70 base / 85+ strides/min during surges',structure:'85 min Zone 2 → 6 × 20 sec cadence burst at same resistance, just move faster / 3 min easy → CD 10 min.'},
+    notes:'This mirrors your first strides run on Wednesday. Surges are neuromuscular — they teach your legs to turn over faster without cardiovascular stress. Feel the difference, don\'t force it.'
+  };
+
+  // Phase 1 — Pure Zone 2 (May 4 – Jul 6), progress by week
+  // Progressive bike distance targets to match running volume build
+  if(d>='2026-05-04'&&d<'2026-05-11') return {
+    label:'Wk 7 — Zone 2 Base',duration:'90 min',effort:'Zone 2',hr:'115–125 bpm',type:'steady',
+    bike:{target:'24–28 km',cadence:'82–90 rpm',structure:'90 min flat ride, easy gearing. No hills, no surges. HR should stay 115–125 the whole ride. If HR drifts above 125 → shift to an easier gear or slow down. Aerobic base only.'},
+    elliptical:{resistance:'Level 4–5',cadence:'62–68 strides/min',structure:'90 min steady. Arms moving in opposition (like running). Fully conversational effort. Check HR every 15 min — if above 125, reduce resistance.'},
+    notes:'First week of the plan. Easy is the goal, not impressive. Zone 2 work done consistently over weeks builds the aerobic engine that carries you through marathon miles.'
+  };
+  if(d>='2026-05-11'&&d<'2026-05-25') return {
+    label:'Wk 8–9 — Zone 2 Base',duration:'90 min',effort:'Zone 2',hr:'116–126 bpm',type:'steady',
+    bike:{target:'26–30 km',cadence:'83–92 rpm',structure:'90 min. Same easy effort as last week. Aim to cover slightly more ground as your efficiency builds — but only if HR stays in range.'},
+    elliptical:{resistance:'Level 5',cadence:'64–70 strides/min',structure:'90 min steady state. Add incline variation if available (simulates running hill load without impact).'},
+    notes:'Volume building slowly. The bike distance will naturally increase week-on-week as your aerobic system gets more efficient at the same HR. Track your km each session.'
+  };
+  if(d>='2026-05-25'&&d<'2026-06-08') return {
+    label:'Wk 10–11 — Zone 2 Build',duration:'90 min',effort:'Zone 2',hr:'116–126 bpm',type:'steady',
+    bike:{target:'28–32 km',cadence:'84–92 rpm',structure:'90 min. If road cycling: find a route with gentle rolling terrain. Shift gears to maintain HR — climb easy, recover on descents. Flat indoor: raise resistance by one level every 20 min, then drop back.'},
+    elliptical:{resistance:'Level 5–6',cadence:'65–72 strides/min',structure:'90 min with optional pyramid: 20 min Level 5 → 25 min Level 6 → 25 min Level 5 → 20 min Level 4. Stays Zone 2 while adding variety.'},
+    notes:'By now your body is beginning to adapt. You may notice you cover more distance at the same heart rate — that\'s aerobic efficiency improving. That\'s the adaptation you\'re chasing.'
+  };
+  if(d>='2026-06-08'&&d<'2026-06-22') return {
+    label:'Wk 12–13 — Zone 2 Steady',duration:'90 min',effort:'Zone 2',hr:'118–128 bpm',type:'steady',
+    bike:{target:'30–34 km',cadence:'85–94 rpm',structure:'90 min. Can include a gentle 10-min Zone 2-high effort (HR 126–130) in the middle if feeling strong — but back to easy immediately after. This is still a base-building session.'},
+    elliptical:{resistance:'Level 5–6',cadence:'66–72 strides/min',structure:'Option: 20 min / 40 min / 20 min — the middle 40 min at Level 6 (Zone 2 top end), first and last 20 min at Level 5. Keep HR in range throughout.'},
+    notes:'This is the phase where Zone 2 starts to feel genuinely easy. Resist the urge to push harder. The adaptation is happening below the surface — the fat-burning aerobic machinery is being built.'
+  };
+  if(d>='2026-06-22'&&d<'2026-07-07') return {
+    label:'Wk 14–15 — Zone 2 Peak Base',duration:'90 min',effort:'Zone 2',hr:'118–128 bpm',type:'steady',
+    bike:{target:'32–36 km',cadence:'86–95 rpm',structure:'90 min. Peak Phase 1 XT. Aim for your best distance-at-Zone-2 of the plan so far. Route with rolling terrain is fine — manage HR on the climbs by shifting down. Keep a 2-week running average of your km.'},
+    elliptical:{resistance:'Level 6',cadence:'68–74 strides/min',structure:'90 min. Optional fartlek-style variation: every 8 min, increase cadence (not resistance) by 10% for 60 sec, then return. Neuromuscular stimulus without cardiovascular cost.'},
+    notes:'Approaching the end of Phase 1 — pure aerobic base. After this, intensity enters the program. Your aerobic foundation determines how high the intensity ceiling can go. Make these sessions count.'
+  };
+
+  // Default fallback
+  return {
+    label:'Cross-Training',duration:'90 min',effort:'Zone 2',hr:'118–128 bpm',type:'steady',
+    bike:{target:'28–34 km',cadence:'85–94 rpm',structure:'90 min Zone 2. No surges. HR 118–128 throughout.'},
+    elliptical:{resistance:'Level 5–6',cadence:'65–72 strides/min',structure:'90 min steady state. Conversational effort.'},
+    notes:'Zone 2 aerobic base session. Bike or elliptical — your choice based on how legs feel.'
+  };
 }
 
 /* ─── LIFT WORKOUTS ─── */
@@ -1157,26 +1281,51 @@ function renderXTCard(dateStr_val){
   const xt=getXTWorkout(dateStr_val);
   const workoutKey=`${dateStr_val}_xt`;
   const done=completedWorkouts[workoutKey]||false;
+  if(xt.type==='rest') return `
+  <div class="workout-card" id="xt-card-${workoutKey}">
+    <div class="card-header" onclick="toggleCard('xt-card-${workoutKey}')">
+      <div class="card-meta"><div class="card-title">Cross-Training</div><div class="card-sub">${xt.label}</div></div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body"><p style="font-size:14px;color:var(--text-muted);padding:8px 0;line-height:1.5">${xt.notes}</p></div>
+  </div>`;
+
+  const typeTag=xt.type==='intervals'
+    ?`<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--orange-light);color:var(--orange);letter-spacing:.4px;text-transform:uppercase">Intervals</span>`
+    :`<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--green-light);color:var(--green-dark);letter-spacing:.4px;text-transform:uppercase">Zone 2</span>`;
+
+  const bikeHtml=xt.bike?`
+    <div class="xt-mode-card">
+      <div class="xt-mode-title">🚲 Bike</div>
+      <div class="run-row"><span class="run-key">Target</span><span class="run-val">${xt.bike.target}</span></div>
+      <div class="run-row"><span class="run-key">Cadence</span><span class="run-val">${xt.bike.cadence}</span></div>
+      <div class="run-row"><span class="run-key">Heart Rate</span><span class="run-val">${xt.hr}</span></div>
+      <div class="xt-structure">${xt.bike.structure}</div>
+    </div>`:'';
+
+  const ellHtml=xt.elliptical?`
+    <div class="xt-mode-card">
+      <div class="xt-mode-title">〰 Elliptical</div>
+      <div class="run-row"><span class="run-key">Resistance</span><span class="run-val">${xt.elliptical.resistance}</span></div>
+      <div class="run-row"><span class="run-key">Cadence</span><span class="run-val">${xt.elliptical.cadence}</span></div>
+      <div class="run-row"><span class="run-key">Heart Rate</span><span class="run-val">${xt.hr}</span></div>
+      <div class="xt-structure">${xt.elliptical.structure}</div>
+    </div>`:'';
+
   return `
   <div class="workout-card" id="xt-card-${workoutKey}">
     <div class="card-header" onclick="toggleCard('xt-card-${workoutKey}')">
       <div class="card-meta">
-        <div class="card-title">Cross-Training</div>
-        <div class="card-sub">${xt.duration} · ${xt.effort}</div>
+        <div class="card-title" style="display:flex;align-items:center;gap:8px">Cross-Training ${typeTag}</div>
+        <div class="card-sub">${xt.label} · ${xt.duration}</div>
       </div>
       <div class="card-chevron">›</div>
     </div>
     <div class="card-body">
-      <div class="run-detail">
-        <h4>Zone 2 Cross-Training</h4>
-        <div class="run-row"><span class="run-key">Duration</span><span class="run-val">${xt.duration}</span></div>
-        <div class="run-row"><span class="run-key">Effort</span><span class="run-val">${xt.effort}</span></div>
-        <div class="run-row"><span class="run-key">Heart Rate</span><span class="run-val">120–135 bpm (Zone 2)</span></div>
-        <div class="run-row"><span class="run-key">Options</span><span class="run-val">${xt.options}</span></div>
-      </div>
-      <p style="font-size:13px;color:var(--text-muted);margin-top:10px;line-height:1.5">${xt.notes}</p>
+      ${bikeHtml}${ellHtml}
+      <p style="font-size:12px;color:var(--text-muted);margin-top:10px;line-height:1.5;font-style:italic">${xt.notes}</p>
       <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
-        ${done?'✓ Completed':'Mark Complete'}
+        ${done?'✓ XT Completed':'Mark XT Complete'}
       </button>
     </div>
   </div>`;
