@@ -258,6 +258,126 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ai-chip{background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;padding:7px 13px;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:inherit;transition:all .15s}
 .ai-chip:active{background:var(--green-light);border-color:var(--green);color:var(--green-dark)}
 .ai-change-key{background:none;border:none;color:var(--text-dim);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0;display:block;margin-top:4px}
+/* ─── CALENDAR VIEW ─── */
+.cal-header{padding:12px 20px 10px;display:flex;align-items:center;justify-content:space-between}
+.cal-month-nav{display:flex;align-items:center;gap:12px}
+.cal-nav-btn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);line-height:1}
+.cal-month-name{font-size:15px;font-weight:800;letter-spacing:-.3px;color:var(--text);min-width:130px;text-align:center}
+.cal-grid-wrap{padding:0 12px 8px}
+.cal-week-labels{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:2px}
+.cal-week-label{text-align:center;font-size:9px;font-weight:700;color:var(--text-dim);padding:3px 0;text-transform:uppercase;letter-spacing:.6px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:11px;cursor:pointer;transition:all .12s;border:2px solid transparent;user-select:none;position:relative}
+.cal-cell:not(.cal-empty):hover{background:var(--surface2)}
+.cal-cell.cal-today{background:var(--surface3);border-color:var(--text)}
+.cal-cell.cal-sel{background:#2A2520 !important;border-color:#2A2520}
+.cal-cell.cal-no-sched{opacity:.3;cursor:default}
+.cal-cell.cal-no-sched:hover{background:transparent}
+.cal-num{font-size:13px;font-weight:700;color:var(--text);line-height:1}
+.cal-cell.cal-sel .cal-num{color:#fff}
+.cal-cell.cal-today:not(.cal-sel) .cal-num{color:var(--text)}
+.cal-pip{width:5px;height:5px;border-radius:50%;margin-top:2px}
+.cal-cell.cal-sel .cal-pip{background:rgba(255,255,255,.5)!important}
+.pip-run{background:var(--orange)}
+.pip-lift{background:var(--green)}
+.pip-pilates{background:var(--purple)}
+.pip-rest{background:var(--border2)}
+.pip-race{background:var(--yellow)}
+/* Legend */
+.cal-legend{display:flex;gap:10px;flex-wrap:wrap;padding:4px 20px 10px}
+.cal-leg-item{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
+.cal-leg-dot{width:6px;height:6px;border-radius:50%}
+/* Divider */
+.cal-divider{height:2px;background:var(--border);margin:0 0 0 0}
+/* Detail area */
+.cal-detail{padding:16px 20px 110px}
+.cal-detail-date{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.cal-type-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:14px;letter-spacing:.3px}
+.pill-run{background:var(--orange-light);color:var(--orange)}
+.pill-lift{background:var(--green-light);color:var(--green-dark)}
+.pill-pilates{background:var(--purple-light);color:var(--purple)}
+.pill-rest{background:var(--surface3);color:var(--text-muted)}
+.pill-race{background:var(--yellow-light);color:var(--yellow)}
+/* Phase banner */
+.phase-banner{background:#2A2520;border-radius:16px;padding:14px 16px;margin-bottom:14px}
+.pb-scheme{font-size:26px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1}
+.pb-meta{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.pb-badge{background:rgba(255,255,255,.13);color:rgba(255,255,255,.85);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;letter-spacing:.3px}
+.pb-note{background:var(--orange-light);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--orange);font-weight:600;margin-bottom:12px;line-height:1.4}
+/* Cal exercise rows */
+.cal-ex-section-label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin:2px 0 8px}
+.cal-ex-row{display:flex;align-items:flex-start;gap:10px;padding:12px 14px 12px 15px;background:var(--surface);border-radius:12px;border:1px solid var(--border);border-left:3px solid var(--border2);margin-bottom:6px;cursor:pointer;transition:background .12s;-webkit-tap-highlight-color:transparent}
+.cal-ex-row:active{background:var(--surface2)}
+.cat-lower_body{border-left-color:var(--orange)!important}
+.cat-posterior_chain{border-left-color:var(--blue)!important}
+.cat-single_leg{border-left-color:var(--green)!important}
+.cat-upper_body{border-left-color:var(--purple)!important}
+.cat-core{border-left-color:var(--cyan)!important}
+.cat-lower_leg{border-left-color:var(--red)!important}
+.cat-full_body{border-left-color:var(--yellow)!important}
+.cal-ex-body{flex:1;min-width:0}
+.cal-ex-name{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.2px}
+.cal-ex-scheme{font-size:13px;font-weight:800;color:var(--text);margin-top:2px}
+.cal-ex-intensity{font-size:11px;font-weight:600;color:var(--text-muted);margin-left:5px}
+.cal-ex-cue{font-size:12px;color:var(--green-dark);font-style:italic;border-left:2px solid var(--green-light);padding-left:8px;margin-top:6px;line-height:1.4;display:none}
+.cal-ex-row.ex-open .cal-ex-cue{display:block}
+.cal-ex-benefit{font-size:11px;color:var(--blue);margin-top:4px;line-height:1.3;display:none}
+.cal-ex-row.ex-open .cal-ex-benefit{display:block}
+.cal-ex-chev{font-size:11px;color:var(--text-dim);flex-shrink:0;margin-top:3px;transition:transform .15s}
+.cal-ex-row.ex-open .cal-ex-chev{transform:rotate(180deg)}
+/* Run detail */
+.cal-run-card{border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.run-card-easy{background:var(--orange-light)}
+.run-card-quality{background:var(--red-light)}
+.run-card-long{background:var(--surface3)}
+.run-card-shakeout{background:var(--green-light)}
+.crn-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;opacity:.65;margin-bottom:3px}
+.crn-title{font-size:20px;font-weight:900;letter-spacing:-.4px}
+.crn-quality{font-size:13px;font-weight:700;opacity:.7;margin-top:3px}
+.crn-note{font-size:13px;font-weight:600;margin-top:8px;opacity:.8;line-height:1.4}
+.cal-hr-box{display:flex;align-items:center;gap:10px;background:var(--green-light);border-radius:12px;padding:11px 14px;margin-bottom:12px}
+.cal-hr-num{font-size:24px;font-weight:900;color:var(--green-dark)}
+.cal-hr-lbl{font-size:11px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:.5px;line-height:1.3}
+/* 3pt check */
+.check-card{background:var(--surface2);border-radius:14px;padding:14px 16px;margin-bottom:8px}
+.check-card-title{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.check-logged{background:var(--green-light);border-radius:12px;padding:12px 14px}
+.check-logged-head{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--green-dark);margin-bottom:4px}
+.check-logged-body{font-size:12px;color:var(--green-dark);line-height:1.5}
+.check-edit-btn{font-size:12px;font-weight:700;color:var(--orange);background:none;border:none;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0;margin-top:6px;display:block}
+.check-open-btn{width:100%;padding:12px;border-radius:12px;background:#2A2520;color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;transition:opacity .15s}
+.check-sub{font-size:12px;color:var(--text-muted);line-height:1.4;margin-bottom:0}
+/* Pilates/Rest/Race blocks */
+.cal-simple-block{border-radius:16px;padding:24px;text-align:center;margin-bottom:12px}
+.cal-simple-emoji{font-size:40px;margin-bottom:8px}
+.cal-simple-title{font-size:18px;font-weight:900;letter-spacing:-.3px}
+.cal-simple-sub{font-size:13px;margin-top:4px;opacity:.7}
+.cal-simple-note{font-size:13px;font-weight:600;margin-top:10px;opacity:.8}
+/* ─── SYMPTOM CHECK MODAL ─── */
+.symptom-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:700;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.symptom-overlay.open{opacity:1;pointer-events:auto}
+.symptom-sheet{background:var(--bg);border-radius:28px 28px 0 0;width:100%;max-width:480px;margin:0 auto;padding:0 20px;padding-bottom:max(24px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.symptom-overlay.open .symptom-sheet{transform:translateY(0)}
+.sym-handle{width:36px;height:4px;background:var(--border2);border-radius:4px;margin:12px auto 18px}
+.sym-pips{display:flex;gap:6px;margin-bottom:18px}
+.sym-pip{height:3px;flex:1;border-radius:3px;background:var(--border);transition:background .2s}
+.sym-pip.done{background:#2A2520}
+.sym-eyebrow{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.sym-title{font-size:20px;font-weight:900;color:var(--text);letter-spacing:-.4px}
+.sym-sub{font-size:13px;color:var(--text-muted);margin-top:3px;margin-bottom:20px;line-height:1.4}
+.feel-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:24px}
+.feel-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:13px;border:2px solid var(--border);background:var(--surface);cursor:pointer;font-family:inherit;transition:all .12s;-webkit-tap-highlight-color:transparent}
+.feel-btn.sel{border-color:#2A2520;background:#2A2520}
+.feel-emoji{font-size:22px}
+.feel-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.feel-btn.sel .feel-lbl{color:rgba(255,255,255,.65)}
+.sym-textarea{width:100%;border:2px solid var(--border);border-radius:13px;padding:12px 14px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--text);resize:none;outline:none;transition:border-color .15s;line-height:1.5;margin-bottom:22px}
+.sym-textarea:focus{border-color:#2A2520}
+.sym-hint{background:var(--green-light);border-radius:11px;padding:10px 12px;font-size:12px;color:var(--green-dark);margin-bottom:20px;line-height:1.4}
+.sym-btns{display:flex;gap:10px;padding-bottom:4px}
+.sym-back{flex:0 0 80px;padding:14px;border-radius:13px;border:2px solid var(--border);background:none;font-size:14px;font-weight:700;color:var(--text-muted);cursor:pointer;font-family:inherit}
+.sym-next{flex:1;padding:14px;border-radius:13px;border:none;background:#2A2520;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.sym-next.save{background:var(--green)}
 </style>
 </head>
 <body>
@@ -276,6 +396,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div id="content">
     <div id="view-today" class="view active"></div>
     <div id="view-plan" class="view"></div>
+    <div id="view-schedule" class="view">
+      <div class="cal-header">
+        <div class="cal-month-nav">
+          <button class="cal-nav-btn" onclick="calPrevMonth()">‹</button>
+          <div class="cal-month-name" id="cal-month-name"></div>
+          <button class="cal-nav-btn" onclick="calNextMonth()">›</button>
+        </div>
+      </div>
+      <div class="cal-grid-wrap">
+        <div class="cal-week-labels">
+          <div class="cal-week-label">S</div><div class="cal-week-label">M</div><div class="cal-week-label">T</div>
+          <div class="cal-week-label">W</div><div class="cal-week-label">T</div><div class="cal-week-label">F</div><div class="cal-week-label">S</div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div class="cal-legend">
+        <div class="cal-leg-item"><div class="cal-leg-dot pip-run"></div>Run</div>
+        <div class="cal-leg-item"><div class="cal-leg-dot pip-lift"></div>Lift</div>
+        <div class="cal-leg-item"><div class="cal-leg-dot pip-pilates"></div>Pilates</div>
+        <div class="cal-leg-item"><div class="cal-leg-dot pip-rest"></div>Rest</div>
+        <div class="cal-leg-item"><div class="cal-leg-dot pip-race"></div>Race</div>
+      </div>
+      <div class="cal-divider"></div>
+      <div class="cal-detail" id="cal-detail"></div>
+    </div>
   </div>
 
   <nav id="bottom-nav">
@@ -286,6 +431,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <button class="nav-btn" onclick="switchView('plan')" id="nav-plan">
       <span class="nav-icon">📅</span>
       <span class="nav-label">PLAN</span>
+    </button>
+    <button class="nav-btn" onclick="switchToSchedule()" id="nav-schedule">
+      <span class="nav-icon">🗓</span>
+      <span class="nav-label">SCHEDULE</span>
     </button>
   </nav>
 </div>
@@ -937,6 +1086,437 @@ const DAY_CONFIG = {
   5: {type:'run_upper', liftKey:'FB_TUE', runDay:true, runLabel:'Zone 2 Run'},
   6: {type:'long_run', runDay:true, runLabel:'Long Run'},
 };
+
+/* ─── TRAINING SCHEDULE DATA ─── */
+const T_PHASES = {
+  base:  {id:'base',  name:'Base Building', repScheme:'5×5', restSec:90, intensity:'heavy'},
+  build: {id:'build', name:'Build Phase',   repScheme:'3×8', restSec:90, intensity:'moderate'},
+  peak:  {id:'peak',  name:'Peak Block',    repScheme:'3×8', restSec:90, intensity:'mod–light'},
+  taper: {id:'taper', name:'Taper',         repScheme:'2×10',restSec:60, intensity:'light'},
+  race_week:{id:'race_week',name:'Race Week',repScheme:'—',  restSec:0,  intensity:'—'},
+};
+
+const T_SESSIONS = {
+  lower_body:{name:'Lower Body + Posterior Chain',dur:50,exercises:[
+    {id:'back_squat',name:'Back Squat',cat:'lower_body',benefit:'Quad and glute strength, running economy',cue:'Brace core, knees tracking toes, full depth'},
+    {id:'romanian_deadlift',name:'Romanian Deadlift',cat:'posterior_chain',benefit:'Hamstring strength, injury prevention',cue:'Hinge at hips, soft knee, bar close to shins'},
+    {id:'bulgarian_split_squat',name:'Bulgarian Split Squat',cat:'single_leg',benefit:'Single-leg stability, quad and glute strength',cue:'Front foot forward enough that knee stays behind toe'},
+    {id:'single_leg_rdl',name:'Single-Leg RDL',cat:'single_leg',benefit:'Hamstring and hip stability, mimics running gait',cue:'Hinge slowly, keep hips square, soft standing knee'},
+    {id:'hip_thrust',name:'Hip Thrust',cat:'posterior_chain',benefit:'Glute max power, propulsion',cue:'Shoulders on bench, drive through heels, squeeze at top'},
+    {id:'nordic_hamstring_curl',name:'Nordic Hamstring Curl',cat:'posterior_chain',benefit:'Hamstring injury prevention, eccentric strength',cue:'Lower as slowly as possible, use hands to catch at bottom'},
+    {id:'single_leg_calf_raise',name:'Single-Leg Calf Raise',cat:'lower_leg',benefit:'Achilles and tibial load tolerance',cue:'Full range of motion, slow eccentric, no bouncing'},
+    {id:'step_up_knee_drive',name:'Step-Up with Knee Drive',cat:'single_leg',benefit:'Hip flexor strength, running gait pattern',cue:'Drive through the heel of the planted foot, control descent'},
+  ]},
+  upper_body:{name:'Upper Body + Single-Leg Accessory',dur:45,exercises:[
+    {id:'pullup',name:'Pull-Up or Lat Pulldown',cat:'upper_body',benefit:'Upper body posture and arm drive efficiency',cue:'Full hang to chin over bar, no kipping'},
+    {id:'barbell_row',name:'Barbell or Dumbbell Row',cat:'upper_body',benefit:'Scapular stability, posture under fatigue',cue:'Flat back, pull to hip not chest, squeeze shoulder blade'},
+    {id:'overhead_press',name:'Overhead Press',cat:'upper_body',benefit:'Shoulder stability, upper body tension management',cue:'Brace core, press straight up, no lumbar flare'},
+    {id:'face_pull',name:'Face Pull',cat:'upper_body',benefit:'Rotator cuff health, posture',cue:'Pull to forehead, elbows high, external rotation at end'},
+    {id:'pallof_press',name:'Pallof Press',cat:'core',benefit:'Anti-rotation core stability, critical for late-race form',cue:'Feet shoulder width, press straight out, resist rotation'},
+    {id:'copenhagen_plank',name:'Copenhagen Plank',cat:'single_leg',benefit:'Adductor and hip stability, tibial stress injury prevention',cue:'Top leg on bench, body straight, hold without sagging'},
+  ]},
+  full_body:{name:'Full Body Moderate',dur:45,exercises:[
+    {id:'trap_bar_deadlift',name:'Trap Bar Deadlift',cat:'full_body',benefit:'Total posterior chain, lower spinal stress than straight bar',cue:'Chest up, push floor away, hips and shoulders rise together'},
+    {id:'goblet_squat',name:'Goblet Squat',cat:'lower_body',benefit:'Quad strength, ankle mobility',cue:'Elbows inside knees at bottom, heels down, upright torso'},
+    {id:'kettlebell_swing',name:'Kettlebell Swing',cat:'full_body',benefit:'Posterior chain power, hip extension mimics push-off',cue:'Hinge not squat, snap hips, bell floats to shoulder height'},
+    {id:'farmer_carry',name:'Farmer Carry',cat:'full_body',benefit:'Core stability, grip, posture under load',cue:'Tall spine, shoulders back, short quick steps'},
+    {id:'dumbbell_clean_press',name:'Dumbbell Clean and Press',cat:'full_body',benefit:'Power development, coordination',cue:'Explosive hip drive, catch at shoulder, press overhead'},
+  ]},
+};
+
+const T_SCHEDULE = [
+  {date:'2026-07-20',type:'run',subtype:'easy',phase:'base'},
+  {date:'2026-07-21',type:'lift',session:'lower_body',phase:'base'},
+  {date:'2026-07-22',type:'run',subtype:'quality',quality:'strides',phase:'base'},
+  {date:'2026-07-23',type:'pilates',phase:'base'},
+  {date:'2026-07-24',type:'run',subtype:'long',phase:'base'},
+  {date:'2026-07-25',type:'lift',session:'upper_body',phase:'base'},
+  {date:'2026-07-26',type:'run',subtype:'easy',phase:'base'},
+  {date:'2026-07-27',type:'lift',session:'full_body',phase:'base'},
+  {date:'2026-07-28',type:'run',subtype:'easy',phase:'base'},
+  {date:'2026-07-29',type:'pilates',phase:'base'},
+  {date:'2026-07-30',type:'run',subtype:'quality',quality:'strides',phase:'base'},
+  {date:'2026-07-31',type:'lift',session:'upper_body',phase:'base'},
+  {date:'2026-08-01',type:'run',subtype:'long',phase:'base'},
+  {date:'2026-08-02',type:'rest',phase:'base'},
+  {date:'2026-08-03',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-08-04',type:'lift',session:'lower_body',phase:'build'},
+  {date:'2026-08-05',type:'run',subtype:'quality',quality:'tempo',phase:'build'},
+  {date:'2026-08-06',type:'pilates',phase:'build'},
+  {date:'2026-08-07',type:'run',subtype:'long',phase:'build'},
+  {date:'2026-08-08',type:'lift',session:'upper_body',phase:'build'},
+  {date:'2026-08-09',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-08-10',type:'lift',session:'full_body',phase:'build'},
+  {date:'2026-08-11',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-08-12',type:'pilates',phase:'build'},
+  {date:'2026-08-13',type:'run',subtype:'quality',quality:'tempo',phase:'build'},
+  {date:'2026-08-14',type:'lift',session:'upper_body',phase:'build'},
+  {date:'2026-08-15',type:'run',subtype:'long',phase:'build'},
+  {date:'2026-08-16',type:'rest',phase:'build'},
+  {date:'2026-08-17',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-08-18',type:'lift',session:'lower_body',phase:'build'},
+  {date:'2026-08-19',type:'run',subtype:'quality',quality:'tempo',phase:'build'},
+  {date:'2026-08-20',type:'pilates',phase:'build'},
+  {date:'2026-08-21',type:'run',subtype:'long',phase:'build'},
+  {date:'2026-08-22',type:'lift',session:'upper_body',phase:'build'},
+  {date:'2026-08-23',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-08-24',type:'lift',session:'full_body',phase:'build'},
+  {date:'2026-08-25',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-08-26',type:'pilates',phase:'build'},
+  {date:'2026-08-27',type:'run',subtype:'quality',quality:'tempo',phase:'build'},
+  {date:'2026-08-28',type:'lift',session:'upper_body',phase:'build'},
+  {date:'2026-08-29',type:'run',subtype:'long',phase:'build'},
+  {date:'2026-08-30',type:'rest',phase:'build'},
+  {date:'2026-08-31',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-09-01',type:'lift',session:'lower_body',phase:'build'},
+  {date:'2026-09-02',type:'run',subtype:'quality',quality:'tempo',phase:'build'},
+  {date:'2026-09-03',type:'pilates',phase:'build'},
+  {date:'2026-09-04',type:'run',subtype:'long',phase:'build'},
+  {date:'2026-09-05',type:'lift',session:'upper_body',phase:'build'},
+  {date:'2026-09-06',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-09-07',type:'lift',session:'full_body',phase:'build'},
+  {date:'2026-09-08',type:'run',subtype:'easy',phase:'build'},
+  {date:'2026-09-09',type:'pilates',phase:'build'},
+  {date:'2026-09-10',type:'run',subtype:'quality',quality:'marathon_pace',phase:'peak'},
+  {date:'2026-09-11',type:'lift',session:'upper_body',phase:'peak'},
+  {date:'2026-09-12',type:'run',subtype:'long',phase:'peak'},
+  {date:'2026-09-13',type:'rest',phase:'peak'},
+  {date:'2026-09-14',type:'run',subtype:'easy',phase:'peak'},
+  {date:'2026-09-15',type:'lift',session:'lower_body',note:'reduce volume 20%',phase:'peak'},
+  {date:'2026-09-16',type:'run',subtype:'quality',quality:'marathon_pace',phase:'peak'},
+  {date:'2026-09-17',type:'pilates',phase:'peak'},
+  {date:'2026-09-18',type:'run',subtype:'long',note:'peak mileage',phase:'peak'},
+  {date:'2026-09-19',type:'lift',session:'upper_body',note:'drop single-leg work',phase:'peak'},
+  {date:'2026-09-20',type:'run',subtype:'easy',phase:'peak'},
+  {date:'2026-09-21',type:'lift',session:'full_body',note:'light',phase:'peak'},
+  {date:'2026-09-22',type:'run',subtype:'easy',phase:'peak'},
+  {date:'2026-09-23',type:'pilates',phase:'peak'},
+  {date:'2026-09-24',type:'run',subtype:'quality',quality:'marathon_pace',phase:'peak'},
+  {date:'2026-09-25',type:'lift',session:'upper_body',phase:'peak'},
+  {date:'2026-09-26',type:'run',subtype:'long',note:'peak long run ~20 miles',phase:'peak'},
+  {date:'2026-09-27',type:'rest',phase:'peak'},
+  {date:'2026-09-28',type:'run',subtype:'easy',note:'cut volume 30%',phase:'taper'},
+  {date:'2026-09-29',type:'lift',session:'lower_body',note:'one session this cycle only',phase:'taper'},
+  {date:'2026-09-30',type:'run',subtype:'quality',quality:'tempo',note:'shorter',phase:'taper'},
+  {date:'2026-10-01',type:'pilates',phase:'taper'},
+  {date:'2026-10-02',type:'run',subtype:'long',note:'14–16 miles max',phase:'taper'},
+  {date:'2026-10-03',type:'rest',phase:'taper'},
+  {date:'2026-10-04',type:'run',subtype:'easy',phase:'taper'},
+  {date:'2026-10-05',type:'lift',session:'upper_body',note:'upper body only',phase:'taper'},
+  {date:'2026-10-06',type:'run',subtype:'easy',phase:'taper'},
+  {date:'2026-10-07',type:'pilates',phase:'taper'},
+  {date:'2026-10-08',type:'run',subtype:'quality',quality:'tempo',note:'short and sharp',phase:'taper'},
+  {date:'2026-10-09',type:'rest',phase:'taper'},
+  {date:'2026-10-10',type:'run',subtype:'long',note:'12 miles max',phase:'taper'},
+  {date:'2026-10-11',type:'rest',phase:'taper'},
+  {date:'2026-10-12',type:'run',subtype:'easy',phase:'taper'},
+  {date:'2026-10-13',type:'lift',session:'upper_body',note:'last strength session',phase:'taper'},
+  {date:'2026-10-14',type:'run',subtype:'quality',quality:'tempo',note:'20–30 min, feel sharp',phase:'taper'},
+  {date:'2026-10-15',type:'pilates',phase:'taper'},
+  {date:'2026-10-16',type:'run',subtype:'easy',note:'45 min',phase:'taper'},
+  {date:'2026-10-17',type:'rest',phase:'taper'},
+  {date:'2026-10-18',type:'run',subtype:'easy',note:'30 min',phase:'taper'},
+  {date:'2026-10-19',type:'rest',phase:'race_week'},
+  {date:'2026-10-20',type:'run',subtype:'easy',note:'30 min',phase:'race_week'},
+  {date:'2026-10-21',type:'run',subtype:'easy',note:'20 min with 4 race pace strides',phase:'race_week'},
+  {date:'2026-10-22',type:'pilates',note:'gentle',phase:'race_week'},
+  {date:'2026-10-23',type:'rest',phase:'race_week'},
+  {date:'2026-10-24',type:'run',subtype:'shakeout',note:'20 min',phase:'race_week'},
+  {date:'2026-10-25',type:'rest',phase:'race_week'},
+  {date:'2026-10-26',type:'run',subtype:'shakeout',note:'20 min',phase:'race_week'},
+  {date:'2026-10-27',type:'rest',phase:'race_week'},
+  {date:'2026-10-28',type:'rest',phase:'race_week'},
+  {date:'2026-10-29',type:'rest',phase:'race_week'},
+  {date:'2026-10-30',type:'rest',phase:'race_week'},
+  {date:'2026-10-31',type:'rest',phase:'race_week'},
+  {date:'2026-11-01',type:'rest',phase:'race_week'},
+  {date:'2026-11-02',type:'race',note:'NYC Marathon 🏆',phase:'race_week'},
+];
+
+function tSchedFor(ds){return T_SCHEDULE.find(s=>s.date===ds)||null;}
+
+/* ─── CALENDAR STATE ─── */
+const calToday = new Date(); calToday.setHours(0,0,0,0);
+const calTodayStr = dateStr(calToday);
+let calMonth = {year: calToday.getFullYear(), month: calToday.getMonth()};
+let calSelected = calTodayStr;
+
+function switchToSchedule(){
+  switchView('schedule');
+  renderCalGrid();
+  renderCalDetail(calSelected);
+}
+
+function calPrevMonth(){
+  const {year,month}=calMonth;
+  calMonth = month===0?{year:year-1,month:11}:{year,month:month-1};
+  renderCalGrid();
+}
+function calNextMonth(){
+  const {year,month}=calMonth;
+  calMonth = month===11?{year:year+1,month:0}:{year,month:month+1};
+  renderCalGrid();
+}
+
+function calPickDay(ds){
+  calSelected=ds;
+  renderCalGrid();
+  renderCalDetail(ds);
+}
+
+const SUBTYPE_LABELS={easy:'Easy Run',quality:'Quality Run',long:'Long Run',shakeout:'Shakeout'};
+const QUALITY_LABELS={strides:'Strides',tempo:'Tempo Run',marathon_pace:'Marathon Pace'};
+const TYPE_ICONS={run:'🏃',lift:'🏋️',pilates:'🧘',rest:'💤',race:'🏆'};
+
+function renderCalGrid(){
+  const {year,month}=calMonth;
+  const monthName=new Date(year,month,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  document.getElementById('cal-month-name').textContent=monthName;
+
+  const firstDow=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+
+  const PIP_CLASS={run:'pip-run',lift:'pip-lift',pilates:'pip-pilates',rest:'pip-rest',race:'pip-race'};
+  let html='';
+  for(let i=0;i<firstDow;i++) html+=`<div class="cal-cell cal-empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const sched=tSchedFor(ds);
+    const isToday=ds===calTodayStr;
+    const isSel=ds===calSelected;
+    const cls=['cal-cell'];
+    if(isToday) cls.push('cal-today');
+    if(isSel) cls.push('cal-sel');
+    if(!sched) cls.push('cal-no-sched');
+    const pip=sched?`<div class="cal-pip ${PIP_CLASS[sched.type]||''}"></div>`:'';
+    html+=`<div class="${cls.join(' ')}" onclick="${sched?`calPickDay('${ds}')`:'void 0'}">
+      <div class="cal-num">${d}</div>${pip}
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+}
+
+function renderCalDetail(ds){
+  const el=document.getElementById('cal-detail');
+  const sched=tSchedFor(ds);
+  const d=new Date(ds+'T00:00:00');
+  const dateFmt=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const isToday=ds===calTodayStr;
+
+  if(!sched){
+    el.innerHTML=`<div class="cal-detail-date">${dateFmt}${isToday?' · Today':''}</div>
+    <div style="text-align:center;padding:32px 0;color:var(--text-dim);font-size:14px">No training scheduled</div>`;
+    return;
+  }
+
+  const phase=T_PHASES[sched.phase];
+  const PILL={run:'pill-run',lift:'pill-lift',pilates:'pill-pilates',rest:'pill-rest',race:'pill-race'};
+  const TYPE_LABEL={run:'Run',lift:'Lift',pilates:'Pilates',rest:'Rest Day',race:'Race Day'};
+
+  let html=`<div class="cal-detail-date">${dateFmt}${isToday?' · Today':''}</div>
+  <div class="cal-type-pill ${PILL[sched.type]||'pill-rest'}">${TYPE_ICONS[sched.type]||''} ${TYPE_LABEL[sched.type]||sched.type}</div>`;
+
+  if(sched.type==='lift'){
+    const st=T_SESSIONS[sched.session];
+    const [sets,reps]=phase?phase.repScheme.split('×'):['?','?'];
+    const dropSingle=sched.note&&sched.note.includes('drop single-leg');
+    const reduceVol=sched.note&&sched.note.includes('reduce volume');
+    const actualSets=reduceVol&&sets?Math.max(1,Math.round(parseInt(sets)*.8)):sets;
+
+    html+=`<div class="phase-banner">
+      <div class="pb-scheme">${actualSets}×${reps}</div>
+      <div class="pb-meta">
+        <span class="pb-badge">${phase?phase.name:''}</span>
+        <span class="pb-badge">${phase?phase.intensity:''}</span>
+        <span class="pb-badge">${phase?phase.restSec+'s rest':''}</span>
+        ${st?`<span class="pb-badge">${st.dur} min</span>`:''}
+      </div>
+    </div>`;
+
+    if(sched.note){
+      html+=`<div class="pb-note">📌 ${sched.note}</div>`;
+    }
+
+    if(st){
+      html+=`<div class="cal-ex-section-label">${st.name}</div>`;
+      st.exercises.forEach((ex,i)=>{
+        if(dropSingle&&ex.cat==='single_leg') return;
+        const exSets=reduceVol?Math.max(1,Math.round(parseInt(sets)*.8)):sets;
+        html+=`<div class="cal-ex-row cat-${ex.cat}" id="cal-ex-${i}" onclick="toggleCalEx(${i})">
+          <div class="cal-ex-body">
+            <div class="cal-ex-name">${ex.name}</div>
+            <div class="cal-ex-scheme">${exSets}×${reps}<span class="cal-ex-intensity">${phase?phase.intensity:''}</span></div>
+            <div class="cal-ex-cue">${ex.cue}</div>
+            <div class="cal-ex-benefit">${ex.benefit}</div>
+          </div>
+          <div class="cal-ex-chev">▼</div>
+        </div>`;
+      });
+    }
+  }
+
+  if(sched.type==='run'){
+    const subtypeLabel=SUBTYPE_LABELS[sched.subtype]||sched.subtype||'Run';
+    const qualityLabel=sched.quality?QUALITY_LABELS[sched.quality]||sched.quality:null;
+    const RUN_BG={easy:'run-card-easy',quality:'run-card-quality',long:'run-card-long',shakeout:'run-card-shakeout'};
+    html+=`<div class="cal-run-card ${RUN_BG[sched.subtype]||'run-card-easy'}">
+      <div class="crn-eyebrow">${qualityLabel||subtypeLabel}</div>
+      <div class="crn-title">${subtypeLabel}</div>
+      ${qualityLabel?`<div class="crn-quality">${qualityLabel}</div>`:''}
+      ${sched.note?`<div class="crn-note">${sched.note}</div>`:''}
+    </div>`;
+
+    if(sched.subtype==='easy'||!sched.subtype){
+      html+=`<div class="cal-hr-box">
+        <div class="cal-hr-num">≤140</div>
+        <div><div class="cal-hr-lbl">HR Cap</div><div style="font-size:11px;color:var(--green-dark)">beats per minute</div></div>
+      </div>`;
+    }
+
+    const log=loadSymptomLog(ds);
+    const FEEL_LABELS=['Great 💚','Good 👍','OK 😐','Tough 😬','Bad 🔴'];
+    html+=`<div class="check-card">
+      <div class="check-card-title">3-Point Check</div>`;
+    if(log){
+      html+=`<div class="check-logged">
+        <div class="check-logged-head">✓ Check-in logged</div>
+        <div class="check-logged-body">`;
+      if(log.during!=null) html+=`During: <strong>${FEEL_LABELS[log.during]}</strong><br>`;
+      if(log.after) html+=`After: <strong>${log.after}</strong><br>`;
+      if(log.morning!=null) html+=`Morning: <strong>${FEEL_LABELS[log.morning]}</strong>`;
+      html+=`</div><button class="check-edit-btn" onclick="openSymptomCheck('${ds}')">Edit check-in</button></div>`;
+    } else {
+      html+=`<div class="check-sub">During the run · Right after · Next morning</div>
+      <button class="check-open-btn" onclick="openSymptomCheck('${ds}')">Log how it went</button>`;
+    }
+    html+=`</div>`;
+  }
+
+  if(sched.type==='pilates'){
+    html+=`<div class="cal-simple-block" style="background:var(--purple-light)">
+      <div class="cal-simple-emoji">🧘</div>
+      <div class="cal-simple-title" style="color:var(--purple)">Pilates</div>
+      <div class="cal-simple-sub" style="color:var(--purple)">Recovery · flexibility · core stability</div>
+      ${sched.note?`<div class="cal-simple-note" style="color:var(--purple)">${sched.note}</div>`:''}
+    </div>`;
+  }
+
+  if(sched.type==='rest'){
+    html+=`<div class="cal-simple-block" style="background:var(--surface3)">
+      <div class="cal-simple-emoji">😴</div>
+      <div class="cal-simple-title" style="color:var(--text-muted)">Rest Day</div>
+      <div class="cal-simple-sub">Recovery is training too</div>
+    </div>`;
+  }
+
+  if(sched.type==='race'){
+    html+=`<div class="cal-simple-block" style="background:#2A2520">
+      <div class="cal-simple-emoji">🏆</div>
+      <div class="cal-simple-title" style="color:#fff">NYC Marathon</div>
+      <div class="cal-simple-sub" style="color:rgba(255,255,255,.55)">November 2, 2026</div>
+      <div class="cal-simple-note" style="color:var(--yellow)">Goal: 3:15 – 3:20</div>
+    </div>`;
+  }
+
+  el.innerHTML=html;
+}
+
+function toggleCalEx(i){
+  const row=document.getElementById('cal-ex-'+i);
+  if(row) row.classList.toggle('ex-open');
+}
+
+/* ─── SYMPTOM CHECK ─── */
+function loadSymptomLog(ds){
+  try{return JSON.parse(localStorage.getItem('sym_log')||'{}')[ds]||null;}catch{return null;}
+}
+function saveSymptomLog(ds,data){
+  try{
+    const all=JSON.parse(localStorage.getItem('sym_log')||'{}');
+    all[ds]=data;
+    localStorage.setItem('sym_log',JSON.stringify(all));
+  }catch{}
+}
+
+let symDateStr='';
+let symStep=0;
+let symAnswers={during:null,after:'',morning:null};
+
+const SYM_STEPS=[
+  {eyebrow:'3-Point Check · 1 of 3',title:'During the Run',sub:'How did it feel while running?',type:'feel',key:'during'},
+  {eyebrow:'3-Point Check · 2 of 3',title:'Right After',sub:'Any pain, tightness, or shin discomfort?',type:'text',key:'after'},
+  {eyebrow:'3-Point Check · 3 of 3',title:'Next Morning',sub:'How do you feel waking up after this run?',type:'feel',key:'morning',hint:true},
+];
+const FEEL_OPTIONS=[
+  {emoji:'💚',label:'Great'},{emoji:'👍',label:'Good'},{emoji:'😐',label:'OK'},
+  {emoji:'😬',label:'Tough'},{emoji:'🔴',label:'Bad'},
+];
+
+function openSymptomCheck(ds){
+  symDateStr=ds;
+  const existing=loadSymptomLog(ds);
+  symAnswers=existing?{...existing}:{during:null,after:'',morning:null};
+  symStep=0;
+  renderSymStep();
+  document.getElementById('symptom-overlay').classList.add('open');
+}
+function closeSymptomCheck(e){
+  if(e&&e.currentTarget!==e.target) return;
+  document.getElementById('symptom-overlay').classList.remove('open');
+}
+function renderSymStep(){
+  const s=SYM_STEPS[symStep];
+  document.getElementById('sym-eyebrow').textContent=s.eyebrow;
+  document.getElementById('sym-title').textContent=s.title;
+  document.getElementById('sym-sub').textContent=s.sub;
+  // pips
+  for(let i=0;i<3;i++) document.getElementById('sym-pip-'+i).classList.toggle('done',i<=symStep);
+  // sections
+  const feelSec=document.getElementById('sym-feel-section');
+  const textSec=document.getElementById('sym-text-section');
+  const hintEl=document.getElementById('sym-hint');
+  if(s.type==='feel'){
+    feelSec.style.display='';textSec.style.display='none';
+    hintEl.style.display=s.hint?'':'none';
+    document.getElementById('feel-grid').innerHTML=FEEL_OPTIONS.map((f,i)=>`
+      <button class="feel-btn${symAnswers[s.key]===i?' sel':''}" onclick="selectFeel(${i})">
+        <span class="feel-emoji">${f.emoji}</span>
+        <span class="feel-lbl">${f.label}</span>
+      </button>`).join('');
+  } else {
+    feelSec.style.display='none';textSec.style.display='';hintEl.style.display='none';
+    document.getElementById('sym-textarea').value=symAnswers.after||'';
+  }
+  // back button
+  document.getElementById('sym-back').style.display=symStep>0?'':'none';
+  // next button
+  const nextBtn=document.getElementById('sym-next');
+  if(symStep===2){nextBtn.textContent='Save ✓';nextBtn.className='sym-next save';}
+  else{nextBtn.textContent='Next →';nextBtn.className='sym-next';}
+}
+function selectFeel(i){
+  const s=SYM_STEPS[symStep];
+  symAnswers[s.key]=i;
+  renderSymStep();
+}
+function symNext(){
+  if(symStep===1){
+    symAnswers.after=document.getElementById('sym-textarea').value;
+  }
+  if(symStep===2){
+    saveSymptomLog(symDateStr,symAnswers);
+    document.getElementById('symptom-overlay').classList.remove('open');
+    renderCalDetail(calSelected);
+    return;
+  }
+  symStep++;
+  renderSymStep();
+}
+function symPrev(){
+  if(symStep===0) return;
+  symStep--;
+  renderSymStep();
+}
 
 /* ─── STATE ─── */
 let selectedDate = new Date();
@@ -1776,6 +2356,40 @@ async function callClaude(messages) {
     <input class="ai-input" type="text" id="ai-input" placeholder="No barbell, sore hips, more glutes…" autocomplete="off"
       onkeydown="if(event.key==='Enter')sendAIMessage()" />
     <button class="ai-send-btn" id="ai-send" onclick="sendAIMessage()">↑</button>
+  </div>
+</div>
+
+<!-- SYMPTOM CHECK MODAL -->
+<div class="symptom-overlay" id="symptom-overlay" onclick="closeSymptomCheck(event)">
+  <div class="symptom-sheet" onclick="event.stopPropagation()">
+    <div class="sym-handle"></div>
+    <div class="sym-pips" id="sym-pips">
+      <div class="sym-pip" id="sym-pip-0"></div>
+      <div class="sym-pip" id="sym-pip-1"></div>
+      <div class="sym-pip" id="sym-pip-2"></div>
+    </div>
+    <div class="sym-eyebrow" id="sym-eyebrow">3-Point Check · 1 of 3</div>
+    <div class="sym-title" id="sym-title">During the Run</div>
+    <div class="sym-sub" id="sym-sub">How did it feel while you were running?</div>
+
+    <!-- Step 0 & 2: feel rating -->
+    <div id="sym-feel-section">
+      <div class="feel-grid" id="feel-grid"></div>
+    </div>
+    <!-- Step 1: text -->
+    <div id="sym-text-section" style="display:none">
+      <textarea class="sym-textarea" id="sym-textarea" rows="3"
+        placeholder="e.g. Shins felt fine, calves tight, felt strong…"></textarea>
+    </div>
+    <!-- Step 2 hint -->
+    <div class="sym-hint" id="sym-hint" style="display:none">
+      💡 Fill in this rating tomorrow morning — how do you feel waking up?
+    </div>
+
+    <div class="sym-btns">
+      <button class="sym-back" id="sym-back" onclick="symPrev()" style="display:none">Back</button>
+      <button class="sym-next" id="sym-next" onclick="symNext()">Next →</button>
+    </div>
   </div>
 </div>
 </body>
