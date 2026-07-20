@@ -1097,53 +1097,72 @@ const T_PHASES = {
 };
 
 const T_SESSIONS = {
-  lower_body:{name:'Lift A — Lower Body',dur:55,exercises:[
-    {id:'back_squat',name:'Back Squat',cat:'lower_body',
+  lower_body:{name:'Lift A — Lower + Upper',dur:55,exercises:[
+    // SS1: Back Squat + Overhead Press
+    {id:'back_squat',name:'Back Squat',cat:'lower_body',supersetGroup:1,supersetLetter:'A',
      cue:'Brace core before unracking. Knees track over toes. Full depth to parallel or below. Bar stays over mid-foot.',
      error:'Heels rising → widen stance or elevate heels. Knees caving → cue "spread the floor".',
      benefit:'Primary quad and glute driver; most transferable strength to running economy'},
-    {id:'romanian_deadlift',name:'Romanian Deadlift',cat:'posterior_chain',
+    {id:'overhead_press_a',name:'Overhead Press',cat:'upper_body',supersetGroup:1,supersetLetter:'B',
+     cue:'Brace core like a plank. Press straight up. Lower under control 3 sec. No lumbar flare at top.',
+     error:'Arching back → engage core first. Flaring elbows → keep them slightly in front.',
+     benefit:'Shoulder stability and arm-drive power'},
+    // SS2: Romanian Deadlift + Pull-Up / Lat Pulldown
+    {id:'romanian_deadlift',name:'Romanian Deadlift',cat:'posterior_chain',supersetGroup:2,supersetLetter:'A',
      cue:'Hinge at hips, NOT the lower back. Soft knee. Bar drags shins. Feel hamstring stretch before reversing.',
      error:'Rounding lower back → load less, brace harder. Bending knees too much → think "push hips back".',
      benefit:'Hamstring eccentric strength — the single biggest injury prevention lift for runners'},
-    {id:'bulgarian_split_squat',name:'Bulgarian Split Squat',cat:'single_leg',
+    {id:'lat_pulldown_a',name:'Pull-Up or Lat Pulldown',cat:'upper_body',supersetGroup:2,supersetLetter:'B',
+     cue:'Full hang to chin over bar. Lead with elbows, not hands. Slow descent (3 sec). No kipping.',
+     error:'Short-cutting range → loses lat engagement. Shrugging shoulders → keep them packed down.',
+     benefit:'Upper body posture and arm drive efficiency across marathon miles'},
+    // SS3: Bulgarian Split Squat + Face Pull
+    {id:'bulgarian_split_squat',name:'Bulgarian Split Squat',cat:'single_leg',supersetGroup:3,supersetLetter:'A',
      cue:'Front foot far enough that knee stays behind toe. Drive through front heel. Rear foot passive.',
      error:'Leaning too far forward → chest tall, think "vertical torso". Knee diving in → cue "press knee out".',
      benefit:'Single-leg quad and glute strength, directly mirrors running gait mechanics'},
-    {id:'nordic_hamstring_curl',name:'Nordic Hamstring Curl',cat:'posterior_chain',
+    {id:'face_pull_a',name:'Face Pull',cat:'upper_body',supersetGroup:3,supersetLetter:'B',
+     cue:'Pull to forehead. Elbows high. External rotation at end range. Slow controlled movement.',
+     error:'Pulling to chin → elbows need to go higher. Too much weight → lose control at end range.',
+     benefit:'Rotator cuff health and posture; shoulder stability under running fatigue'},
+    // SS4: Nordic Hamstring Curl + Single-Leg Calf Raise (Nordic drops in peak/taper)
+    {id:'nordic_hamstring_curl',name:'Nordic Hamstring Curl',cat:'posterior_chain',supersetGroup:4,supersetLetter:'A',
      peakExclude:true,taperExclude:true,
      cue:'Kneel on pad. Feet anchored firmly. Lower body toward floor as slowly as possible — 4-sec minimum. Hands ready to catch.',
      error:'Dropping too fast → no eccentric benefit. Hips flexing → keep body in a rigid plank.',
      benefit:'Most potent hamstring injury prevention exercise known; reduces hamstring strain risk 50%+'},
-    {id:'single_leg_calf_raise',name:'Single-Leg Calf Raise',cat:'lower_leg',
+    {id:'single_leg_calf_raise',name:'Single-Leg Calf Raise',cat:'lower_leg',supersetGroup:4,supersetLetter:'B',
      cue:'Full range of motion — heel below step on the way down. Rise fully onto toes. 3-sec eccentric minimum.',
      error:'Partial range → no load on the Achilles. Rushing the descent → defeats the purpose.',
      benefit:'Achilles and tibial load tolerance; permanent fixture for shin health'},
   ]},
-  upper_body:{name:'Lift B — Upper Body & Posterior Chain',dur:50,exercises:[
-    {id:'pullup',name:'Pull-Up or Lat Pulldown',cat:'upper_body',
-     cue:'Full hang to chin over bar. Lead with elbows, not hands. Slow descent (3 sec). No kipping.',
-     error:'Short-cutting range → loses lat engagement. Shrugging shoulders → keep them packed down.',
-     benefit:'Upper body posture and arm drive efficiency across marathon miles'},
-    {id:'barbell_row',name:'Barbell or Dumbbell Row',cat:'upper_body',
-     cue:'Flat back — hinge to 45°. Pull to hip, not chest. Squeeze shoulder blade at top. Slow return.',
-     error:'Rounding back → reduce weight, brace harder. Pulling to chest → think "elbow to pocket".',
-     benefit:'Scapular stability and posture under fatigue; prevents late-race forward collapse'},
-    {id:'overhead_press',name:'Overhead Press',cat:'upper_body',
-     cue:'Brace core like a plank. Press straight up. Lower under control 3 sec. No lumbar flare at top.',
-     error:'Arching back → engage core first. Flaring elbows → keep them slightly in front.',
-     benefit:'Shoulder stability and arm-drive power; upper body tension management during hard runs'},
-    {id:'trap_bar_deadlift',name:'Trap Bar Deadlift',cat:'lower_body',
+  upper_body:{name:'Lift B — Lower + Upper',dur:50,exercises:[
+    // SS1: Trap Bar Deadlift + Pull-Up (drops in taper)
+    {id:'trap_bar_deadlift',name:'Trap Bar Deadlift',cat:'lower_body',supersetGroup:1,supersetLetter:'A',
      taperExclude:true,
      cue:'Chest up, push floor away. Hips and shoulders rise together. Full hip extension at top.',
      error:"Hips shooting up first → squat the weight, don't hinge. Rounding back → chest tall.",
      benefit:'Total posterior chain without spinal loading; power base for running propulsion'},
-    {id:'single_leg_rdl',name:'Single-Leg RDL',cat:'single_leg',
+    {id:'pullup',name:'Pull-Up or Lat Pulldown',cat:'upper_body',supersetGroup:1,supersetLetter:'B',
+     cue:'Full hang to chin over bar. Lead with elbows, not hands. Slow descent (3 sec). No kipping.',
+     error:'Short-cutting range → loses lat engagement. Shrugging shoulders → keep them packed down.',
+     benefit:'Upper body posture and arm drive efficiency across marathon miles'},
+    // SS2: Single-Leg RDL + Barbell Row (SL RDL drops in peak/taper)
+    {id:'single_leg_rdl',name:'Single-Leg RDL',cat:'single_leg',supersetGroup:2,supersetLetter:'A',
      peakExclude:true,taperExclude:true,
      cue:'Hinge slowly, keep hips square. Soft standing knee. Feel hamstring load before reversing.',
      error:'Hip rotation → cue "square hips to floor". Balance wobble → light touch on wall only.',
      benefit:'Hip stability and hamstring control; directly mimics single-leg running mechanics'},
-    {id:'copenhagen_plank',name:'Copenhagen Plank',cat:'single_leg',
+    {id:'barbell_row',name:'Barbell or Dumbbell Row',cat:'upper_body',supersetGroup:2,supersetLetter:'B',
+     cue:'Flat back — hinge to 45°. Pull to hip, not chest. Squeeze shoulder blade at top. Slow return.',
+     error:'Rounding back → reduce weight, brace harder. Pulling to chest → think "elbow to pocket".',
+     benefit:'Scapular stability and posture under fatigue; prevents late-race forward collapse'},
+    // SS3: Overhead Press + Copenhagen Plank (Copenhagen drops in peak/taper)
+    {id:'overhead_press',name:'Overhead Press',cat:'upper_body',supersetGroup:3,supersetLetter:'A',
+     cue:'Brace core like a plank. Press straight up. Lower under control 3 sec. No lumbar flare at top.',
+     error:'Arching back → engage core first. Flaring elbows → keep them slightly in front.',
+     benefit:'Shoulder stability and arm-drive power; upper body tension management during hard runs'},
+    {id:'copenhagen_plank',name:'Copenhagen Plank',cat:'single_leg',supersetGroup:3,supersetLetter:'B',
      peakExclude:true,taperExclude:true,
      cue:'Top foot on bench — long lever, not knee. Body in straight line. Hold without sagging at hip.',
      error:'Hips dropping → squeeze adductor and glute. Too easy → progress to lifting bottom leg.',
@@ -2022,7 +2041,7 @@ function renderNewLiftCard(sched,ds){
   const isTaper=sched.phase==='taper';
   const dropSingle=sched.note&&sched.note.includes('drop single-leg');
   const reduceVol=sched.note&&sched.note.includes('reduce volume');
-  const actualSets=reduceVol&&sets?Math.max(1,Math.round(parseInt(sets)*.8)):sets;
+  const exSets=reduceVol&&sets?String(Math.max(1,Math.round(parseInt(sets)*.8))):sets;
   let html=`<div class="workout-card" id="lift-card-${workoutKey}">
     <div class="card-header" onclick="toggleCard('lift-card-${workoutKey}')">
       <div class="card-meta">
@@ -2033,7 +2052,7 @@ function renderNewLiftCard(sched,ds){
     </div>
     <div class="card-body">
       <div class="phase-banner">
-        <div class="pb-scheme">${actualSets}×${reps}</div>
+        <div class="pb-scheme">${exSets}×${reps}</div>
         <div class="pb-meta">
           <span class="pb-badge">${phase.name}</span>
           <span class="pb-badge">${phase.intensity}</span>
@@ -2043,30 +2062,78 @@ function renderNewLiftCard(sched,ds){
         </div>
       </div>`;
   if(sched.note)html+=`<div class="pb-note">📌 ${sched.note}</div>`;
-  html+=`<div class="exercise-list">`;
-  st.exercises.forEach((ex,i)=>{
-    if(isPeak&&ex.peakExclude)return;
-    if(isTaper&&(ex.peakExclude||ex.taperExclude))return;
-    if(dropSingle&&ex.cat==='single_leg')return;
-    const exSets=reduceVol?Math.max(1,Math.round(parseInt(sets)*.8)):sets;
-    const key=`${workoutKey}_${i}`;
-    const exDone=completedExercises[key]||false;
-    html+=`<div class="exercise-row" id="ex-${key}">
-      <div class="exercise-info">
-        <div class="exercise-name">${ex.name}${ex.peakExclude||ex.taperExclude?'<span style="font-size:10px;color:var(--text-dim);margin-left:6px">drops in peak/taper</span>':''}</div>
-        <div class="exercise-detail">${exSets}×${reps} · Rest ${phase.restSec}s</div>
-        ${ex.cue?`<div class="cue-text">${ex.cue}</div>`:''}
-        ${ex.error?`<div class="cue-text cue-warning">⚠️ Common error: ${ex.error}</div>`:''}
-      </div>
-      <div class="exercise-check ${exDone?'done':''}" onclick="toggleEx('${key}',this)">${checkMark()}</div>
-    </div>`;
-  });
-  html+=`</div>
-      <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
-        ${done?'✓ Completed':'Mark Complete'}
-      </button>
-    </div>
-  </div>`;
+  const active=st.exercises.reduce((acc,ex,i)=>{
+    if(isPeak&&ex.peakExclude)return acc;
+    if(isTaper&&(ex.peakExclude||ex.taperExclude))return acc;
+    if(dropSingle&&ex.cat==='single_leg')return acc;
+    acc.push({...ex,_origIdx:i});
+    return acc;
+  },[]);
+  const hasSupersets=active.some(ex=>ex.supersetGroup);
+  if(hasSupersets){
+    const groups={};
+    active.forEach(ex=>{const g=ex.supersetGroup||99;if(!groups[g])groups[g]=[];groups[g].push(ex);});
+    Object.keys(groups).sort((a,b)=>Number(a)-Number(b)).forEach(gk=>{
+      const exs=groups[gk];
+      if(exs.length>1){
+        html+=`<div style="border:1.5px solid var(--border2);border-radius:16px;margin-bottom:14px;overflow:hidden">
+          <div style="background:#2A2520;padding:10px 16px;display:flex;align-items:center;justify-content:space-between">
+            <span style="color:rgba(255,255,255,.55);font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase">Superset ${gk}</span>
+            <span style="color:rgba(255,255,255,.85);font-size:11px;font-weight:700;padding:3px 10px;border-radius:8px;background:rgba(255,255,255,.13)">A → B · Rest ${phase.restSec}s</span>
+          </div>
+          <div style="background:var(--surface2);padding:6px 8px;display:flex;flex-direction:column;gap:6px">`;
+        exs.forEach(ex=>{
+          const key=`${workoutKey}_${ex._origIdx}`;
+          const exDone=completedExercises[key]||false;
+          const letter=ex.supersetLetter||'?';
+          html+=`<div class="exercise-row" id="ex-${key}">
+            <div class="exercise-info">
+              <div class="exercise-name" style="display:flex;align-items:center;gap:8px">
+                <span style="width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">${letter}</span>${ex.name}
+              </div>
+              <div class="exercise-detail">${exSets}×${reps} · Tempo ${phase.tempo||'2-0-2'}</div>
+              ${ex.cue?`<div class="cue-text">${ex.cue}</div>`:''}
+              ${ex.error?`<div class="cue-text cue-warning">⚠️ ${ex.error}</div>`:''}
+            </div>
+            <div class="exercise-check ${exDone?'done':''}" onclick="toggleEx('${key}',this)">${checkMark()}</div>
+          </div>`;
+        });
+        html+=`</div></div>`;
+      }else{
+        const ex=exs[0];
+        const key=`${workoutKey}_${ex._origIdx}`;
+        const exDone=completedExercises[key]||false;
+        html+=`<div class="exercise-row" id="ex-${key}" style="margin-bottom:6px">
+          <div class="exercise-info">
+            <div class="exercise-name">${ex.name}</div>
+            <div class="exercise-detail">${exSets}×${reps} · Rest ${phase.restSec}s</div>
+            ${ex.cue?`<div class="cue-text">${ex.cue}</div>`:''}
+            ${ex.error?`<div class="cue-text cue-warning">⚠️ ${ex.error}</div>`:''}
+          </div>
+          <div class="exercise-check ${exDone?'done':''}" onclick="toggleEx('${key}',this)">${checkMark()}</div>
+        </div>`;
+      }
+    });
+  }else{
+    html+=`<div class="exercise-list">`;
+    active.forEach(ex=>{
+      const key=`${workoutKey}_${ex._origIdx}`;
+      const exDone=completedExercises[key]||false;
+      html+=`<div class="exercise-row" id="ex-${key}">
+        <div class="exercise-info">
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-detail">${exSets}×${reps} · Rest ${phase.restSec}s</div>
+          ${ex.cue?`<div class="cue-text">${ex.cue}</div>`:''}
+          ${ex.error?`<div class="cue-text cue-warning">⚠️ ${ex.error}</div>`:''}
+        </div>
+        <div class="exercise-check ${exDone?'done':''}" onclick="toggleEx('${key}',this)">${checkMark()}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+  html+=`<button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
+    ${done?'✓ Completed':'Mark Complete'}
+  </button></div></div>`;
   return html;
 }
 
@@ -2125,6 +2192,33 @@ function renderNewRunCard(sched,ds){
   return html;
 }
 
+function renderRunBikeXT(ds){
+  const workoutKey=`${ds}_bike_xt`;
+  const done=completedWorkouts[workoutKey]||false;
+  return `<div class="workout-card" id="xt-card-${workoutKey}">
+    <div class="card-header" onclick="toggleCard('xt-card-${workoutKey}')">
+      <div class="card-meta">
+        <div class="card-title" style="display:flex;align-items:center;gap:8px">🚲 Bike <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--blue-light);color:var(--blue);letter-spacing:.4px;text-transform:uppercase">Zone 2</span></div>
+        <div class="card-sub">1 hour after your run · aerobic flush</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="xt-mode-card">
+        <div class="xt-mode-title">Post-Run Bike</div>
+        <div class="run-row"><span class="run-key">Duration</span><span class="run-val">60 min</span></div>
+        <div class="run-row"><span class="run-key">Heart Rate</span><span class="run-val">≤140 bpm</span></div>
+        <div class="run-row"><span class="run-key">Cadence</span><span class="run-val">80–90 rpm</span></div>
+        <div class="run-row"><span class="run-key">Effort</span><span class="run-val">Conversational — easy aerobic</span></div>
+        <div class="xt-structure">Steady Zone 2 effort. No intervals. Focus on leg flush and blood flow — extends your aerobic base without adding tibial stress.</div>
+      </div>
+      <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
+        ${done?'✓ Bike Completed':'Mark Bike Complete'}
+      </button>
+    </div>
+  </div>`;
+}
+
 function renderTodayView(){
   const ds=dateStr(selectedDate);
   const sched=tSchedFor(ds);
@@ -2132,7 +2226,6 @@ function renderTodayView(){
   let html='';
 
   if(!sched){
-    // date outside T_SCHEDULE range — fall back to generic rest display
     html+=`<div class="rest-card"><div class="rest-emoji">📅</div><h3>No session scheduled</h3><p>Rest or light activity.</p></div>`;
   }else if(sched.type==='rest'){
     html+=`<div class="rest-card"><div class="rest-emoji">😴</div><h3>Rest Day</h3><p>Recovery is training. Bone remodeling is most active during rest and sleep.${sched.note?' '+sched.note:''}</p></div>`;
@@ -2141,8 +2234,14 @@ function renderTodayView(){
   }else{
     html+=renderWorkoutTimer();
     html+=`<div class="section-label">Today's Workouts</div>`;
-    if(sched.type==='run') html+=renderNewRunCard(sched,ds);
-    if(sched.type==='lift') html+=renderNewLiftCard(sched,ds);
+    if(sched.type==='run'){
+      html+=renderNewRunCard(sched,ds);
+      html+=renderRunBikeXT(ds);
+    }
+    if(sched.type==='lift'){
+      html+=renderNewLiftCard(sched,ds);
+      html+=renderXTCard(ds);
+    }
     if(sched.type==='pilates') html+=renderPilatesCard(ds);
   }
 
