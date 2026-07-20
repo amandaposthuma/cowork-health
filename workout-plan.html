@@ -1089,38 +1089,87 @@ const DAY_CONFIG = {
 
 /* ─── TRAINING SCHEDULE DATA ─── */
 const T_PHASES = {
-  base:  {id:'base',  name:'Base Building', repScheme:'5×5', restSec:90, intensity:'heavy'},
-  build: {id:'build', name:'Build Phase',   repScheme:'3×8', restSec:90, intensity:'moderate'},
-  peak:  {id:'peak',  name:'Peak Block',    repScheme:'3×8', restSec:90, intensity:'mod–light'},
-  taper: {id:'taper', name:'Taper',         repScheme:'2×10',restSec:60, intensity:'light'},
-  race_week:{id:'race_week',name:'Race Week',repScheme:'—',  restSec:0,  intensity:'—'},
+  base:  {id:'base',  name:'Foundation', repScheme:'3×8–10', restSec:60,  intensity:'moderate',       tempo:'2-0-2'},
+  build: {id:'build', name:'Build',      repScheme:'4×6–8',  restSec:90,  intensity:'moderate-heavy', tempo:'3-1-2'},
+  peak:  {id:'peak',  name:'Peak',       repScheme:'4×4–6',  restSec:120, intensity:'heavy',          tempo:'3-1-1'},
+  taper: {id:'taper', name:'Taper',      repScheme:'2×5',    restSec:90,  intensity:'light',          tempo:'2-0-2'},
+  race_week:{id:'race_week',name:'Race Week',repScheme:'—',  restSec:0,   intensity:'—',              tempo:'—'},
 };
 
 const T_SESSIONS = {
-  lower_body:{name:'Lower Body + Posterior Chain',dur:50,exercises:[
-    {id:'back_squat',name:'Back Squat',cat:'lower_body',benefit:'Quad and glute strength, running economy',cue:'Brace core, knees tracking toes, full depth'},
-    {id:'romanian_deadlift',name:'Romanian Deadlift',cat:'posterior_chain',benefit:'Hamstring strength, injury prevention',cue:'Hinge at hips, soft knee, bar close to shins'},
-    {id:'bulgarian_split_squat',name:'Bulgarian Split Squat',cat:'single_leg',benefit:'Single-leg stability, quad and glute strength',cue:'Front foot forward enough that knee stays behind toe'},
-    {id:'single_leg_rdl',name:'Single-Leg RDL',cat:'single_leg',benefit:'Hamstring and hip stability, mimics running gait',cue:'Hinge slowly, keep hips square, soft standing knee'},
-    {id:'hip_thrust',name:'Hip Thrust',cat:'posterior_chain',benefit:'Glute max power, propulsion',cue:'Shoulders on bench, drive through heels, squeeze at top'},
-    {id:'nordic_hamstring_curl',name:'Nordic Hamstring Curl',cat:'posterior_chain',benefit:'Hamstring injury prevention, eccentric strength',cue:'Lower as slowly as possible, use hands to catch at bottom'},
-    {id:'single_leg_calf_raise',name:'Single-Leg Calf Raise',cat:'lower_leg',benefit:'Achilles and tibial load tolerance',cue:'Full range of motion, slow eccentric, no bouncing'},
-    {id:'step_up_knee_drive',name:'Step-Up with Knee Drive',cat:'single_leg',benefit:'Hip flexor strength, running gait pattern',cue:'Drive through the heel of the planted foot, control descent'},
+  lower_body:{name:'Lift A — Lower Body',dur:55,exercises:[
+    {id:'back_squat',name:'Back Squat',cat:'lower_body',
+     cue:'Brace core before unracking. Knees track over toes. Full depth to parallel or below. Bar stays over mid-foot.',
+     error:'Heels rising → widen stance or elevate heels. Knees caving → cue "spread the floor".',
+     benefit:'Primary quad and glute driver; most transferable strength to running economy'},
+    {id:'romanian_deadlift',name:'Romanian Deadlift',cat:'posterior_chain',
+     cue:'Hinge at hips, NOT the lower back. Soft knee. Bar drags shins. Feel hamstring stretch before reversing.',
+     error:'Rounding lower back → load less, brace harder. Bending knees too much → think "push hips back".',
+     benefit:'Hamstring eccentric strength — the single biggest injury prevention lift for runners'},
+    {id:'bulgarian_split_squat',name:'Bulgarian Split Squat',cat:'single_leg',
+     cue:'Front foot far enough that knee stays behind toe. Drive through front heel. Rear foot passive.',
+     error:'Leaning too far forward → chest tall, think "vertical torso". Knee diving in → cue "press knee out".',
+     benefit:'Single-leg quad and glute strength, directly mirrors running gait mechanics'},
+    {id:'nordic_hamstring_curl',name:'Nordic Hamstring Curl',cat:'posterior_chain',
+     peakExclude:true,taperExclude:true,
+     cue:'Kneel on pad. Feet anchored firmly. Lower body toward floor as slowly as possible — 4-sec minimum. Hands ready to catch.',
+     error:'Dropping too fast → no eccentric benefit. Hips flexing → keep body in a rigid plank.',
+     benefit:'Most potent hamstring injury prevention exercise known; reduces hamstring strain risk 50%+'},
+    {id:'single_leg_calf_raise',name:'Single-Leg Calf Raise',cat:'lower_leg',
+     cue:'Full range of motion — heel below step on the way down. Rise fully onto toes. 3-sec eccentric minimum.',
+     error:'Partial range → no load on the Achilles. Rushing the descent → defeats the purpose.',
+     benefit:'Achilles and tibial load tolerance; permanent fixture for shin health'},
   ]},
-  upper_body:{name:'Upper Body + Single-Leg Accessory',dur:45,exercises:[
-    {id:'pullup',name:'Pull-Up or Lat Pulldown',cat:'upper_body',benefit:'Upper body posture and arm drive efficiency',cue:'Full hang to chin over bar, no kipping'},
-    {id:'barbell_row',name:'Barbell or Dumbbell Row',cat:'upper_body',benefit:'Scapular stability, posture under fatigue',cue:'Flat back, pull to hip not chest, squeeze shoulder blade'},
-    {id:'overhead_press',name:'Overhead Press',cat:'upper_body',benefit:'Shoulder stability, upper body tension management',cue:'Brace core, press straight up, no lumbar flare'},
-    {id:'face_pull',name:'Face Pull',cat:'upper_body',benefit:'Rotator cuff health, posture',cue:'Pull to forehead, elbows high, external rotation at end'},
-    {id:'pallof_press',name:'Pallof Press',cat:'core',benefit:'Anti-rotation core stability, critical for late-race form',cue:'Feet shoulder width, press straight out, resist rotation'},
-    {id:'copenhagen_plank',name:'Copenhagen Plank',cat:'single_leg',benefit:'Adductor and hip stability, tibial stress injury prevention',cue:'Top leg on bench, body straight, hold without sagging'},
+  upper_body:{name:'Lift B — Upper Body & Posterior Chain',dur:50,exercises:[
+    {id:'pullup',name:'Pull-Up or Lat Pulldown',cat:'upper_body',
+     cue:'Full hang to chin over bar. Lead with elbows, not hands. Slow descent (3 sec). No kipping.',
+     error:'Short-cutting range → loses lat engagement. Shrugging shoulders → keep them packed down.',
+     benefit:'Upper body posture and arm drive efficiency across marathon miles'},
+    {id:'barbell_row',name:'Barbell or Dumbbell Row',cat:'upper_body',
+     cue:'Flat back — hinge to 45°. Pull to hip, not chest. Squeeze shoulder blade at top. Slow return.',
+     error:'Rounding back → reduce weight, brace harder. Pulling to chest → think "elbow to pocket".',
+     benefit:'Scapular stability and posture under fatigue; prevents late-race forward collapse'},
+    {id:'overhead_press',name:'Overhead Press',cat:'upper_body',
+     cue:'Brace core like a plank. Press straight up. Lower under control 3 sec. No lumbar flare at top.',
+     error:'Arching back → engage core first. Flaring elbows → keep them slightly in front.',
+     benefit:'Shoulder stability and arm-drive power; upper body tension management during hard runs'},
+    {id:'trap_bar_deadlift',name:'Trap Bar Deadlift',cat:'lower_body',
+     taperExclude:true,
+     cue:'Chest up, push floor away. Hips and shoulders rise together. Full hip extension at top.',
+     error:"Hips shooting up first → squat the weight, don't hinge. Rounding back → chest tall.",
+     benefit:'Total posterior chain without spinal loading; power base for running propulsion'},
+    {id:'single_leg_rdl',name:'Single-Leg RDL',cat:'single_leg',
+     peakExclude:true,taperExclude:true,
+     cue:'Hinge slowly, keep hips square. Soft standing knee. Feel hamstring load before reversing.',
+     error:'Hip rotation → cue "square hips to floor". Balance wobble → light touch on wall only.',
+     benefit:'Hip stability and hamstring control; directly mimics single-leg running mechanics'},
+    {id:'copenhagen_plank',name:'Copenhagen Plank',cat:'single_leg',
+     peakExclude:true,taperExclude:true,
+     cue:'Top foot on bench — long lever, not knee. Body in straight line. Hold without sagging at hip.',
+     error:'Hips dropping → squeeze adductor and glute. Too easy → progress to lifting bottom leg.',
+     benefit:'Adductor and lateral core; reduces tibial bending moment during running'},
   ]},
-  full_body:{name:'Full Body Moderate',dur:45,exercises:[
-    {id:'trap_bar_deadlift',name:'Trap Bar Deadlift',cat:'full_body',benefit:'Total posterior chain, lower spinal stress than straight bar',cue:'Chest up, push floor away, hips and shoulders rise together'},
-    {id:'goblet_squat',name:'Goblet Squat',cat:'lower_body',benefit:'Quad strength, ankle mobility',cue:'Elbows inside knees at bottom, heels down, upright torso'},
-    {id:'kettlebell_swing',name:'Kettlebell Swing',cat:'full_body',benefit:'Posterior chain power, hip extension mimics push-off',cue:'Hinge not squat, snap hips, bell floats to shoulder height'},
-    {id:'farmer_carry',name:'Farmer Carry',cat:'full_body',benefit:'Core stability, grip, posture under load',cue:'Tall spine, shoulders back, short quick steps'},
-    {id:'dumbbell_clean_press',name:'Dumbbell Clean and Press',cat:'full_body',benefit:'Power development, coordination',cue:'Explosive hip drive, catch at shoulder, press overhead'},
+  full_body:{name:'Full Body — Moderate',dur:45,exercises:[
+    {id:'trap_bar_deadlift',name:'Trap Bar Deadlift',cat:'lower_body',
+     cue:'Chest up, push floor away. Hips and shoulders rise together.',
+     error:"Hips rising first → focus on pushing floor, not pulling bar.",
+     benefit:'Total posterior chain with minimal spinal load'},
+    {id:'goblet_squat',name:'Goblet Squat',cat:'lower_body',
+     cue:'Elbows inside knees at bottom. Heels down, upright torso. Full depth.',
+     error:'Heels rising → slow down, sit deeper. Torso pitching forward → weight too heavy.',
+     benefit:'Quad strength and ankle mobility; runner-friendly pattern'},
+    {id:'single_leg_glute_bridge',name:'Single-Leg Glute Bridge',cat:'single_leg',
+     cue:'Drive through heel. Hold 2 sec at top. Keep hips level — no rotation.',
+     error:'Hips rotating → go slower, focus on the working glute.',
+     benefit:'Glute strength and hip stability; femoral neck stimulus'},
+    {id:'pallof_press',name:'Pallof Press',cat:'core',
+     cue:'Feet shoulder width. Press straight out, resist rotation. Hold 2 sec extended.',
+     error:'Rotating hips → feet wider, focus on abs.',
+     benefit:'Anti-rotation core stability; critical for maintaining form in late marathon miles'},
+    {id:'face_pull',name:'Face Pull',cat:'upper_body',
+     cue:'Pull to forehead. Elbows high. External rotation at end range.',
+     error:'Pulling to chin → elbows need to go higher.',
+     benefit:'Rotator cuff health and posture; shoulder stability under running fatigue'},
   ]},
 };
 
@@ -1354,12 +1403,15 @@ function renderCalDetail(ds){
       html+=`<div class="cal-ex-section-label">${st.name}</div>`;
       st.exercises.forEach((ex,i)=>{
         if(dropSingle&&ex.cat==='single_leg') return;
+        if(sched.phase==='peak'&&ex.peakExclude) return;
+        if(sched.phase==='taper'&&(ex.peakExclude||ex.taperExclude)) return;
         const exSets=reduceVol?Math.max(1,Math.round(parseInt(sets)*.8)):sets;
         html+=`<div class="cal-ex-row cat-${ex.cat}" id="cal-ex-${i}" onclick="toggleCalEx(${i})">
           <div class="cal-ex-body">
             <div class="cal-ex-name">${ex.name}</div>
-            <div class="cal-ex-scheme">${exSets}×${reps}<span class="cal-ex-intensity">${phase?phase.intensity:''}</span></div>
+            <div class="cal-ex-scheme">${exSets}×${reps}<span class="cal-ex-intensity">${phase?phase.intensity:''}</span>${phase&&phase.tempo?`<span class="cal-ex-intensity">Tempo ${phase.tempo}</span>`:''}</div>
             <div class="cal-ex-cue">${ex.cue}</div>
+            ${ex.error?`<div class="cal-ex-cue" style="color:var(--yellow,#e6a800)">⚠️ ${ex.error}</div>`:''}
             <div class="cal-ex-benefit">${ex.benefit}</div>
           </div>
           <div class="cal-ex-chev">▼</div>
@@ -1426,7 +1478,7 @@ function renderCalDetail(ds){
     html+=`<div class="cal-simple-block" style="background:#2A2520">
       <div class="cal-simple-emoji">🏆</div>
       <div class="cal-simple-title" style="color:#fff">NYC Marathon</div>
-      <div class="cal-simple-sub" style="color:rgba(255,255,255,.55)">November 2, 2026</div>
+      <div class="cal-simple-sub" style="color:rgba(255,255,255,.55)">November 1, 2026</div>
       <div class="cal-simple-note" style="color:var(--yellow)">Goal: 3:15 – 3:20</div>
     </div>`;
   }
@@ -1911,7 +1963,197 @@ function renderXTCard(dateStr_val){
   </div>`;
 }
 
+/* ─── PILATES DATA ─── */
+const PILATES_EXERCISES=[
+  {name:'Dead Bug',sets:'3',reps:'8/side',cue:'Lower back glued to floor. Exhale on every rep. Spine neutral throughout.'},
+  {name:'Single-Leg Glute Bridge',sets:'3',reps:'12/side',cue:'Drive through heel. Hold 2 sec at top. Keep hips level — no rotation.'},
+  {name:'Side-Lying Hip Abduction',sets:'3',reps:'15/side',cue:'Straight leg. Small controlled arc. Glute med engagement.'},
+  {name:'Bird Dog',sets:'3',reps:'10/side',cue:'Opposite arm + leg. Spine absolutely still. Hold 2 sec at full extension.'},
+  {name:'Copenhagen Plank',sets:'3',reps:'20s/side',cue:'Top foot on bench, long lever. Adductor and lateral core. Progress to 30s.'},
+  {name:'Pallof Press',sets:'3',reps:'10/side',cue:'Anti-rotation. Stand tall, zero hip shift. Slow and controlled.'},
+  {name:'Clamshell (Banded)',sets:'2',reps:'20/side',cue:'Side-lying, hips stacked. Full range. Hip abductor + external rotation.'},
+  {name:'Swan Dive',sets:'3',reps:'8',cue:'Lie face down. Lift chest and arms. Hold 2 sec. Back extensors for form collapse prevention.'},
+  {name:'Leg Circles',sets:'2',reps:'8 each dir/side',cue:'Lie on back. Draw full circles with straight leg. Core completely stable.'},
+  {name:'Spine Stretch Forward',sets:'2',reps:'6',cue:'Sit tall. Round forward, exhale. Thoracic mobility and hamstring lengthening.'},
+  {name:'Hip Flexor Stretch',sets:'1',reps:'60s/side',cue:'Deep lunge, tuck pelvis. Key for runners. Breathe into the stretch.'},
+  {name:'Thoracic Rotation',sets:'2',reps:'8/side',cue:'Side-lying or seated. Full upper back rotation. Improves running arm drive.'},
+];
+
+function renderPilatesCard(ds){
+  const workoutKey=`${ds}_pilates`;
+  const done=completedWorkouts[workoutKey]||false;
+  let html=`<div class="workout-card" id="pilates-card-${workoutKey}">
+    <div class="card-header" onclick="toggleCard('pilates-card-${workoutKey}')">
+      <div class="card-meta">
+        <div class="card-title">🧘 Pilates</div>
+        <div class="card-sub">Recovery · flexibility · core stability — 45 min</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body"><div class="exercise-list">`;
+  PILATES_EXERCISES.forEach((ex,i)=>{
+    const key=`${workoutKey}_${i}`;
+    const exDone=completedExercises[key]||false;
+    html+=`<div class="exercise-row" id="ex-${key}">
+      <div class="exercise-info">
+        <div class="exercise-name">${ex.name}</div>
+        <div class="exercise-detail">${ex.sets}× ${ex.reps}</div>
+        <div class="cue-text">${ex.cue}</div>
+      </div>
+      <div class="exercise-check ${exDone?'done':''}" onclick="toggleEx('${key}',this)">${checkMark()}</div>
+    </div>`;
+  });
+  html+=`</div>
+    <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
+      ${done?'✓ Pilates Completed':'Mark Pilates Complete'}
+    </button></div></div>`;
+  return html;
+}
+
+function renderNewLiftCard(sched,ds){
+  const st=T_SESSIONS[sched.session];
+  const phase=T_PHASES[sched.phase]||T_PHASES.base;
+  const workoutKey=`${ds}_${sched.session}`;
+  const done=completedWorkouts[workoutKey]||false;
+  if(!st)return'';
+  const parts=phase.repScheme.split('×');
+  const sets=parts[0];const reps=parts[1]||'?';
+  const isPeak=sched.phase==='peak';
+  const isTaper=sched.phase==='taper';
+  const dropSingle=sched.note&&sched.note.includes('drop single-leg');
+  const reduceVol=sched.note&&sched.note.includes('reduce volume');
+  const actualSets=reduceVol&&sets?Math.max(1,Math.round(parseInt(sets)*.8)):sets;
+  let html=`<div class="workout-card" id="lift-card-${workoutKey}">
+    <div class="card-header" onclick="toggleCard('lift-card-${workoutKey}')">
+      <div class="card-meta">
+        <div class="card-title">${st.name}</div>
+        <div class="card-sub">${phase.name} · ${phase.repScheme}${phase.tempo?' · Tempo '+phase.tempo:''}</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="phase-banner">
+        <div class="pb-scheme">${actualSets}×${reps}</div>
+        <div class="pb-meta">
+          <span class="pb-badge">${phase.name}</span>
+          <span class="pb-badge">${phase.intensity}</span>
+          <span class="pb-badge">${phase.restSec}s rest</span>
+          ${phase.tempo?`<span class="pb-badge">Tempo ${phase.tempo}</span>`:''}
+          <span class="pb-badge">${st.dur} min</span>
+        </div>
+      </div>`;
+  if(sched.note)html+=`<div class="pb-note">📌 ${sched.note}</div>`;
+  html+=`<div class="exercise-list">`;
+  st.exercises.forEach((ex,i)=>{
+    if(isPeak&&ex.peakExclude)return;
+    if(isTaper&&(ex.peakExclude||ex.taperExclude))return;
+    if(dropSingle&&ex.cat==='single_leg')return;
+    const exSets=reduceVol?Math.max(1,Math.round(parseInt(sets)*.8)):sets;
+    const key=`${workoutKey}_${i}`;
+    const exDone=completedExercises[key]||false;
+    html+=`<div class="exercise-row" id="ex-${key}">
+      <div class="exercise-info">
+        <div class="exercise-name">${ex.name}${ex.peakExclude||ex.taperExclude?'<span style="font-size:10px;color:var(--text-dim);margin-left:6px">drops in peak/taper</span>':''}</div>
+        <div class="exercise-detail">${exSets}×${reps} · Rest ${phase.restSec}s</div>
+        ${ex.cue?`<div class="cue-text">${ex.cue}</div>`:''}
+        ${ex.error?`<div class="cue-text cue-warning">⚠️ Common error: ${ex.error}</div>`:''}
+      </div>
+      <div class="exercise-check ${exDone?'done':''}" onclick="toggleEx('${key}',this)">${checkMark()}</div>
+    </div>`;
+  });
+  html+=`</div>
+      <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
+        ${done?'✓ Completed':'Mark Complete'}
+      </button>
+    </div>
+  </div>`;
+  return html;
+}
+
+function renderNewRunCard(sched,ds){
+  const workoutKey=`${ds}_run`;
+  const done=completedWorkouts[workoutKey]||false;
+  const subtypeLabel=SUBTYPE_LABELS[sched.subtype]||sched.subtype||'Run';
+  const qualityLabel=sched.quality?QUALITY_LABELS[sched.quality]||sched.quality:null;
+  const HR_CAP={easy:'≤140',quality:'≤160',long:'≤145',shakeout:'≤135'};
+  const PACE_MAP={strides:'20s surges, full recovery between',tempo:'4:45/km',marathon_pace:'4:38–4:44/km'};
+  const hrCap=HR_CAP[sched.subtype]||'≤140';
+  const paceTarget=sched.quality&&PACE_MAP[sched.quality]?PACE_MAP[sched.quality]:'Conversational, HR-controlled';
+  const log=loadSymptomLog(ds);
+  const FEEL_LABELS=['Great 💚','Good 👍','OK 😐','Tough 😬','Bad 🔴'];
+  let html=`<div class="workout-card" id="run-card-${workoutKey}">
+    <div class="card-header" onclick="toggleCard('run-card-${workoutKey}')">
+      <div class="card-meta">
+        <div class="card-title">${qualityLabel||subtypeLabel}</div>
+        <div class="card-sub">${subtypeLabel}${sched.note?' · '+sched.note:''}</div>
+      </div>
+      <div class="card-chevron">›</div>
+    </div>
+    <div class="card-body">
+      <div class="run-detail">
+        <div class="run-row"><span class="run-key">Session</span><span class="run-val">${subtypeLabel}${qualityLabel?' — '+qualityLabel:''}</span></div>
+        <div class="run-row"><span class="run-key">HR Cap</span><span class="run-val">${hrCap} bpm</span></div>
+        <div class="run-row"><span class="run-key">Pace</span><span class="run-val">${paceTarget}</span></div>
+        ${sched.note?`<div class="run-row"><span class="run-key">Note</span><span class="run-val">${sched.note}</span></div>`:''}
+        <div class="run-row"><span class="run-key">Cadence</span><span class="run-val">170–180 steps/min</span></div>
+      </div>
+      <div class="pain-zone-guide" style="margin-top:12px">
+        <div class="pain-zone pz-green"><div class="pz-dot"></div><div class="pz-text"><strong>0–2/10</strong> — Proceed normally</div></div>
+        <div class="pain-zone pz-yellow"><div class="pz-dot"></div><div class="pz-text"><strong>2–4/10 intermittent</strong> — Caution, log it, repeat week if needed</div></div>
+        <div class="pain-zone pz-orange"><div class="pz-dot"></div><div class="pz-text"><strong>4+</strong> — Stop. Contact Dr. Best before next run</div></div>
+      </div>
+      <div class="check-card" style="margin-top:12px">
+        <div class="check-card-title">3-Point Check</div>`;
+  if(log){
+    html+=`<div class="check-logged">
+      <div class="check-logged-head">✓ Check-in logged</div>
+      <div class="check-logged-body">`;
+    if(log.during!=null)html+=`During: <strong>${FEEL_LABELS[log.during]}</strong><br>`;
+    if(log.after)html+=`After: <strong>${log.after}</strong><br>`;
+    if(log.morning!=null)html+=`Morning: <strong>${FEEL_LABELS[log.morning]}</strong>`;
+    html+=`</div><button class="check-edit-btn" onclick="openSymptomCheck('${ds}')">Edit check-in</button></div>`;
+  }else{
+    html+=`<div class="check-sub">During the run · Right after · Next morning</div>
+    <button class="check-open-btn" onclick="openSymptomCheck('${ds}')">Log how it went</button>`;
+  }
+  html+=`</div>
+      <button class="complete-btn ${done?'done':'not-done'}" onclick="toggleWorkout('${workoutKey}',this)">
+        ${done?'✓ Run Completed':'Mark Run Complete'}
+      </button>
+    </div>
+  </div>`;
+  return html;
+}
+
 function renderTodayView(){
+  const ds=dateStr(selectedDate);
+  const sched=tSchedFor(ds);
+  const view=document.getElementById('view-today');
+  let html='';
+
+  if(!sched){
+    // date outside T_SCHEDULE range — fall back to generic rest display
+    html+=`<div class="rest-card"><div class="rest-emoji">📅</div><h3>No session scheduled</h3><p>Rest or light activity.</p></div>`;
+  }else if(sched.type==='rest'){
+    html+=`<div class="rest-card"><div class="rest-emoji">😴</div><h3>Rest Day</h3><p>Recovery is training. Bone remodeling is most active during rest and sleep.${sched.note?' '+sched.note:''}</p></div>`;
+  }else if(sched.type==='race'){
+    html+=`<div class="rest-card" style="background:#1a1510"><div class="rest-emoji">🏆</div><h3 style="color:#fff">NYC Marathon</h3><p style="color:var(--yellow)">Goal: 3:15 – 3:20 · November 1, 2026</p><p style="color:rgba(255,255,255,.6);font-size:13px">Everything since July 20 comes together today. Trust the training.</p></div>`;
+  }else{
+    html+=renderWorkoutTimer();
+    html+=`<div class="section-label">Today's Workouts</div>`;
+    if(sched.type==='run') html+=renderNewRunCard(sched,ds);
+    if(sched.type==='lift') html+=renderNewLiftCard(sched,ds);
+    if(sched.type==='pilates') html+=renderPilatesCard(ds);
+  }
+
+  html+=`<div class="section-label">Plan Progress</div>`;
+  html+=renderPhaseProgress();
+  view.innerHTML=html;
+  restoreWorkoutTimerState();
+}
+
+/* ─── OLD renderTodayView (KEPT FOR REFERENCE — replaced above) ─── */
+function renderTodayView_OLD(){
   const ds=dateStr(selectedDate);
   const dow=selectedDate.getDay();
   const config=DAY_CONFIG[dow];
