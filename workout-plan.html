@@ -1022,10 +1022,17 @@ const LIFTS = {
         {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Femoral neck bone density stimulus. Cable at ankle. Controlled tempo. Always first.'},
         {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'45s',cue:'Drive through heel. Hold 2 sec at top. Hips level throughout.'},
       ]},
-      {label:'B — Posterior Chain',clr:'clr-cyan',note:'~18 min — Nordic + RDL superset, then B-Stance. The 3 highest-value posterior chain moves for runners.',rptLabel:'3 sets',exercises:[
-        {code:'NC',cat:'ex-lower',name:'Nordic Curl',sets:3,reps:'5–6',rest:'90s',cue:'Kneel on pad, feet anchored under bar or partner. Lower body toward floor — 4-sec eccentric minimum. THE hamstring exercise for runners. Control everything on the way down. Use hands to press back up.'},
-        {code:'RD',cat:'ex-lower',name:'Barbell Romanian Deadlift',sets:3,reps:'6–8',rest:'90s',cue:'Superset with Nordic. Hip hinge, 3-sec eccentric slow lower. Posterior chain + glute drive. Build weight weekly.'},
-        {code:'BH',cat:'ex-lower',name:'B-Stance (Staggered) Hip Thrust',sets:3,reps:'10/side',rest:'75s',cue:'One leg drives, other leg rests lightly for balance. Upper back on bench. Pause 1 sec at top. Single-leg glute power = running propulsion. Mirrors the hip extension of your stride.'},
+      {label:'B1 — Superset · Pull-up + Nordic Curl',clr:'clr-cyan',note:'~7 min · SUPERSET — do both back-to-back, rest 90s, repeat 3 rounds. Same bar: pull-ups first while fresh, then anchor feet for Nordics. Upper vertical pull balances the eccentric hamstring work.',rptLabel:'3 rounds',exercises:[
+        {code:'PU',cat:'ex-upper',name:'Pull-up (or Lat Pulldown)',sets:3,reps:'5–8',rest:'15s',cue:'Full hang to chin over bar. Control the descent 2 sec. No kipping. Go directly into Nordic Curls — use the same bar. If no pull-up yet: lat pulldown or band-assisted.'},
+        {code:'NC',cat:'ex-lower',name:'Nordic Curl',sets:3,reps:'5–6',rest:'90s',cue:'Anchor feet under the bar you just used. 4-sec eccentric minimum — lower as slowly as possible. THE hamstring exercise for runners. Use hands to press back up. Rest 90s then back to pull-ups.'},
+      ]},
+      {label:'B2 — Superset · Barbell Row + Romanian Deadlift',clr:'clr-teal',note:'~7 min · SUPERSET — same barbell, back to back. Row while hamstrings recover, RDL while upper back recovers. Horizontal pull + hip hinge — the two most important posterior chain patterns.',rptLabel:'3 rounds',exercises:[
+        {code:'BR',cat:'ex-upper',name:'Barbell or Dumbbell Row',sets:3,reps:'8',rest:'15s',cue:'Flat back, bar to hip — not chest. Squeeze shoulder blade at top. Hold 1 sec. Scapular stability = upright posture in miles 18–26. Row first, then immediately set up for RDL.'},
+        {code:'RD',cat:'ex-lower',name:'Barbell Romanian Deadlift',sets:3,reps:'6–8',rest:'90s',cue:'Same bar — add weight if needed. Hip hinge, push hips back, 3-sec slow lower. Feel the stretch in the hamstrings. Drive through glutes to return. Rest 90s then back to rows.'},
+      ]},
+      {label:'B3 — Superset · Push-up + B-Stance Hip Thrust',clr:'clr-purple',note:'~6 min · SUPERSET — push pattern balances the day\'s pulling. Hip thrust builds single-leg glute power = running propulsion. Use the bench for both.',rptLabel:'3 rounds',exercises:[
+        {code:'BP',cat:'ex-upper',name:'Push-up or DB Bench Press',sets:3,reps:'10–12',rest:'15s',cue:'Push-ups: hands just wider than shoulders, lower chest to 1 inch off floor, full extension at top. DB Bench: control 3-sec descent. The upper push pattern you need to balance all the pulling. Immediately move to hip thrust.'},
+        {code:'BH',cat:'ex-lower',name:'B-Stance (Staggered) Hip Thrust',sets:3,reps:'10/side',rest:'90s',cue:'Upper back on same bench. One leg drives, other rests lightly. Pause 1 sec at top — full glute lockout. Single-leg glute power = running propulsion. Mirrors the hip extension of every stride. Rest 90s then back to push-up.'},
       ]},
       {label:'C — Runner\'s Core A',clr:'clr-purple',note:'~12 min — anti-extension + rotational stability. Flow as a circuit, 3 rounds.',rptLabel:'3 rounds',exercises:[
         {code:'TA',cat:'ex-core',name:'Taps (Dead Bug Heel Tap)',sets:3,reps:'10/side',rest:'20s',cue:'Lie on back, arms to ceiling, legs in tabletop. Lower one heel to lightly tap the floor while keeping hips completely still — no rocking, no arching. The stillness IS the exercise. Core must brace before the leg moves.'},
@@ -1057,10 +1064,17 @@ const LIFTS = {
         {code:'CA',cat:'ex-pt',name:'Standing Cable Hip Abduction',sets:3,reps:'15/side',rest:'60s',cue:'Femoral neck bone density stimulus. Always first.'},
         {code:'SB',cat:'ex-pt',name:'Single-Leg Glute Bridge',sets:3,reps:'12/side',rest:'45s',cue:'Drive through heel. Pause 2 sec. Hips level.'},
       ]},
-      {label:'B — Squat + Single Leg',clr:'clr-orange',note:'~20 min — 3 key movements. Front squat for quad strength, Bulgarian for single-leg power, Step Up for running pattern.',rptLabel:'3 sets',exercises:[
-        {code:'FR',cat:'ex-lower',name:'Front Squat',sets:3,reps:'6–8',rest:'2min',cue:'Bar in front rack (or arms crossed). Chest tall, elbows high. Deeper pattern than back squat, more core demand. Strong quads for hills and surges. No tibial impact loading.'},
-        {code:'BU',cat:'ex-lower',name:'Bulgarian Split Squat (DB)',sets:3,reps:'8–10/side',rest:'90s',cue:'Rear foot elevated. Drive through front heel. Best single-leg glute + femoral neck builder. Mirrors single-leg running mechanics exactly.'},
-        {code:'SU',cat:'ex-lower',name:'Step Up with Knee Drive',sets:3,reps:'10/side',rest:'75s',cue:'Step onto box, drive opposite knee up to hip height at top. Running high-knee position. Drive through front heel — DO NOT push off back foot. Single-leg power + balance + running pattern.'},
+      {label:'B1 — Superset · Pull-up + Front Squat',clr:'clr-orange',note:'~7 min · SUPERSET — same rack. Pull-ups on the bar, step back and squat. Upper vertical pull + lower quad drive. Rest 2 min between rounds — front squat needs full recovery.',rptLabel:'3 rounds',exercises:[
+        {code:'PU',cat:'ex-upper',name:'Pull-up (or Lat Pulldown)',sets:3,reps:'5–8',rest:'15s',cue:'Use the squat rack bar. Full hang, chin over bar, 2-sec descent. Upper back and lats — posture and arm drive efficiency. Step out and set up front squat immediately after last rep.'},
+        {code:'FR',cat:'ex-lower',name:'Front Squat',sets:3,reps:'6–8',rest:'2min',cue:'Bar in front rack or arms crossed. Chest tall, elbows high. Full depth. Strong quads for hills and surges. Rest 2 min (full recovery needed for heavy front squats) then back to pull-ups.'},
+      ]},
+      {label:'B2 — Superset · Dumbbell Row + Bulgarian Split Squat',clr:'clr-red',note:'~7 min · SUPERSET — same dumbbells. Row for scapular stability and upper back, Bulgarian for single-leg glute + quad power. The best pairing for marathon runners.',rptLabel:'3 rounds',exercises:[
+        {code:'DR',cat:'ex-upper',name:'Dumbbell Row (single-arm)',sets:3,reps:'10/side',rest:'15s',cue:'Brace on bench, flat back. Pull DB to hip — not armpit. Squeeze scapula at top, 2-sec hold. 10 each side back-to-back. Pick up same DBs and immediately move to Bulgarian.'},
+        {code:'BU',cat:'ex-lower',name:'Bulgarian Split Squat (DB)',sets:3,reps:'8–10/side',rest:'90s',cue:'Same dumbbells — rear foot on bench. Drive through front heel, knee tracks toes. Best single-leg glute + femoral neck builder. Mirrors running mechanics exactly. Rest 90s then back to rows.'},
+      ]},
+      {label:'B3 — Superset · Overhead Press + Step Up with Knee Drive',clr:'clr-purple',note:'~6 min · SUPERSET — DBs + box. Press for shoulder stability and upper body tension management, step up for the exact running high-knee pattern.',rptLabel:'3 rounds',exercises:[
+        {code:'OP',cat:'ex-upper',name:'Overhead Press (DB or barbell)',sets:3,reps:'8–10',rest:'15s',cue:'Brace core, press straight up — no lumbar flare. DBs: neutral or pronated grip. Shoulder stability = good arm drive form late in a race. Set down weights, move to box immediately.'},
+        {code:'SU',cat:'ex-lower',name:'Step Up with Knee Drive',sets:3,reps:'10/side',rest:'90s',cue:'Step onto box, drive opposite knee to hip height at top — the exact running high-knee position. Drive through FRONT heel, do not push off back foot. Single-leg power + balance + running pattern. Rest 90s then back to press.'},
       ]},
       {label:'C — Runner\'s Core B',clr:'clr-purple',note:'~12 min — back extensors + stabilization. 3 rounds.',rptLabel:'3 rounds',exercises:[
         {code:'SM',cat:'ex-core',name:'Superman + Diver',sets:3,reps:'10 each',rest:'20s',cue:'SUPERMAN: Lie face down, arms extended overhead. Lift arms + chest + legs simultaneously. Hold 2 sec at top. DIVER: Same start, arms sweep back like a diver — lift and hold. Back extensors (erector spinae, multifidus) are critically undertrained in runners. These prevent the forward lean collapse in miles 18–26.'},
@@ -1202,7 +1216,7 @@ const T_SCHEDULE = [
   {date:'2026-07-25',type:'lift',session:'upper_body',phase:'base'},
   {date:'2026-07-26',type:'run',subtype:'easy',phase:'base'},
   // Wk 2 Jul 27–Aug 2 · Base · B-cycle: Tue quality → Thu long → Fri pilates
-  {date:'2026-07-27',type:'lift',session:'full_body',phase:'base'},
+  {date:'2026-07-27',type:'lift',session:'lower_body',phase:'base'},
   {date:'2026-07-28',type:'run',subtype:'quality',quality:'strides',phase:'base'},
   {date:'2026-07-29',type:'lift',session:'upper_body',phase:'base'},
   {date:'2026-07-30',type:'run',subtype:'long',phase:'base'},
@@ -1218,7 +1232,7 @@ const T_SCHEDULE = [
   {date:'2026-08-08',type:'lift',session:'upper_body',phase:'build'},
   {date:'2026-08-09',type:'run',subtype:'easy',phase:'build'},
   // Wk 4 Aug 10–16 · Build · B-cycle: Tue quality → Thu long → Fri pilates
-  {date:'2026-08-10',type:'lift',session:'full_body',phase:'build'},
+  {date:'2026-08-10',type:'lift',session:'lower_body',phase:'build'},
   {date:'2026-08-11',type:'run',subtype:'quality',quality:'tempo',phase:'build'},
   {date:'2026-08-12',type:'lift',session:'upper_body',phase:'build'},
   {date:'2026-08-13',type:'run',subtype:'long',phase:'build'},
@@ -1234,7 +1248,7 @@ const T_SCHEDULE = [
   {date:'2026-08-22',type:'lift',session:'upper_body',phase:'build'},
   {date:'2026-08-23',type:'run',subtype:'easy',phase:'build'},
   // Wk 6 Aug 24–30 · Build · B-cycle: Tue quality → Thu long → Fri pilates
-  {date:'2026-08-24',type:'lift',session:'full_body',phase:'build'},
+  {date:'2026-08-24',type:'lift',session:'lower_body',phase:'build'},
   {date:'2026-08-25',type:'run',subtype:'quality',quality:'tempo',phase:'build'},
   {date:'2026-08-26',type:'lift',session:'upper_body',phase:'build'},
   {date:'2026-08-27',type:'run',subtype:'long',phase:'build'},
@@ -1250,7 +1264,7 @@ const T_SCHEDULE = [
   {date:'2026-09-05',type:'lift',session:'upper_body',phase:'build'},
   {date:'2026-09-06',type:'run',subtype:'easy',phase:'build'},
   // Wk 8 Sep 7–13 · Peak · B-cycle: Tue quality → Thu long → Fri pilates
-  {date:'2026-09-07',type:'lift',session:'full_body',phase:'peak'},
+  {date:'2026-09-07',type:'lift',session:'lower_body',phase:'peak'},
   {date:'2026-09-08',type:'run',subtype:'quality',quality:'marathon_pace',phase:'peak'},
   {date:'2026-09-09',type:'lift',session:'upper_body',phase:'peak'},
   {date:'2026-09-10',type:'run',subtype:'long',phase:'peak'},
@@ -1266,7 +1280,7 @@ const T_SCHEDULE = [
   {date:'2026-09-19',type:'lift',session:'upper_body',note:'drop single-leg work',phase:'peak'},
   {date:'2026-09-20',type:'run',subtype:'easy',phase:'peak'},
   // Wk 10 Sep 21–27 · Peak · B-cycle: Tue quality → Thu long ~20 mi → Fri pilates
-  {date:'2026-09-21',type:'lift',session:'full_body',note:'light',phase:'peak'},
+  {date:'2026-09-21',type:'lift',session:'lower_body',note:'light',phase:'peak'},
   {date:'2026-09-22',type:'run',subtype:'quality',quality:'marathon_pace',phase:'peak'},
   {date:'2026-09-23',type:'lift',session:'upper_body',phase:'peak'},
   {date:'2026-09-24',type:'run',subtype:'long',note:'peak long run ~20 miles',phase:'peak'},
